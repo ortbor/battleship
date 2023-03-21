@@ -149,8 +149,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "C:/mipt/battlesh_t/cmake-build-debug",
-		"source" : "C:/mipt/battlesh_t"
+		"build" : "C:/mipt/battleship/cmake-build-debug",
+		"source" : "C:/mipt/battleship"
 	},
 	"version" : 
 	{

@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "battlesh_t.exe"
+			"path" : "battleship.exe"
 		},
 		{
-			"path" : "battlesh_t.pdb"
+			"path" : "battleship.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -14,6 +14,7 @@
 		"commands" : 
 		[
 			"add_executable",
+			"install",
 			"include_directories"
 		],
 		"files" : 
@@ -34,47 +35,53 @@
 			{
 				"command" : 1,
 				"file" : 0,
+				"line" : 138,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
 				"line" : 6,
 				"parent" : 0
 			},
 			{
-				"command" : 1,
+				"command" : 2,
 				"file" : 0,
 				"line" : 7,
 				"parent" : 0
 			},
 			{
-				"command" : 1,
+				"command" : 2,
 				"file" : 0,
 				"line" : 8,
 				"parent" : 0
 			},
 			{
-				"command" : 1,
+				"command" : 2,
 				"file" : 0,
 				"line" : 9,
 				"parent" : 0
 			},
 			{
-				"command" : 1,
+				"command" : 2,
 				"file" : 0,
 				"line" : 10,
 				"parent" : 0
 			},
 			{
-				"command" : 1,
+				"command" : 2,
 				"file" : 0,
 				"line" : 11,
 				"parent" : 0
 			},
 			{
-				"command" : 1,
+				"command" : 2,
 				"file" : 0,
 				"line" : 12,
 				"parent" : 0
 			},
 			{
-				"command" : 1,
+				"command" : 2,
 				"file" : 0,
 				"line" : 13,
 				"parent" : 0
@@ -96,36 +103,36 @@
 			"includes" : 
 			[
 				{
-					"backtrace" : 2,
-					"path" : "C:/mipt/battlesh_t/."
-				},
-				{
 					"backtrace" : 3,
-					"path" : "C:/mipt/battlesh_t/include"
+					"path" : "C:/mipt/battleship/."
 				},
 				{
 					"backtrace" : 4,
-					"path" : "C:/mipt/battlesh_t/include/SFML"
+					"path" : "C:/mipt/battleship/include"
 				},
 				{
 					"backtrace" : 5,
-					"path" : "C:/mipt/battlesh_t/include/SFML/Audio"
+					"path" : "C:/mipt/battleship/include/SFML"
 				},
 				{
 					"backtrace" : 6,
-					"path" : "C:/mipt/battlesh_t/include/SFML/Graphics"
+					"path" : "C:/mipt/battleship/include/SFML/Audio"
 				},
 				{
 					"backtrace" : 7,
-					"path" : "C:/mipt/battlesh_t/include/SFML/Network"
+					"path" : "C:/mipt/battleship/include/SFML/Graphics"
 				},
 				{
 					"backtrace" : 8,
-					"path" : "C:/mipt/battlesh_t/include/SFML/System"
+					"path" : "C:/mipt/battleship/include/SFML/Network"
 				},
 				{
 					"backtrace" : 9,
-					"path" : "C:/mipt/battlesh_t/include/SFML/Window"
+					"path" : "C:/mipt/battleship/include/SFML/System"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "C:/mipt/battleship/include/SFML/Window"
 				}
 			],
 			"language" : "CXX",
@@ -149,7 +156,21 @@
 			]
 		}
 	],
-	"id" : "battlesh_t::@6890427a1f51a3e7e1df",
+	"id" : "battleship::@6890427a1f51a3e7e1df",
+	"install" : 
+	{
+		"destinations" : 
+		[
+			{
+				"backtrace" : 2,
+				"path" : "."
+			}
+		],
+		"prefix" : 
+		{
+			"path" : "C:/Program Files (x86)/battlesh_t"
+		}
+	},
 	"link" : 
 	{
 		"commandFragments" : 
@@ -169,8 +190,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "battlesh_t",
-	"nameOnDisk" : "battlesh_t.exe",
+	"name" : "battleship",
+	"nameOnDisk" : "battleship.exe",
 	"paths" : 
 	{
 		"build" : ".",

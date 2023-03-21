@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.23)
-project(battlesh_t)
+project(battleship)
 
 set(CMAKE_CXX_STANDARD 14)
 
@@ -12,7 +12,7 @@ include_directories(include/SFML/Network)
 include_directories(include/SFML/System)
 include_directories(include/SFML/Window)
 
-add_executable(battlesh_t
+add_executable(battleship
         include/SFML/Audio/AlResource.hpp
         include/SFML/Audio/Export.hpp
         include/SFML/Audio/InputSoundFile.hpp
@@ -134,3 +134,5 @@ add_executable(battlesh_t
         ship.hpp
         game.cpp
         game.hpp)
+
+install(TARGETS battleship DESTINATION .)

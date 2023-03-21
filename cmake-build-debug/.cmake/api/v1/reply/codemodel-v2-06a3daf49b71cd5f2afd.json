@@ -6,7 +6,8 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-806724119064149ff9b4.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.23"
@@ -27,7 +28,7 @@
 					[
 						0
 					],
-					"name" : "battlesh_t",
+					"name" : "battleship",
 					"targetIndexes" : 
 					[
 						0
@@ -38,9 +39,9 @@
 			[
 				{
 					"directoryIndex" : 0,
-					"id" : "battlesh_t::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-battlesh_t-Debug-2e5b77a4c846839c880d.json",
-					"name" : "battlesh_t",
+					"id" : "battleship::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-battleship-Debug-2d7f60a4614aa90b3988.json",
+					"name" : "battleship",
 					"projectIndex" : 0
 				}
 			]
@@ -49,8 +50,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/mipt/battlesh_t/cmake-build-debug",
-		"source" : "C:/mipt/battlesh_t"
+		"build" : "C:/mipt/battleship/cmake-build-debug",
+		"source" : "C:/mipt/battleship"
 	},
 	"version" : 
 	{

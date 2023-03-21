@@ -1,24 +1,3 @@
 # ninja log v5
-46	1136	7009347697983392	CMakeFiles/battlesh_t.dir/cell.cpp.obj	c6d5a04f9ea612f5
-7	1097	7009348086117425	CMakeFiles/battlesh_t.dir/main.cpp.obj	bd846cabf7793a5c
-15	1180	7009347698407868	CMakeFiles/battlesh_t.dir/command.cpp.obj	bfb1295c2871ff86
-36	1439	7009347701009036	CMakeFiles/battlesh_t.dir/player.cpp.obj	a5efc10c282c3af0
-56	1364	7009347700246721	CMakeFiles/battlesh_t.dir/field.cpp.obj	22167b103b42e1b6
-3	378	7009349109525471	build.ninja	d8fe153444e4616d
-7	1476	7009347701388048	CMakeFiles/battlesh_t.dir/game.cpp.obj	99d3188906b3f297
-15	1565	7009348090784997	CMakeFiles/battlesh_t.dir/ship.cpp.obj	645224787c71c41c
-3	463	7009349109525471	build.ninja	d8fe153444e4616d
-8	1923	7009349130778686	CMakeFiles/battlesh_t.dir/player.cpp.obj	a5efc10c282c3af0
-5	858	7009350162989624	CMakeFiles/battlesh_t.dir/command.cpp.obj	bfb1295c2871ff86
-18	1596	7009350932433235	CMakeFiles/battlesh_t.dir/main.cpp.obj	bd846cabf7793a5c
-7	1634	7009350932689318	CMakeFiles/battlesh_t.dir/command.cpp.obj	bfb1295c2871ff86
-28	2407	7009350940982630	CMakeFiles/battlesh_t.dir/game.cpp.obj	99d3188906b3f297
-2407	2854	7009350945421771	battlesh_t.exe	4042a232a14bb281
-5	1339	7009351135862980	CMakeFiles/battlesh_t.dir/command.cpp.obj	bfb1295c2871ff86
-1341	1893	7009351141046768	battlesh_t.exe	4042a232a14bb281
-17	2358	7009455737032774	CMakeFiles/battlesh_t.dir/main.cpp.obj	bd846cabf7793a5c
-6	2656	7009455740096388	CMakeFiles/battlesh_t.dir/command.cpp.obj	bfb1295c2871ff86
-27	2958	7009455743542396	CMakeFiles/battlesh_t.dir/field.cpp.obj	22167b103b42e1b6
-46	2993	7009455743888276	CMakeFiles/battlesh_t.dir/game.cpp.obj	99d3188906b3f297
-37	3076	7009455744725489	CMakeFiles/battlesh_t.dir/player.cpp.obj	a5efc10c282c3af0
+3	463	7011038562291178	build.ninja	d8fe153444e4616d
 3076	3613	7009455750033521	battlesh_t.exe	4042a232a14bb281
