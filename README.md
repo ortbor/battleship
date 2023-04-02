@@ -35,8 +35,8 @@ _Now you can start to build and install game_
 
 3. Now you can start to build and install game
   ```sh
-  cmake ..
-  cmake --build .
+  cmake -DCMAKE_BUILD_TYPE=Release ..
+  cmake --build . --config Release -- -j 16
   sudo cmake --install . 
   ```
 
