@@ -1,5 +1,11 @@
 {
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
+    "readability-function-size",
+    "readability-magic-numbers"
+  ],
   "files.associations": {
+    "iostream": "cpp",
     "array": "cpp",
     "atomic": "cpp",
     "bit": "cpp",
@@ -14,9 +20,11 @@
     "cstdint": "cpp",
     "cstdio": "cpp",
     "cstdlib": "cpp",
+    "ctime": "cpp",
     "cwchar": "cpp",
     "cwctype": "cpp",
     "deque": "cpp",
+    "map": "cpp",
     "string": "cpp",
     "unordered_map": "cpp",
     "vector": "cpp",
@@ -35,7 +43,6 @@
     "utility": "cpp",
     "initializer_list": "cpp",
     "iosfwd": "cpp",
-    "iostream": "cpp",
     "istream": "cpp",
     "limits": "cpp",
     "new": "cpp",

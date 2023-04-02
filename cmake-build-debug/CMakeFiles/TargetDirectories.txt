@@ -1,3 +1,0 @@
-C:/mipt/battlesh_t/cmake-build-debug/CMakeFiles/battlesh_t.dir
-C:/mipt/battlesh_t/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/mipt/battlesh_t/cmake-build-debug/CMakeFiles/rebuild_cache.dir
