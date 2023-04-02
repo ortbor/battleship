@@ -90,11 +90,12 @@ void GameLoop::SetCommands() {
   command_.push_back(new AddShipCommand(players_.data(), &window));
   command_.push_back(new AddShipCommand(players_.data() + 1, &window));
 
-  for (size_t p = 0; p < 2; ++p) {
+  for (size_t pl = 0; pl < 2; ++pl) {
     for (size_t i = 0; i < size_.x; ++i) {
       for (size_t j = 0; j < size_.y; ++j) {
-        auto cell = players_[p].GetField()->GetCell(Vector2f(i, j));
-        auto cmd = new AddCellToShipCommand(players_.data() + p, &window, cell);
+        auto* cell = players_[pl].GetField()->GetCell(Vector2f(i, j));
+        auto* cmd =
+            new AddCellToShipCommand(players_.data() + pl, &window, cell);
         command_.push_back(cmd);
       }
     }

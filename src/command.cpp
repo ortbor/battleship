@@ -39,11 +39,11 @@ bool AddCellToShipCommand::Execute() {
     } else {
       player_->ship_in_process_.EraseCell(cell_);
     }
-    for (auto& item : window_->GetButtons()) {
+    for (const auto& item : window_->GetButtons()) {
       if (item->GetCommand() == this) {
-        auto obj = dynamic_cast<sf::RectangleShape*>(item->GetDrawable()[0]);
-        auto c = obj->getFillColor();
-        obj->setFillColor(sf::Color(255 - c.r, 255 - c.g, 255 - c.b));
+        auto* obj = dynamic_cast<sf::RectangleShape*>(item->GetDrawable()[0]);
+        auto color = obj->getFillColor();
+        obj->setFillColor(sf::Color(255 - color.r, 255 - color.g, 255 - color.b));
         window_->DrawObjects();
         break;
       }
@@ -54,11 +54,11 @@ bool AddCellToShipCommand::Execute() {
 
 void AddCellToShipCommand::Undo() {
   player_->ship_in_process_.EraseCell(cell_);
-  for (auto& item : window_->GetButtons()) {
+  for (const auto& item : window_->GetButtons()) {
     if (item->GetCommand() == this) {
-      auto obj = dynamic_cast<sf::RectangleShape*>(item->GetDrawable()[0]);
-      auto c = obj->getFillColor();
-      obj->setFillColor(sf::Color(c.r, c.g, 255 - c.b));
+      auto* obj = dynamic_cast<sf::RectangleShape*>(item->GetDrawable()[0]);
+      auto color = obj->getFillColor();
+      obj->setFillColor(sf::Color(color.r, color.g, 255 - color.b));
       window_->DrawObjects();
       break;
     }
