@@ -19,7 +19,7 @@ set(RES_PATH share/battlesh1p_res)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
-SET(CMAKE_CXX_FLAGS_DEBUG "-std=c++20 -Og -Wall  -fsanitize=address")
+SET(CMAKE_CXX_FLAGS_DEBUG "-std=c++20 -Og -Wall -Werror -fsanitize=address")
 SET(CMAKE_CXX_FLAGS_RELEASE "-std=c++20 -O3 -Wall")
 
 find_package(SFML 2.5.1 COMPONENTS window graphics system REQUIRED)
