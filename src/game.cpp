@@ -9,6 +9,10 @@ GameLoop::GameLoop(const Vector2f& size, size_t ships)
       size_(size),
       players_(std::array<Player, 2>{Player(0, size), Player(1, size)}),
       window(kName) {
+  if (!font.loadFromFile(Path().string() + kRes + "symbola.ttf")) {
+    throw std::runtime_error("Cannot load font");
+  }
+
   Link();
   SetDraw();
   SetCommands();

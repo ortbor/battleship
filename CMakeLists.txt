@@ -15,8 +15,8 @@ set(SOURCES ${SRC_PATH}/button.cpp
             ${SRC_PATH}/window.cpp
             main.cpp)
 
+set(CMAKE_INSTALL_PREFIX /usr/local)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
-
 SET(CMAKE_CXX_FLAGS_DEBUG "-std=c++20 -Og -Wall -Werror -fsanitize=address")
 SET(CMAKE_CXX_FLAGS_RELEASE "-std=c++20 -O3 -Wall")
 
@@ -24,6 +24,5 @@ find_package(SFML 2.5.1 COMPONENTS window graphics system REQUIRED)
 add_executable(battlesh1p ${SOURCES})
 target_link_libraries(battlesh1p PRIVATE sfml-window sfml-graphics sfml-system)
 
-install(DIRECTORY DESTINATION ${RES_PATH})
-install(TARGETS battlesh1p)
+install(TARGETS battlesh1p DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(DIRECTORY share DESTINATION ${CMAKE_INSTALL_PREFIX})
