@@ -42,7 +42,6 @@ class AddCellToShipCommand : public Command {
   AddCellToShipCommand(Player* player, GameWindow* windown, Cell* cell);
   ~AddCellToShipCommand() final = default;
   bool Execute() final;
-  void Undo();
   bool IsValid() const final;
 
  protected:

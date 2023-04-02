@@ -47,7 +47,6 @@ enum class State {
   Killed,
   Chosen
 };
-
 static const std::string kName = "BATTLESH!P!!";
-static const std::string kResPrefix = "/share/battlesh1p_res/symbola.ttf";
+static const std::string kRes = "/share/battlesh1p/";
 std::filesystem::path Path();

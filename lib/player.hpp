@@ -19,7 +19,6 @@ class Player {
   void AddShip();
   void Shoot(Cell* cell, ShotResult& shot_result);
   const Ship* GetShipInProcess() const;
-  void FinishSettingShip();
   size_t GetNumberOfShipsSized(size_t size) const;
   void LinkWithRival(Player* rival);
 

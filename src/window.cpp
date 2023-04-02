@@ -44,8 +44,10 @@ void GameWindow::SetButtons(vector<Button*>& other) { buttons_ = &other; }
 void GameWindow::DrawObjects() {
   clear();
   for (const auto& item : *buttons_) {
-    for (const auto& object : item->GetDrawable()) {
-      draw(*object);
+    if (item->GetShow()) {
+      for (const auto& object : item->GetDrawable()) {
+        draw(*object);
+      }
     }
   }
   display();

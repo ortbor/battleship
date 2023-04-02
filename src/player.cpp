@@ -25,6 +25,7 @@ void Player::AddShip() {
   ships_[ship_in_process_.GetSize()].push_back(ship_in_process_);
   ++ship_count_;
   my_field_.SetShip(&ship_in_process_);
+  ship_in_process_.Clear();
 }
 
 void Player::Shoot(Cell* cell, ShotResult& shot_result) {
@@ -36,8 +37,6 @@ void Player::Shoot(Cell* cell, ShotResult& shot_result) {
 }
 
 const Ship* Player::GetShipInProcess() const { return &ship_in_process_; }
-
-void Player::FinishSettingShip() { ship_in_process_.Clear(); }
 
 size_t Player::GetNumberOfShipsSized(size_t size) const {
   return ships_[size].size();

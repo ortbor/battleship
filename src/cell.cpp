@@ -1,17 +1,58 @@
 #include "../lib/cell.hpp"
 
-Cell::Cell()
-    : coord(0, 0), state(State::Unknown), ship(nullptr), twin_cell(nullptr) {}
+Cell::Cell(const Vector2f& coord)
+    : coord_(coord),
+      state_(State::Unknown),
+      ship_(nullptr),
+      twin_cell_(nullptr),
+      shape_(nullptr) {}
 
-Cell::Cell(const Vector2f& coordn)
-    : coord(coordn), state(State::Unknown), ship(nullptr), twin_cell(nullptr) {}
+const Vector2f& Cell::GetCoord() const { return coord_; }
 
-void Cell::LinkCell(Cell* other_cell) {
-  twin_cell = other_cell;
-  other_cell->twin_cell = this;
+State Cell::GetState() const { return state_; }
+
+Ship* Cell::GetShip() const { return ship_; }
+
+Cell* Cell::GetTwin() const { return twin_cell_; }
+
+void Cell::SetState(State state) {
+  state_ = state;
+  if (shape_ != nullptr) {
+    UpdateColor();
+  }
+}
+
+void Cell::SetShip(Ship* ship) { ship_ = ship; }
+
+void Cell::SetTwins(Cell* other_cell) {
+  twin_cell_ = other_cell;
+  other_cell->twin_cell_ = this;
+}
+
+void Cell::SetShape(sf::RectangleShape* shape) { shape_ = shape; }
+
+void Cell::UpdateColor() {
+  auto col = shape_->getFillColor();
+  switch (state_) {
+    case State::Alive:
+      shape_->setFillColor(sf::Color(0, 135, 255));
+      break;
+    case State::Chosen:
+      shape_->setFillColor(sf::Color(255 - col.r, 255 - col.g, 255 - col.b));
+      break;
+    case State::Clear:
+      shape_->setFillColor(sf::Color(255, 120, 255));
+      break;
+    case State::Prohibited:
+      break;
+    default:
+      throw std::runtime_error("Unknown state!");
+      break;
+  }
 }
 
 bool CellComparator(const Cell* cell1, const Cell* cell2) {
-  return cell1->coord.x < cell2->coord.x ||
-         (cell1->coord.x == cell2->coord.x && cell1->coord.y < cell2->coord.y);
+  return cell1->GetCoord().x < cell2->GetCoord().x ||
+         (cell1->GetCoord().x == cell2->GetCoord().x &&
+          cell1->GetCoord().y < cell2->GetCoord().y);
 }

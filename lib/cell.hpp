@@ -2,17 +2,28 @@
 
 #include "common.hpp"
 
-struct Cell {
-  Cell();
-  Cell(const Vector2f& coordn);
+class Cell {
+  public:
+  Cell(const Vector2f& coord);
   ~Cell() = default;
 
-  void LinkCell(Cell* other_cell);
+  const Vector2f& GetCoord() const;
+  State GetState() const;
+  Ship* GetShip() const;
+  Cell* GetTwin() const;
+  void SetState(State state);
+  void SetShip(Ship* ship);
+  void SetTwins(Cell* other_cell);
+  void SetShape(sf::RectangleShape* shape);
 
-  Vector2f coord;
-  State state;
-  Ship* ship;
-  Cell* twin_cell;
+ private:
+  Vector2f coord_;
+  State state_;
+  Ship* ship_;
+  Cell* twin_cell_;
+  sf::RectangleShape* shape_;
+
+  void UpdateColor();
 };
 
 bool CellComparator(const Cell* cell1, const Cell* cell2);

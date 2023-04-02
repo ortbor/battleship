@@ -34,39 +34,19 @@ AddCellToShipCommand::AddCellToShipCommand(Player* player, GameWindow* windown,
 bool AddCellToShipCommand::Execute() {
   bool valid = IsValid();
   if (valid) {
-    if (cell_->state == State::Clear) {
+    if (cell_->GetState() == State::Clear) {
       player_->ship_in_process_.AddCell(cell_);
     } else {
       player_->ship_in_process_.EraseCell(cell_);
     }
-    for (const auto& item : window_->GetButtons()) {
-      if (item->GetCommand() == this) {
-        auto* obj = dynamic_cast<sf::RectangleShape*>(item->GetDrawable()[0]);
-        auto color = obj->getFillColor();
-        obj->setFillColor(sf::Color(255 - color.r, 255 - color.g, 255 - color.b));
-        window_->DrawObjects();
-        break;
-      }
-    }
+    window_->DrawObjects();
   }
   return valid;
 }
 
-void AddCellToShipCommand::Undo() {
-  player_->ship_in_process_.EraseCell(cell_);
-  for (const auto& item : window_->GetButtons()) {
-    if (item->GetCommand() == this) {
-      auto* obj = dynamic_cast<sf::RectangleShape*>(item->GetDrawable()[0]);
-      auto color = obj->getFillColor();
-      obj->setFillColor(sf::Color(color.r, color.g, 255 - color.b));
-      window_->DrawObjects();
-      break;
-    }
-  }
-}
-
 bool AddCellToShipCommand::IsValid() const {
-  return cell_->state == State::Clear || cell_->state == State::Chosen;
+  return cell_->GetState() == State::Clear ||
+         cell_->GetState() == State::Chosen;
 }
 
 AddShipCommand::AddShipCommand(Player* player, GameWindow* windown)
@@ -75,13 +55,9 @@ AddShipCommand::AddShipCommand(Player* player, GameWindow* windown)
 bool AddShipCommand::Execute() {
   bool valid = IsValid();
   if (valid) {
-    // for (auto added_cell : player_->GetShipInProcess()->GetCells()) {
-    // added_cell->Color(State::Alive);
-    // }
     player_->AddShip();
-    player_->FinishSettingShip();
+    window_->DrawObjects();
   }
-
   return valid;
 }
 
@@ -96,7 +72,7 @@ bool AddShipCommand::IsValid() const {
 
   auto cells = player_->GetShipInProcess()->GetCells();
   return std::all_of(cells.begin(), cells.end(), [](const Cell* cell) {
-    return cell->state != State::Clear;
+    return cell->GetState() != State::Clear;
   });
 }
 

@@ -12,9 +12,13 @@ bool Button::IsPressed(const Event& event) const {
           dynamic_cast<ResizeCommand*>(command_) != nullptr);
 }
 
-const vector<sf::Drawable*>& Button::GetDrawable() const { return draw_; }
+bool Button::GetShow() { return show_; }
+
+void Button::TurnShow() { show_ = !show_; }
 
 Command* Button::GetCommand() { return command_; }
+
+const vector<sf::Drawable*>& Button::GetDrawable() const { return draw_; }
 
 MouseButton::MouseButton(const pair<Vector2f, Vector2f>& coord,
                          const Mouse::Button& button, Command* command,

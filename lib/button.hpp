@@ -8,10 +8,13 @@ class Button {
   virtual ~Button() = default;
 
   virtual bool IsPressed(const Event& event) const;
-  const vector<sf::Drawable*>& GetDrawable() const;
+  bool GetShow();
+  void TurnShow();
   Command* GetCommand();
+  const vector<sf::Drawable*>& GetDrawable() const;
 
  protected:
+  bool show_ = true;
   vector<sf::Drawable*> draw_;
   Command* command_;
 };

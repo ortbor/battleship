@@ -27,7 +27,7 @@ size_t Ship::GetSize() const { return cells_.size(); }
 void Ship::AddCell(Cell* cell) {
   ++health_;
   cells_.push_back(cell);
-  cell->state = State::Chosen;
+  cell->SetState(State::Chosen);
   size_t new_cell_index = GetSize() - 1;
   while (new_cell_index > 0 &&
          !CellComparator(cells_[new_cell_index - 1], cells_[new_cell_index])) {
@@ -39,11 +39,12 @@ void Ship::AddCell(Cell* cell) {
 void Ship::EraseCell(Cell* cell) {
   auto cell_location = find(cells_.begin(), cells_.end(), cell);
   if (cell_location != cells_.end()) {
-    if (cell->state != State::Killed && cell->state != State::Harmed) {
+    if (cell->GetState() != State::Killed &&
+        cell->GetState() != State::Harmed) {
       --health_;
     }
     cells_.erase(find(cells_.begin(), cells_.end(), cell));
-    cell->state = State::Clear;
+    cell->SetState(State::Clear);
   }
 }
 
@@ -55,14 +56,15 @@ bool Ship::IsClassic() const {
     return false;
   }
   bool vertical = false;
-  if (cells_[0]->coord.y == cells_[1]->coord.y) {
+  if (cells_[0]->GetCoord().y == cells_[1]->GetCoord().y) {
     vertical = true;
   }
   for (size_t i = 0; i < GetSize() - 1; ++i) {
-    if ((vertical && cells_[i + 1]->coord.y == cells_[i + 1]->coord.y &&
-         cells_[i]->coord.x + 1 == cells_[i + 1]->coord.x) ||
-        (!vertical && cells_[i]->coord.x == cells_[i + 1]->coord.x &&
-         cells_[i]->coord.y + 1 == cells_[i + 1]->coord.y)) {
+    if ((vertical &&
+         cells_[i + 1]->GetCoord().y == cells_[i + 1]->GetCoord().y &&
+         cells_[i]->GetCoord().x + 1 == cells_[i + 1]->GetCoord().x) ||
+        (!vertical && cells_[i]->GetCoord().x == cells_[i + 1]->GetCoord().x &&
+         cells_[i]->GetCoord().y + 1 == cells_[i + 1]->GetCoord().y)) {
       continue;
     }
     return false;

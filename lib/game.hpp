@@ -5,7 +5,6 @@
 #include "player.hpp"
 #include "window.hpp"
 
-
 class GameLoop {
  public:
   GameLoop(const Vector2f& size, size_t ships);
@@ -18,8 +17,7 @@ class GameLoop {
   const Vector2f size_;
   array<Player, 2> players_;
   stack<Command*> turns_;
-
-  sf::Font font;
+  
   GameWindow window;
   vector<sf::Drawable*> draw_;
   vector<Command*> command_;
@@ -27,6 +25,7 @@ class GameLoop {
 
   void SetAllShips(Player* player);
   void Link();
+  void Clear();
   void SetDraw();
   void SetCommands();
   void SetButtons();

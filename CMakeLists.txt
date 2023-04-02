@@ -8,18 +8,16 @@ set(SOURCES ${SRC_PATH}/button.cpp
             ${SRC_PATH}/command.cpp
             ${SRC_PATH}/common.cpp
             ${SRC_PATH}/field.cpp 
+            ${SRC_PATH}/object.cpp 
             ${SRC_PATH}/game.cpp 
             ${SRC_PATH}/player.cpp 
             ${SRC_PATH}/ship.cpp
             ${SRC_PATH}/window.cpp
             main.cpp)
 
-set(RES_PATH share/battlesh1p_res)
-
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
-SET(CMAKE_CXX_FLAGS_DEBUG "-std=c++20 -Og -Wall -Werror -fsanitize=address")
+SET(CMAKE_CXX_FLAGS_DEBUG "-std=c++20 -Og -Wall -Werror")
 SET(CMAKE_CXX_FLAGS_RELEASE "-std=c++20 -O3 -Wall")
 
 find_package(SFML 2.5.1 COMPONENTS window graphics system REQUIRED)
@@ -27,5 +25,5 @@ add_executable(battlesh1p ${SOURCES})
 target_link_libraries(battlesh1p PRIVATE sfml-window sfml-graphics sfml-system)
 
 install(DIRECTORY DESTINATION ${RES_PATH})
-install(TARGETS battlesh1p DESTINATION bin)
-install(FILES symbola.ttf DESTINATION ${RES_PATH})
+install(TARGETS battlesh1p)
+install(DIRECTORY share DESTINATION ${CMAKE_INSTALL_PREFIX})
