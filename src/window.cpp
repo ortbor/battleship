@@ -45,6 +45,8 @@ void GameWindow::DrawObjects() {
   clear();
   for (const auto& item : *buttons_) {
     if (item->GetShow()) {
+      std::cout << item << ' ';
+      std::cout.flush();
       for (const auto& object : item->GetDrawable()) {
         draw(*object);
       }
