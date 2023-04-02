@@ -5,22 +5,22 @@
 #include "../lib/command.hpp"
 #include "../lib/window.hpp"
 
-GameLoop::GameLoop(const Vector2f& size)
-    : size_(size),
+GameLoop::GameLoop(const Vector2f& size, size_t ships)
+    : ships_(ships),
+      size_(size),
       players_(std::array<Player, 2>{Player(0, size), Player(1, size)}),
-      window("Btest!esh!t!!!") {
-  if (!font.loadFromFile("symbola.ttf")) {
+      window(kName) {
+  if (!font.loadFromFile(Path().parent_path().string() + kResPrefix)) {
     throw std::runtime_error("Cannot load font");
   }
+
   Link();
   SetDraw();
   SetCommands();
   SetButtons();
 }
 
-GameLoop::~GameLoop() { Clear(); }
-
-void GameLoop::Clear() {
+GameLoop::~GameLoop() {
   for (auto& item : draw_) {
     delete item;
   }
@@ -40,7 +40,7 @@ void GameLoop::Clear() {
 void GameLoop::Link() { players_[0].LinkWithRival(&players_[1]); }
 
 void GameLoop::SetDraw() {
-  sf::Text* title = new sf::Text("BATTLESH!T", font, 140);
+  sf::Text* title = new sf::Text(kName, font, 140);
   title->setFillColor(sf::Color::Red);
   title->setPosition(Vector2f(525, 0));
   title->setStyle(sf::Text::Bold | sf::Text::Underlined);
@@ -68,7 +68,7 @@ void GameLoop::SetDraw() {
   for (size_t pl = 0; pl < 2; ++pl) {
     for (size_t i = 0; i < size_.x; ++i) {
       for (size_t j = 0; j < size_.y; ++j) {
-        Vector2f size(kCell, kCell);
+        Vector2f size(65, 65);
         Vector2f left(300 + i * 75, 270 + j * 75);
         sf::RectangleShape* test = new sf::RectangleShape(size);
         test->setFillColor(sf::Color(255, 120, 255));
@@ -138,7 +138,7 @@ void GameLoop::SetButtons() {
 
 void GameLoop::SetAllShips(Player* player) {
   std::cout << "Player " << player->GetIndex() + 1 << ", set your ships.\n";
-  for (size_t i = 0; i < kNumShips; ++i) {
+  for (size_t i = 0; i < ships_; ++i) {
     std::cout << "Insert ship.\n";
     bool ship_set = false;
     stack<AddCellToShipCommand*> command_stack;

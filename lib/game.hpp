@@ -8,18 +8,14 @@
 
 class GameLoop {
  public:
-  GameLoop(const Vector2f& size);
+  GameLoop(const Vector2f& size, size_t ships);
   ~GameLoop();
   void Play();
 
  protected:
-  const size_t kNumShips = 3;
-  const size_t kCell = 65;
-  const size_t kShiftX = 300;
-  const size_t kShiftY = 270;
-
   bool finished_ = false;
-  Vector2f size_;
+  const size_t ships_;
+  const Vector2f size_;
   array<Player, 2> players_;
   stack<Command*> turns_;
 
@@ -34,5 +30,4 @@ class GameLoop {
   void SetDraw();
   void SetCommands();
   void SetButtons();
-  void Clear();
 };

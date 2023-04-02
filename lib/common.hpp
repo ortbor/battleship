@@ -4,10 +4,11 @@
 #include <SFML/Window.hpp>
 #include <algorithm>
 #include <array>
+#include <filesystem>
 #include <iostream>
+#include <memory>
 #include <stack>
 #include <vector>
-#include <memory>
 
 using sf::Event;
 using sf::Keyboard;
@@ -46,3 +47,7 @@ enum class State {
   Killed,
   Chosen
 };
+
+static const std::string kName = "BATTLESH!P!!";
+static const std::string kResPrefix = "/share/battlesh1p_res/symbola.ttf";
+std::filesystem::path Path();
