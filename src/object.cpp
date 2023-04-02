@@ -20,6 +20,9 @@ void GameLoop::Clear() {
 }
 
 void GameLoop::SetDraw() {
+  sf::Sprite* sprite = new sf::Sprite(background);
+  draw_.push_back(sprite);
+
   sf::Text* title = new sf::Text(kName, font, 140);
   title->setFillColor(sf::Color::Red);
   title->setPosition(Vector2f(475, 0));
@@ -86,7 +89,7 @@ void GameLoop::SetCommands() {
 void GameLoop::SetButtons() {
   buttons_.resize(3);
   for (size_t scr = 0; scr < 3; ++scr) {
-    buttons_[scr].push_back(new Button(command_[0], {draw_[0]}));
+    buttons_[scr].push_back(new Button(command_[0], {draw_[0], draw_[1]}));
   }
 
   for (size_t pl = 0; pl < 2; ++pl) {
@@ -94,9 +97,9 @@ void GameLoop::SetButtons() {
     Vector2f right(1735, 910);
     auto coord = std::make_pair(left, right);
     auto* btn = new MouseButton(coord, Mouse::Button::Left, command_[pl + 2],
-                                {draw_[3], draw_[4]});
+                                {draw_[4], draw_[5]});
     buttons_[pl].push_back(btn);
-    buttons_[pl].push_back(new Button(command_[1], {draw_[pl + 1]}));
+    buttons_[pl].push_back(new Button(command_[1], {draw_[pl + 2]}));
 
     for (size_t i = 0; i < size_.x; ++i) {
       for (size_t j = 0; j < size_.y; ++j) {
@@ -107,7 +110,7 @@ void GameLoop::SetButtons() {
 
         Command* cmd = command_[index + 4];
         btn = new MouseButton(coord, Mouse::Button::Left, cmd,
-                              {draw_[index + 5]});
+                              {draw_[index + 6]});
         buttons_[pl].push_back(btn);
       }
     }

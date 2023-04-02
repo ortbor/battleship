@@ -12,6 +12,9 @@ GameLoop::GameLoop(const Vector2f& size, size_t ships)
   if (!font.loadFromFile(Path().string() + kRes + "symbola.ttf")) {
     throw std::runtime_error("Cannot load font");
   }
+  if (!background.loadFromFile(Path().string() + kRes + "background.jpg")) {
+    throw std::runtime_error("Cannot load background");
+  }
 
   Link();
   SetDraw();
@@ -45,10 +48,9 @@ void GameLoop::SetAllShips(Player* player) {
           for (; !command_stack.empty(); command_stack.pop()) {
             std::cout << "F" << command_stack.size() << ' ';
           }
-          break;  
+          break;
         }
       } else {
-        
       }
     }
   }

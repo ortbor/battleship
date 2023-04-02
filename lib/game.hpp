@@ -20,6 +20,7 @@ class GameLoop {
   stack<Command*> turns_;
 
   sf::Font font;
+  sf::Texture background;
   GameWindow window;
   vector<sf::Drawable*> draw_;
   vector<Command*> command_;
