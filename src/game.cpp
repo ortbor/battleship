@@ -1,5 +1,6 @@
 #include "../lib/game.hpp"
 
+#include "../lib/button.hpp"
 #include "../lib/cell.hpp"
 #include "../lib/command.hpp"
 #include "../lib/window.hpp"
@@ -8,11 +9,11 @@ GameLoop::GameLoop(const Vector2f& size, size_t ships)
     : ships_(ships),
       size_(size),
       players_(std::array<Player, 2>{Player(0, size), Player(1, size)}),
-      window(kName) {
-  if (!font.loadFromFile(Path().string() + kRes + "symbola.ttf")) {
+      window_(kName) {
+  if (!font_.loadFromFile(Path().string() + kRes + "symbola.ttf")) {
     throw std::runtime_error("Cannot load font");
   }
-  if (!background.loadFromFile(Path().string() + kRes + "background.jpg")) {
+  if (!background_.loadFromFile(Path().string() + kRes + "background.jpg")) {
     throw std::runtime_error("Cannot load background");
   }
 
@@ -26,74 +27,74 @@ GameLoop::~GameLoop() { Clear(); }
 
 void GameLoop::Link() { players_[0].LinkWithRival(&players_[1]); }
 
-void GameLoop::SetAllShips(Player* player) {
-  for (size_t i = 0; i < ships_; ++i) {
-    stack<AddCellToShipCommand*> command_stack;
-    while (true) {
-      Command* command = window.GetCommand();
-      if (command->Execute()) {
-        if (!window.isOpen()) {
-          return;
-        }
-
-        auto* add_cell_command = dynamic_cast<AddCellToShipCommand*>(command);
-        if (add_cell_command != nullptr) {
-          command_stack.push(add_cell_command);
-          turns_.push(command);
-        }
-
-        auto* add_ship_command = dynamic_cast<AddShipCommand*>(command);
-        if (add_ship_command != nullptr) {
-          turns_.push(command);
-          for (; !command_stack.empty(); command_stack.pop()) {
-            std::cout << "F" << command_stack.size() << ' ';
-          }
-          break;
-        }
-      } else {
-      }
-    }
+void GameLoop::StartMenu() {
+  while (window_.isOpen() && !back_) {
+    window_.SetButtons(buttons_[0]);
+    window_.DrawObjects();
+    window_.GetCommand()->Execute();
   }
 }
 
 void GameLoop::Play() {
-  Player* current_player = players_.data();
-  Player* current_rival = &players_[1];
-  for (int i = 0; i < 2; ++i) {
-    window.SetPlayer(&players_[i]);
-    window.SetButtons(buttons_[i]);
-    window.DrawObjects();
+  for (size_t pl = 0; pl < 2; ++pl) {
+    while (players_[pl].GetShipCount() < ships_) {
+      window_.SetButtons(buttons_[2 + pl]);
+      window_.DrawObjects();
+      auto* command = window_.GetCommand();
+      auto* add_ship_command = dynamic_cast<AddShipCommand*>(command);
 
-    SetAllShips(&players_[i]);
-    if (!window.isOpen()) {
-      return;
+      if (command->Execute()) {
+        if (!window_.isOpen() || back_) {
+          back_ = false;
+          return;
+        }
+        buttons_[pl + 2][5]->SetShow(false);
+        buttons_[pl + 2][6]->SetShow(false);
+        if (add_ship_command != nullptr) {
+          buttons_[pl + 2][4]->SetShow(true);
+        }
+      } else {
+        buttons_[pl + 2][4]->SetShow(false);
+        auto* add_cell_command = dynamic_cast<AddCellCommand*>(command);
+        if (add_cell_command != nullptr) {
+          buttons_[pl + 2][5]->SetShow(true);
+        }
+        if (add_ship_command != nullptr) {
+          buttons_[pl + 2][6]->SetShow(true);
+        }
+      }
     }
   }
 
-  window.SetButtons(buttons_[2]);
-  window.DrawObjects();
+  window_.SetButtons(buttons_[4]);
+  window_.DrawObjects();
+  sf::sleep(sf::milliseconds(1000));
+  window_.SetButtons(buttons_[5]);
+  window_.DrawObjects();
 
+  Player* current_player = players_.data();
+  Player* current_rival = &players_[1];
   int current_player_index = 0;
-  while (!finished_) {
+  while (!back_) {
     bool executed = false;
     while (!executed) {
-      Command* command = window.GetCommand();
-      if (!window.isOpen()) {
-        return;
-      }
-      if (command->Execute() && typeid(command) != typeid(AddShipCommand) &&
-          typeid(command) != typeid(AddCellToShipCommand)) {
-        if (typeid(command) == typeid(ShootCommand)) {
-          turns_.push(command);
-          executed = true;
+      Command* command = window_.GetCommand();
+      auto* cast = dynamic_cast<ShootCommand*>(command);
+      if (command->Execute()) {
+        if (!window_.isOpen() || !back_) {
+          return;
         }
-        continue;
+        if (cast != nullptr) {
+          break;
+        }
       }
       std::cout << "Error. Try again.\n";
     }
+
     if (current_rival->GetShipCount() == 0) {
-      finished_ = true;
+      back_ = true;
       std::cout << "Player " << current_player_index + 1 << " won.\n";
+      std::cout.flush();
     }
     if (current_player->GetLastShotResult() == ShotResult::Miss) {
       current_rival = &players_[current_player_index];
@@ -101,4 +102,13 @@ void GameLoop::Play() {
       current_player = &players_[current_player_index];
     }
   }
+}
+
+void GameLoop::Settings() {
+  while (window_.isOpen() && !back_) {
+    window_.SetButtons(buttons_[1]);
+    window_.DrawObjects();
+    window_.GetCommand()->Execute();
+  }
+  back_ = false;
 }

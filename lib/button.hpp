@@ -5,37 +5,36 @@
 class Button {
  public:
   Button(Command* commandn, const vector<sf::Drawable*>& drawn);
+  Button(Command* commandn, const vector<sf::Drawable*>& drawn, bool show);
   virtual ~Button() = default;
 
   virtual bool IsPressed(const Event& event) const;
-  bool GetShow();
-  void TurnShow();
+  bool GetShow() const;
+  void SetShow(bool show);
   Command* GetCommand();
   const vector<sf::Drawable*>& GetDrawable() const;
 
  protected:
-  bool show_ = true;
-  vector<sf::Drawable*> draw_;
   Command* command_;
+  vector<sf::Drawable*> draw_;
+  bool show_ = true;
 };
 
-class MouseButton : public Button {
+class MouseButton final : public Button {
  public:
-  MouseButton(const pair<Vector2f, Vector2f>& coord,
-              const Mouse::Button& button, Command* command,
+  MouseButton(const Mouse::Button& button, Command* command,
               const vector<sf::Drawable*>& drawn);
   ~MouseButton() final = default;
 
   bool IsPressed(const Event& event) const final;
 
  protected:
-  pair<Vector2f, Vector2f> coord_;
   Mouse::Button button_;
 
   bool Inside(const Vector2f& mouse) const;
 };
 
-class KeyboardButton : public Button {
+class KeyboardButton final : public Button {
  public:
   KeyboardButton(const Keyboard::Key& button, Command* command,
                  const vector<sf::Drawable*>& drawn);

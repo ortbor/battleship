@@ -5,7 +5,7 @@
 #include "ship.hpp"
 
 class Player {
-  friend AddCellToShipCommand;
+  friend class AddCellCommand;
 
  public:
   Player(size_t index, const Vector2f& size);
@@ -15,6 +15,7 @@ class Player {
   ShotResult GetLastShotResult() const;
   size_t GetShipCount() const;
   Field* GetField();
+  Field* GetRField();
   void DecrementShipCount();
   void AddShip();
   void Shoot(Cell* cell, ShotResult& shot_result);

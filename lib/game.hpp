@@ -10,18 +10,18 @@ class GameLoop {
  public:
   GameLoop(const Vector2f& size, size_t ships);
   ~GameLoop();
-  void Play();
+  void StartMenu();
 
  protected:
-  bool finished_ = false;
+  bool back_ = false;
   const size_t ships_;
   const Vector2f size_;
   array<Player, 2> players_;
-  stack<Command*> turns_;
+  vector<Command*> turns_;
+  GameWindow window_;
 
-  sf::Font font;
-  sf::Texture background;
-  GameWindow window;
+  sf::Font font_;
+  sf::Texture background_;
   vector<sf::Drawable*> draw_;
   vector<Command*> command_;
   vector<vector<Button*>> buttons_;
@@ -32,4 +32,6 @@ class GameLoop {
   void SetDraw();
   void SetCommands();
   void SetButtons();
+  void Play();
+  void Settings();
 };

@@ -3,69 +3,81 @@
 #include "common.hpp"
 
 class Command {
-  friend class Player;
+  friend class GameLoop;
 
  public:
-  Command(Player* player, GameWindow* windown);
+  Command();
+  Command(const Event::EventType& type);
   virtual ~Command() = default;
+
   virtual bool Execute() = 0;
+  const Event::EventType& GetType();
 
  protected:
-  Player* player_;
-  GameWindow* window_;
+  Event::EventType type_;
 
   virtual bool IsValid() const = 0;
 };
 
-class CloseCommand : public Command {
+template <typename Type>
+class ExecCommand final : public Command {
  public:
-  CloseCommand(GameWindow* windown);
-  ~CloseCommand() final = default;
+  ExecCommand();
+  ExecCommand(Type* obj, const Event::EventType& type_,
+              void (*func)(Type* obj));
+  ~ExecCommand() final = default;
+
   bool Execute() final;
 
  protected:
+  Type* obj_;
+  void (*func_)(Type* obj);
+
   bool IsValid() const final;
+  static void Empty(Type* val);
 };
 
-class ResizeCommand : public Command {
+class CellCommand : public Command {
  public:
-  ResizeCommand(GameWindow* windown);
-  ~ResizeCommand() final = default;
-  bool Execute() final;
+  CellCommand(Player* player, Cell* cell);
+  ~CellCommand() override = default;
+  virtual bool Execute() = 0;
 
  protected:
-  bool IsValid() const final;
-};
-
-class AddCellToShipCommand : public Command {
- public:
-  AddCellToShipCommand(Player* player, GameWindow* windown, Cell* cell);
-  ~AddCellToShipCommand() final = default;
-  bool Execute() final;
-  bool IsValid() const final;
-
- protected:
+  Player* player_;
   Cell* cell_;
 };
 
-class AddShipCommand : public Command {
+class AddCellCommand final : public CellCommand {
+  friend class Player;
+
  public:
-  AddShipCommand(Player* player, GameWindow* windown);
-  ~AddShipCommand() final = default;
+  AddCellCommand(Player* player, Cell* cell);
+  ~AddCellCommand() final = default;
   bool Execute() final;
 
  protected:
   bool IsValid() const final;
 };
 
-class ShootCommand : public Command {
+class ShootCommand final : public CellCommand {
  public:
-  ShootCommand(Player* player, GameWindow* windown, Cell* cell);
+  ShootCommand(Player* player, Cell* cell);
   ~ShootCommand() final = default;
   bool Execute() final;
 
  protected:
-  Cell* cell_;
+  bool IsValid() const final;
+};
+
+class AddShipCommand : public Command {
+ public:
+  AddShipCommand(Player* player);
+  ~AddShipCommand() final = default;
+  bool Execute() final;
+
+ protected:
+  Player* player_;
 
   bool IsValid() const final;
 };

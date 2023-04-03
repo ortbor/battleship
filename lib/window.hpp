@@ -6,7 +6,7 @@ class GameWindow : public sf::RenderWindow {
  public:
   GameWindow(sf::String title, Vector2f sides = {-1, -1});
 
-  void UpdateSize();
+  void Refresh();
   Command* GetCommand();
   const vector<Button*>& GetButtons() const;
   void SetPlayer(Player* playern);
@@ -14,7 +14,6 @@ class GameWindow : public sf::RenderWindow {
   void DrawObjects();
 
  protected:
-  Player* player_;
   Vector2f screen_;
   sf::View view_;
   Event event_;

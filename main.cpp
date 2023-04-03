@@ -4,10 +4,10 @@
 
 int main() {
   const size_t kSize = 10;
-  const size_t kShips = 2;
+  const size_t kShips = 1;
 
   GameLoop game(Vector2f(kSize, kSize), kShips);
-  game.Play();
+  game.StartMenu();
 
   return 0;
 }

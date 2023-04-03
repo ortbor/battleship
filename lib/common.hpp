@@ -7,7 +7,6 @@
 #include <filesystem>
 #include <iostream>
 #include <memory>
-#include <stack>
 #include <vector>
 
 using sf::Event;
@@ -17,7 +16,7 @@ using sf::Vector2f;
 using sf::Vector2u;
 using std::array;
 using std::pair;
-using std::stack;
+
 using std::unique_ptr;
 using std::vector;
 
@@ -47,6 +46,7 @@ enum class State {
   Killed,
   Chosen
 };
+
 static const std::string kName = "BATTLESH!P!!";
 static const std::string kRes = "/share/battlesh1p/";
 std::filesystem::path Path();

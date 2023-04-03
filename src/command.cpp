@@ -5,33 +5,44 @@
 #include "../lib/player.hpp"
 #include "../lib/window.hpp"
 
-Command::Command(Player* player, GameWindow* windown)
-    : player_(player), window_(windown) {}
+Command::Command() : type_(Event::Count) {}
 
-CloseCommand::CloseCommand(GameWindow* windown) : Command(nullptr, windown) {}
+Command::Command(const Event::EventType& type) : type_(type) {}
 
-bool CloseCommand::Execute() {
-  window_->close();
-  return true;
+const Event::EventType& Command::GetType() { return type_; }
+
+template <typename Type>
+ExecCommand<Type>::ExecCommand() : Command(), obj_(nullptr), func_(Empty) {}
+
+template <typename Type>
+ExecCommand<Type>::ExecCommand(Type* obj, const Event::EventType& type,
+                               void (*func)(Type* obj))
+    : Command(type), obj_(obj), func_(func) {}
+
+template <typename Type>
+bool ExecCommand<Type>::Execute() {
+  bool valid = IsValid();
+  if (valid) {
+    (*func_)(obj_);
+  }
+  return valid;
 }
 
-bool CloseCommand::IsValid() const { return true; }
-
-ResizeCommand::ResizeCommand(GameWindow* windown) : Command(nullptr, windown) {}
-
-bool ResizeCommand::Execute() {
-  window_->UpdateSize();
-  window_->DrawObjects();
-  return true;
+template <typename Type>
+bool ExecCommand<Type>::IsValid() const {
+  return *func_ != nullptr;
 }
 
-bool ResizeCommand::IsValid() const { return true; }
+template <typename Type>
+void ExecCommand<Type>::Empty(Type* val) {}
 
-AddCellToShipCommand::AddCellToShipCommand(Player* player, GameWindow* windown,
-                                           Cell* cell)
-    : Command(player, windown), cell_(cell) {}
+CellCommand::CellCommand(Player* player, Cell* cell)
+    : Command(), player_(player), cell_(cell) {}
 
-bool AddCellToShipCommand::Execute() {
+AddCellCommand::AddCellCommand(Player* player, Cell* cell)
+    : CellCommand(player, cell) {}
+
+bool AddCellCommand::Execute() {
   bool valid = IsValid();
   if (valid) {
     if (cell_->GetState() == State::Clear) {
@@ -39,24 +50,21 @@ bool AddCellToShipCommand::Execute() {
     } else {
       player_->ship_in_process_.EraseCell(cell_);
     }
-    window_->DrawObjects();
   }
   return valid;
 }
 
-bool AddCellToShipCommand::IsValid() const {
+bool AddCellCommand::IsValid() const {
   return cell_->GetState() == State::Clear ||
          cell_->GetState() == State::Chosen;
 }
 
-AddShipCommand::AddShipCommand(Player* player, GameWindow* windown)
-    : Command(player, windown) {}
+AddShipCommand::AddShipCommand(Player* player) : player_(player) {}
 
 bool AddShipCommand::Execute() {
   bool valid = IsValid();
   if (valid) {
     player_->AddShip();
-    window_->DrawObjects();
   }
   return valid;
 }
@@ -76,8 +84,8 @@ bool AddShipCommand::IsValid() const {
   });
 }
 
-ShootCommand::ShootCommand(Player* player, GameWindow* windown, Cell* cell)
-    : Command(player, windown), cell_(cell) {}
+ShootCommand::ShootCommand(Player* player, Cell* cell)
+    : CellCommand(player, cell) {}
 
 bool ShootCommand::Execute() {
   bool valid = IsValid();

@@ -39,6 +39,10 @@ _Now you can start to build and install game_
   cmake --build . --config Release -- -j 16
   sudo cmake --install . 
   ```
+4. Clean build files
+  ```sh
+  cmake --build . --target clean
+  ```
 
 ### Usage
   Just start the game using the following command:

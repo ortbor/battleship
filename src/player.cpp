@@ -19,6 +19,8 @@ size_t Player::GetShipCount() const { return ship_count_; }
 
 Field* Player::GetField() { return dynamic_cast<Field*>(&my_field_); }
 
+Field* Player::GetRField() { return dynamic_cast<Field*>(&rival_field_); }
+
 void Player::DecrementShipCount() { --ship_count_; }
 
 void Player::AddShip() {

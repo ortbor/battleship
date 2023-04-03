@@ -4,8 +4,7 @@
 #include "../lib/command.hpp"
 #include "../lib/player.hpp"
 
-GameWindow::GameWindow(sf::String title, sf::Vector2f sides)
-    : player_(nullptr) {
+GameWindow::GameWindow(sf::String title, sf::Vector2f sides) {
   screen_ = Vector2f(sf::VideoMode::getDesktopMode().width,
                      sf::VideoMode::getDesktopMode().height);
   if (sides.x < 0) {
@@ -17,7 +16,7 @@ GameWindow::GameWindow(sf::String title, sf::Vector2f sides)
   // setView(view_);
 }
 
-void GameWindow::UpdateSize() {
+void GameWindow::Refresh() {
   // view_.setCenter(Vector2f(view_.getSize().x / 2, view_.getSize().y / 2));
   // view_.setViewport(sf::FloatRect(0, 0, screen_.x / Vector2f(getSize()).x,
   //                                 screen_.x / Vector2f(getSize()).y));
@@ -36,8 +35,6 @@ Command* GameWindow::GetCommand() {
 }
 
 const vector<Button*>& GameWindow::GetButtons() const { return *buttons_; }
-
-void GameWindow::SetPlayer(Player* playern) { player_ = playern; }
 
 void GameWindow::SetButtons(vector<Button*>& other) { buttons_ = &other; }
 
