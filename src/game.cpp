@@ -112,3 +112,9 @@ void GameLoop::Settings() {
   }
   back_ = false;
 }
+
+void GameLoop::Go() {
+  while (window_.isOpen()) {
+    window_.GetCommand()->Execute();
+  }
+}

@@ -25,7 +25,7 @@ MouseButton::MouseButton(const Mouse::Button& button, Command* command,
     : Button(command, drawn), button_(button) {}
 
 bool MouseButton::IsPressed(const Event& event) const {
-  return event.type == Event::MouseButtonPressed &&
+  return command_ != nullptr && event.type == Event::MouseButtonPressed &&
          Inside(Vector2f(Mouse::getPosition())) &&
          Mouse::isButtonPressed(button_);
 }
@@ -48,5 +48,6 @@ KeyboardButton::KeyboardButton(const Keyboard::Key& button, Command* command,
     : Button(command, drawn), button_(button) {}
 
 bool KeyboardButton::IsPressed(const Event& event) const {
-  return event.type == Event::KeyPressed && Keyboard::isKeyPressed(button_);
+  return command_ != nullptr && event.type == Event::KeyPressed &&
+         Keyboard::isKeyPressed(button_);
 }

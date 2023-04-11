@@ -220,11 +220,11 @@ void GameLoop::SetButtons() {
     buttons_[pl + 2].push_back(btn);
     for (size_t i = 0; i < 3; ++i) {
       buttons_[pl + 2].push_back(
-          new Button(new ExecCommand<char>(), {draw_[14 + pl * 9 + i]}, false));
+          new Button(nullptr, {draw_[14 + pl * 9 + i]}, false));
     }
     for (size_t i = 0; i < 3; ++i) {
       buttons_[pl + 5].push_back(
-          new Button(new ExecCommand<char>(), {draw_[17 + pl * 9 + i]}));
+          new Button(nullptr, {draw_[17 + pl * 9 + i]}));
     }
 
     for (size_t i = 0; i < size_.x; ++i) {
@@ -238,21 +238,21 @@ void GameLoop::SetButtons() {
   }
 
   buttons_[4].push_back(
-      new Button(new ExecCommand<char>(), {draw_[draw_l - 1]}));
+      new Button(nullptr, {draw_[draw_l - 1]}));
 
   for (size_t pl = 0; pl < 2; ++pl) {
     for (size_t i = 0; i < size_.x; ++i) {
       for (size_t j = 0; j < size_.y; ++j) {
         size_t ind = pl * size_.x * size_.y + i * size_.y + j;
         auto* btn =
-            new MouseButton(Mouse::Button::Left, new ExecCommand<char>(),
+            new MouseButton(Mouse::Button::Left, nullptr,
                             {draw_[ind + draw_l]});
         buttons_[5].push_back(btn);
       }
     }
     for (size_t i = 0; i < size_.x; ++i) {
       for (size_t j = 0; j < size_.y; ++j) {
-        size_t ind = (pl + 2) * size_.x * size_.y + i * size_.y + j;
+        size_t ind = (pl * 2 + 1) * size_.x * size_.y + i * size_.y + j;
         auto* btn = new MouseButton(Mouse::Button::Left, command_[ind + cmd_l],
                                     {draw_[ind + draw_l]});
         buttons_[6].push_back(btn);
