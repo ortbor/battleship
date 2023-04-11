@@ -4,7 +4,7 @@
 #include "../lib/command.hpp"
 #include "../lib/player.hpp"
 
-GameWindow::GameWindow(sf::String title, sf::Vector2f sides) {
+GameWindow::GameWindow(const sf::String& title, sf::Vector2f sides) {
   screen_ = Vector2f(sf::VideoMode::getDesktopMode().width,
                      sf::VideoMode::getDesktopMode().height);
   if (sides.x < 0) {
@@ -26,23 +26,23 @@ void GameWindow::Refresh() {
 Command* GameWindow::GetCommand() {
   while (true) {
     waitEvent(event_);
-    for (auto& button : *buttons_) {
-      if (button->IsPressed(event_)) {
-        return button->GetCommand();
+    for (auto& button : buttons_) {
+      if (button.second->IsPressed(event_)) {
+        return button.second->GetCommand();
       }
     }
   }
 }
 
-const vector<Button*>& GameWindow::GetButtons() const { return *buttons_; }
-
-void GameWindow::SetButtons(vector<Button*>& other) { buttons_ = &other; }
+void GameWindow::SetButtons(const unordered_map<string, Button*>& other) {
+  buttons_ = other;
+}
 
 void GameWindow::DrawObjects() {
   clear();
-  for (const auto& item : *buttons_) {
-    if (item->GetShow()) {
-      for (const auto& object : item->GetDrawable()) {
+  for (const auto& item : buttons_) {
+    if (item.second->GetShow()) {
+      for (const auto& object : item.second->GetDrawable()) {
         draw(*object);
       }
     }

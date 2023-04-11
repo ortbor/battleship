@@ -2,9 +2,6 @@
 
 #include "../lib/command.hpp"
 
-Button::Button(Command* commandn, const vector<sf::Drawable*>& drawn)
-    : command_(commandn), draw_(drawn) {}
-
 Button::Button(Command* commandn, const vector<sf::Drawable*>& drawn, bool show)
     : command_(commandn), draw_(drawn), show_(show) {}
 
@@ -14,9 +11,7 @@ bool Button::IsPressed(const Event& event) const {
 
 bool Button::GetShow() const { return show_; }
 
-void Button::SetShow(bool show) { show_ = show; }
-
-Command* Button::GetCommand() { return command_; }
+Command* Button::GetCommand() const { return command_; }
 
 const vector<sf::Drawable*>& Button::GetDrawable() const { return draw_; }
 
@@ -25,7 +20,7 @@ MouseButton::MouseButton(const Mouse::Button& button, Command* command,
     : Button(command, drawn), button_(button) {}
 
 bool MouseButton::IsPressed(const Event& event) const {
-  return event.type == Event::MouseButtonPressed &&
+  return command_ != nullptr && event.type == Event::MouseButtonPressed &&
          Inside(Vector2f(Mouse::getPosition())) &&
          Mouse::isButtonPressed(button_);
 }
@@ -48,5 +43,6 @@ KeyboardButton::KeyboardButton(const Keyboard::Key& button, Command* command,
     : Button(command, drawn), button_(button) {}
 
 bool KeyboardButton::IsPressed(const Event& event) const {
-  return event.type == Event::KeyPressed && Keyboard::isKeyPressed(button_);
+  return command_ != nullptr && event.type == Event::KeyPressed &&
+         Keyboard::isKeyPressed(button_);
 }

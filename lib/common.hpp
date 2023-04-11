@@ -7,18 +7,23 @@
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
+using sf::Color;
 using sf::Event;
 using sf::Keyboard;
 using sf::Mouse;
+using sf::RectangleShape;
+using sf::Text;
 using sf::Vector2f;
 using sf::Vector2u;
+
 using std::array;
 using std::pair;
-
-using std::unique_ptr;
+using std::unordered_map;
 using std::vector;
+using std::string;
 
 class Cell;
 class Ship;

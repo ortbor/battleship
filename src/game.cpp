@@ -18,8 +18,6 @@ GameLoop::GameLoop(const Vector2f& size, size_t ships)
   }
 
   Link();
-  SetDraw();
-  SetCommands();
   SetButtons();
 }
 

@@ -15,6 +15,8 @@ Ship* Cell::GetShip() const { return ship_; }
 
 Cell* Cell::GetTwin() const { return twin_cell_; }
 
+sf::RectangleShape* Cell::GetShape() const { return shape_; }
+
 void Cell::SetState(State state) {
   state_ = state;
   if (shape_ != nullptr) {

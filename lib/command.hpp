@@ -41,7 +41,7 @@ class CellCommand : public Command {
  public:
   CellCommand(Player* player, Cell* cell);
   ~CellCommand() override = default;
-  virtual bool Execute() = 0;
+  virtual bool Execute() override = 0;
 
  protected:
   Player* player_;
@@ -73,7 +73,7 @@ class ShootCommand final : public CellCommand {
 class AddShipCommand : public Command {
  public:
   AddShipCommand(Player* player);
-  ~AddShipCommand() final = default;
+  ~AddShipCommand() = default;
   bool Execute() final;
 
  protected:
