@@ -50,11 +50,11 @@ bool AddCellCommand::Execute() {
     } else {
       player_->ship_in_process_.EraseCell(cell_);
     }
-    loop_->buttons_[player_->GetIndex() + 2][5]->SetShow(false);
-    loop_->buttons_[player_->GetIndex() + 2][6]->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]->SetShow(false);
   } else {
-    loop_->buttons_[player_->GetIndex() + 2][4]->SetShow(false);
-    loop_->buttons_[player_->GetIndex() + 2][5]->SetShow(true);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]->SetShow(true);
   }
   return valid;
 }
@@ -70,19 +70,21 @@ bool AddShipCommand::Execute() {
   bool valid = IsValid();
   if (valid) {
     player_->AddShip();
-    loop_->buttons_[player_->GetIndex() + 2][5]->SetShow(false);
-    loop_->buttons_[player_->GetIndex() + 2][6]->SetShow(false);
-    loop_->buttons_[player_->GetIndex() + 2][4]->SetShow(true);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]->SetShow(true);
     if (player_->GetShipCount() == 10) {
       if (player_->GetIndex() == 0) {
-        window_->SetButtons(/схема для второго игрока);
+        window_->SetButtons(loop_->buttons_["select_2"]);
       } else {
-        window_->SetButtons(/infinity seconds);
+        window_->SetButtons(loop_->buttons_["starts"]);
+        sf::sleep(sf::milliseconds(1000));
+        window_->SetButtons(loop_->buttons_["play_1"]);
       }
     }
   } else {
-    loop_->buttons_[player_->GetIndex() + 2][4]->SetShow(false);
-    loop_->buttons_[player_->GetIndex() + 2][6]->SetShow(true);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]->SetShow(true);
   }
   return valid;
 }
@@ -107,12 +109,11 @@ bool ShootCommand::Execute() {
     ShotResult shot_result;
     player_->Shoot(cell_, shot_result);
     if (player_->GetRival()->GetShipCount() == 0) {
-      back_ = true;
-      std::cout << "Player " << current_player_index + 1 << " won.\n";
+      std::cout << "Player " << player_->GetIndex() << " won.\n";
       std::cout.flush();
     }
     if (player_->GetLastShotResult() == ShotResult::Miss) {
-      Svapaem polya;
+      loop_->buttons_["play_" + std::to_string(1 - player_->GetIndex())];
     }
   }
   return valid;
