@@ -5,7 +5,6 @@
 #include "player.hpp"
 #include "window.hpp"
 
-
 class GameLoop {
   friend class AddCellCommand;
   friend class AddShipCommand;
@@ -25,15 +24,14 @@ class GameLoop {
 
   sf::Font font_;
   sf::Texture background_;
-  vector<sf::Drawable*> draw_;
-  vector<Command*> command_;
-  vector<vector<Button*>> buttons_;
+  unordered_map<string, unordered_map<string, Button*>> buttons_;
 
-  void SetAllShips(Player* player);
+  Text* GetText(const std::string& str, size_t size, const Color& color,
+                const Vector2f& pos, int style = Text::Regular);
+  RectangleShape* GetShape(const Vector2f& size, const Color& color,
+                           const Vector2f& pos);
   void Link();
   void Clear();
-  void SetDraw();
-  void SetCommands();
   void SetButtons();
   void Play();
   void Settings();

@@ -3,260 +3,175 @@
 #include "command.cpp"
 
 void GameLoop::Clear() {
-  for (auto& item : draw_) {
-    delete item;
-  }
-  for (auto& item : command_) {
-    delete item;
-  }
   for (auto& scr : buttons_) {
-    for (auto& item : scr) {
-      delete item;
+    for (auto& item : scr.second) {
+      for (auto &draw : item.second->GetDrawable()) {
+        delete draw;
+      }
+      delete item.second->GetCommand();
+      delete item.second;
     }
   }
-  draw_.clear();
-  command_.clear();
   buttons_.clear();
 }
 
-void GameLoop::SetDraw() {
-  sf::Sprite* sprite = new sf::Sprite(background_);
-  draw_.push_back(sprite);
-
-  sf::Text* title = new sf::Text(kName, font_, 140);
-  title->setFillColor(sf::Color::Red);
-  title->setPosition(Vector2f(475, 0));
-  title->setStyle(sf::Text::Bold | sf::Text::Underlined);
-  draw_.push_back(title);
-
-  sf::RectangleShape* next = new sf::RectangleShape(Vector2f(100, 100));
-  next->setFillColor(sf::Color(0, 254, 95));
-  next->setPosition(Vector2f(70, 65));
-  draw_.push_back(next);
-
-  title = new sf::Text("X", font_, 60);
-  title->setFillColor(sf::Color::Red);
-  title->setPosition(Vector2f(98, 75));
-  draw_.push_back(title);
-
-  next = new sf::RectangleShape(Vector2f(100, 100));
-  next->setFillColor(sf::Color(0, 254, 95));
-  next->setPosition(Vector2f(70, 65));
-  draw_.push_back(next);
-
-  title = new sf::Text("<-", font_, 60);
-  title->setFillColor(sf::Color::Red);
-  title->setPosition(Vector2f(85, 73));
-  draw_.push_back(title);
-
-  next = new sf::RectangleShape(Vector2f(340, 150));
-  next->setFillColor(sf::Color(0, 254, 95));
-  next->setPosition(Vector2f(790, 300));
-  draw_.push_back(next);
-
-  title = new sf::Text("Play", font_, 140);
-  title->setFillColor(sf::Color::Red);
-  title->setPosition(Vector2f(820, 270));
-  draw_.push_back(title);
-
-  next = new sf::RectangleShape(Vector2f(530, 150));
-  next->setFillColor(sf::Color(0, 254, 95));
-  next->setPosition(Vector2f(700, 820));
-  draw_.push_back(next);
-
-  title = new sf::Text("Settings", font_, 140);
-  title->setFillColor(sf::Color::Red);
-  title->setPosition(Vector2f(720, 790));
-  draw_.push_back(title);
-
-  title = new sf::Text("Nothing yet!", font_, 140);
-  title->setFillColor(sf::Color::Red);
-  title->setPosition(Vector2f(570, 530));
-  draw_.push_back(title);
-
-  std::string player("Player ");
-  std::string select(", select\n    your ships!");
-  for (size_t pl = 0; pl < 2; ++pl) {
-    size_t shift = 850;
-    title = new sf::Text(player + std::to_string(pl + 1) + select, font_, 80);
-    title->setFillColor(sf::Color::Blue);
-    title->setPosition(Vector2f(1110 - pl * shift, 300));
-    draw_.push_back(title);
-
-    next = new sf::RectangleShape(Vector2f(335, 110));
-    next->setFillColor(sf::Color(0, 254, 95));
-    next->setPosition(Vector2f(1210 - pl * shift, 550));
-    draw_.push_back(next);
-
-    title = new sf::Text("Add ship", font_, 80);
-    title->setFillColor(sf::Color::Red);
-    title->setPosition(Vector2f(1220 - pl * shift, 550));
-    draw_.push_back(title);
-
-    title = new sf::Text("Success!", font_, 80);
-    title->setFillColor(sf::Color::Green);
-    title->setPosition(Vector2f(1230 - pl * shift, 750));
-    title->setStyle(sf::Text::Bold);
-    draw_.push_back(title);
-
-    title = new sf::Text("Cannot select\n    this cell!", font_, 80);
-    title->setFillColor(sf::Color::Red);
-    title->setPosition(Vector2f(1120 - pl * shift, 750));
-    title->setStyle(sf::Text::Bold);
-    draw_.push_back(title);
-
-    title = new sf::Text("Wrong shaped ship!", font_, 80);
-    title->setFillColor(sf::Color::Red);
-    title->setPosition(Vector2f(1030 - pl * shift, 750));
-    title->setStyle(sf::Text::Bold);
-    draw_.push_back(title);
-
-    title = new sf::Text(player + std::to_string(pl + 1) + "turn", font_, 100);
-    title->setFillColor(sf::Color::Red);
-    title->setPosition(Vector2f(675, 930));
-    title->setStyle(sf::Text::Bold | sf::Text::Underlined);
-    draw_.push_back(title);
-
-    title = new sf::Text("My field", font_, 80);
-    title->setFillColor(sf::Color::Red);
-    title->setPosition(Vector2f(133 + pl * shift, 950));
-    draw_.push_back(title);
-
-    title = new sf::Text("Rival field", font_, 80);
-    title->setFillColor(sf::Color::Red);
-    title->setPosition(Vector2f(1410 - pl * shift, 950));
-    draw_.push_back(title);
-  }
-
-  title = new sf::Text("Game starts in infinity seconds!", font_, 120);
-  title->setFillColor(sf::Color::Red);
-  title->setPosition(Vector2f(150, 450));
-  draw_.push_back(title);
-
-  for (size_t pl = 0; pl < 2; ++pl) {
-    for (size_t i = 0; i < size_.x; ++i) {
-      for (size_t j = 0; j < size_.y; ++j) {
-        Vector2f size(65, 65);
-        Vector2f left(140 + i * 70 + pl * 940, 250 + j * 70);
-        sf::RectangleShape* cell = new sf::RectangleShape(size);
-        players_[pl].GetField()->GetCell(Vector2f(i, j))->SetShape(cell);
-        cell->setFillColor(sf::Color(255, 120, 255));
-        cell->setPosition(left);
-        draw_.push_back(cell);
-      }
-    }
-    for (size_t i = 0; i < size_.x; ++i) {
-      for (size_t j = 0; j < size_.y; ++j) {
-        Vector2f size(65, 65);
-        Vector2f left(140 + i * 70 + (1 - pl) * 940, 250 + j * 70);
-        sf::RectangleShape* cell = new sf::RectangleShape(size);
-        players_[pl].GetRField()->GetCell(Vector2f(i, j))->SetShape(cell);
-        cell->setFillColor(sf::Color(255, 120, 255));
-        cell->setPosition(left);
-        draw_.push_back(cell);
-      }
-    }
-  }
+Text* GameLoop::GetText(const std::string& str, size_t size, const Color& color,
+                        const Vector2f& pos, int style = Text::Regular) {
+  Text* title = new Text(str, font_, size);
+  title->setFillColor(color);
+  title->setPosition(pos);
+  title->setStyle(style);
+  return title;
 }
 
-void GameLoop::SetCommands() {
-  command_.push_back(new ExecCommand<GameWindow>(
-      &window_, Event::Closed, [](GameWindow* window) { window->close(); }));
-  command_.push_back(new ExecCommand<GameWindow>(
-      &window_, Event::Resized, [](GameWindow* window) { window->Refresh(); }));
-  command_.push_back(
-      new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
-                                [](GameLoop* game) { game->back_ = true; }));
-  command_.push_back(new ExecCommand<GameLoop>(
-      this, Event::MouseButtonPressed, [](GameLoop* game) { game->Play(); }));
-  command_.push_back(
-      new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
-                                [](GameLoop* game) { game->Settings(); }));
-  command_.push_back(new AddShipCommand(players_.data()));
-  command_.push_back(new AddShipCommand(players_.data() + 1));
-
-  for (size_t pl = 0; pl < 2; ++pl) {
-    for (size_t i = 0; i < size_.x; ++i) {
-      for (size_t j = 0; j < size_.y; ++j) {
-        auto* cell = players_[pl].GetField()->GetCell(Vector2f(i, j));
-        auto* cmd = new AddCellCommand(players_.data() + pl, cell);
-        command_.push_back(cmd);
-      }
-    }
-
-    for (size_t i = 0; i < size_.x; ++i) {
-      for (size_t j = 0; j < size_.y; ++j) {
-        auto* cell = players_[pl].GetRField()->GetCell(Vector2f(i, j));
-        auto* cmd = new ShootCommand(players_.data() + pl, cell);
-        command_.push_back(cmd);
-      }
-    }
-  }
+RectangleShape* GameLoop::GetShape(const Vector2f& size, const Color& color,
+                                   const Vector2f& pos) {
+  sf::RectangleShape* box = new sf::RectangleShape(size);
+  box->setFillColor(color);
+  box->setPosition(pos);
+  return box;
 }
-
 void GameLoop::SetButtons() {
-  buttons_.resize(7);
-  for (size_t scr = 0; scr < 7; ++scr) {
-    buttons_[scr].push_back(new Button(command_[0], {draw_[0]}));
-    buttons_[scr].push_back(new Button(command_[1], {draw_[1]}));
-    size_t ind = 2 + (scr != 0) * 2;
-    buttons_[scr].push_back(new MouseButton(Mouse::Button::Left, command_[2],
-                                            {draw_[ind], draw_[ind + 1]}));
-  }
+  buttons_["all"]["close"] = new Button(new ExecCommand<GameWindow>(
+      &window_, Event::Closed, [](GameWindow* window) { window->close(); }));
 
-  buttons_[0].push_back(
-      new MouseButton(Mouse::Button::Left, command_[3], {draw_[6], draw_[7]}));
-  buttons_[0].push_back(
-      new MouseButton(Mouse::Button::Left, command_[4], {draw_[8], draw_[9]}));
-  buttons_[1].push_back(new Button(nullptr, {draw_[10]}));
+  buttons_["all"]["resize"] = new Button(new ExecCommand<GameWindow>(
+      &window_, Event::Closed, [](GameWindow* window) { window->Refresh(); }));
 
-  size_t draw_l = 30;
-  size_t cmd_l = 7;
+  buttons_["all"]["back"] = new MouseButton(
+      Mouse::Button::Left,
+      new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
+                                [](GameLoop* game) { game->back_ = true; }),
+      {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
+       GetText("<-", 60, Color::Red, {85, 93})});
 
-  for (size_t pl = 0; pl < 2; ++pl) {
-    auto* btn = new MouseButton(
-        Mouse::Button::Left, command_[pl + 5],
-        {draw_[12 + pl * 9], draw_[13 + pl * 9], draw_[11 + pl * 9]});
-    buttons_[pl + 2].push_back(btn);
-    for (size_t i = 0; i < 3; ++i) {
-      buttons_[pl + 2].push_back(
-          new Button(nullptr, {draw_[14 + pl * 9 + i]}, false));
-    }
-    for (size_t i = 0; i < 3; ++i) {
-      buttons_[pl + 5].push_back(
-          new Button(nullptr, {draw_[17 + pl * 9 + i]}));
-    }
+  buttons_["menu"]["background"] = new Button(
+      nullptr,
+      {new sf::Sprite(background_), GetText(kName, 140, Color::Red, {475, 0},
+                                            Text::Bold | Text::Underlined)});
+
+  buttons_["menu"]["exit"] = new MouseButton(
+      Mouse::Button::Left,
+      new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
+                                [](GameLoop* game) { game->back_ = true; }),
+      {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
+       GetText("X", 60, Color::Red, {98, 75})});
+
+  buttons_["menu"]["play"] = new MouseButton(
+      Mouse::Button::Left,
+      new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
+                                [](GameLoop* game) { game->Play(); }),
+      {GetShape(Vector2f(340, 150), Color(0, 255, 95), Vector2f(790, 300)),
+       GetText("Play", 140, Color::Red, {820, 270})});
+
+  buttons_["menu"]["settings"] = new MouseButton(
+      Mouse::Button::Left,
+      new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
+                                [](GameLoop* game) { game->Settings(); }),
+      {GetShape(Vector2f(530, 150), Color(0, 255, 95), Vector2f(700, 820)),
+       GetText("Settings", 140, Color::Red, {720, 790})});
+
+  buttons_["settings"]["go back!"] = new Button(
+      nullptr, {GetText("Nothing yet!", 140, Color::Red, {570, 530})});
+
+  for (size_t pl = 1; pl < 3; ++pl) {
+    buttons_["select_" + std::to_string(pl)]["text"] = new Button(
+        nullptr,
+        {GetText("Player " + std::to_string(pl) + ", select\n    your ships!",
+                 80, Color::Blue, {1960 - pl * 850, 300})});
+
+    buttons_["select_" + std::to_string(pl)]["add"] = new MouseButton(
+        Mouse::Button::Left, new AddShipCommand(players_.data()),
+        {GetShape(Vector2f(335, 110), Color(0, 255, 95), Vector2f(1210, 550)),
+         GetText("Add ship", 80, Color::Red, {2070 - pl * 850, 550})});
 
     for (size_t i = 0; i < size_.x; ++i) {
       for (size_t j = 0; j < size_.y; ++j) {
-        size_t ind = pl * 2 * size_.x * size_.y + i * size_.y + j;
-        btn = new MouseButton(Mouse::Button::Left, command_[ind + cmd_l],
-                              {draw_[ind + draw_l]});
-        buttons_[pl + 2].push_back(btn);
+        players_[pl]
+            .GetField()
+            ->GetCell(Vector2f(i, j))
+            ->SetShape(
+                GetShape(Vector2f(65, 65), Color(255, 120, 255),
+                         Vector2f(140 + i * 70 + pl * 940, 250 + j * 70)));
+
+        players_[pl]
+            .GetRField()
+            ->GetCell(Vector2f(i, j))
+            ->SetShape(GetShape(
+                Vector2f(65, 65), Color(255, 120, 255),
+                Vector2f(140 + i * 70 + (1 - pl) * 940, 250 + j * 70)));
+
+        buttons_["select_" + std::to_string(pl)]["field"] = new MouseButton(
+            Mouse::Button::Left,
+            new AddCellCommand(
+                players_.data() + pl,
+                players_[pl].GetField()->GetCell(Vector2f(i, j))),
+            {players_[pl].GetField()->GetCell(Vector2f(i, j))->GetShape()});
+
+        buttons_["play_" + std::to_string(pl)]["field_my"] = new Button(
+            nullptr,
+            {players_[pl].GetField()->GetCell(Vector2f(i, j))->GetShape()});
+
+        buttons_["play_" + std::to_string(pl)]["field_rival"] = new MouseButton(
+            Mouse::Button::Left,
+            new ShootCommand(players_.data() + pl,
+                             players_[pl].GetRField()->GetCell(Vector2f(i, j))),
+            {players_[pl].GetRField()->GetCell(Vector2f(i, j))->GetShape()});
       }
     }
+
+    buttons_["select_" + std::to_string(pl) + "_ok"]["text"] =
+        buttons_["select_" + std::to_string(pl)]["text"];
+
+    buttons_["select_" + std::to_string(pl) + "_ok"]["add"] =
+        buttons_["select_" + std::to_string(pl)]["add"];
+
+    buttons_["select_" + std::to_string(pl) + "_ok"]["field"] =
+        buttons_["select_" + std::to_string(pl)]["field"];
+
+    buttons_["select_" + std::to_string(pl) + "_errcell"]["text"] =
+        buttons_["select_" + std::to_string(pl)]["text"];
+
+    buttons_["select_" + std::to_string(pl) + "_errcell"]["add"] =
+        buttons_["select_" + std::to_string(pl)]["add"];
+
+    buttons_["select_" + std::to_string(pl) + "_errcell"]["field"] =
+        buttons_["select_" + std::to_string(pl)]["field"];
+
+    buttons_["select_" + std::to_string(pl) + "_errship"]["text"] =
+        buttons_["select_" + std::to_string(pl)]["text"];
+
+    buttons_["select_" + std::to_string(pl) + "_errship"]["add"] =
+        buttons_["select_" + std::to_string(pl)]["add"];
+
+    buttons_["select_" + std::to_string(pl) + "_errship"]["field"] =
+        buttons_["select_" + std::to_string(pl)]["field"];
+
+    buttons_["select_" + std::to_string(pl) + "_ok"]["ok"] =
+        new Button(nullptr, {GetText("Success!", 80, Color::Green,
+                                     {2080 - pl * 850, 750}, Text::Bold)});
+
+    buttons_["select_" + std::to_string(pl) + "_errcell"]["err"] = new Button(
+        nullptr, {GetText("Cannot select\n    this cell!", 80, Color::Red,
+                          {1970 - pl * 850, 750}, Text::Bold)});
+
+    buttons_["select_" + std::to_string(pl) + "_errship"]["err"] =
+        new Button(nullptr, {GetText("Wrong shaped ship!", 80, Color::Red,
+                                     {1880 - pl * 850, 750}, Text::Bold)});
+
+    buttons_["play_" + std::to_string(pl)]["turn"] = new Button(
+        nullptr, {GetText("Player " + std::to_string(pl) + " turn ", 100,
+                          Color::Red, {675, 930}, sf::Text::Bold)});
+
+    buttons_["play_" + std::to_string(pl)]["field_my"] = new Button(
+        nullptr, {GetText("My field", 80, Color::Red, {-717 + pl * 850, 950})});
+
+    buttons_["play_" + std::to_string(pl)]["field_rival"] = new Button(
+        nullptr,
+        {GetText("Rival field", 80, Color::Red, {2260 - pl * 850, 950})});
   }
 
-  buttons_[4].push_back(
-      new Button(nullptr, {draw_[draw_l - 1]}));
-
-  for (size_t pl = 0; pl < 2; ++pl) {
-    for (size_t i = 0; i < size_.x; ++i) {
-      for (size_t j = 0; j < size_.y; ++j) {
-        size_t ind = pl * size_.x * size_.y + i * size_.y + j;
-        auto* btn =
-            new MouseButton(Mouse::Button::Left, nullptr,
-                            {draw_[ind + draw_l]});
-        buttons_[5].push_back(btn);
-      }
-    }
-    for (size_t i = 0; i < size_.x; ++i) {
-      for (size_t j = 0; j < size_.y; ++j) {
-        size_t ind = (pl * 2 + 1) * size_.x * size_.y + i * size_.y + j;
-        auto* btn = new MouseButton(Mouse::Button::Left, command_[ind + cmd_l],
-                                    {draw_[ind + draw_l]});
-        buttons_[6].push_back(btn);
-      }
-    }
-  }
+  buttons_["starts"]["text"] =
+      new Button(nullptr, {GetText("Game starts in infinity seconds!", 120,
+                                   Color::Red, {150, 450})});
 }

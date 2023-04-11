@@ -2,9 +2,6 @@
 
 #include "../lib/command.hpp"
 
-Button::Button(Command* commandn, const vector<sf::Drawable*>& drawn)
-    : command_(commandn), draw_(drawn) {}
-
 Button::Button(Command* commandn, const vector<sf::Drawable*>& drawn, bool show)
     : command_(commandn), draw_(drawn), show_(show) {}
 
@@ -14,9 +11,7 @@ bool Button::IsPressed(const Event& event) const {
 
 bool Button::GetShow() const { return show_; }
 
-void Button::SetShow(bool show) { show_ = show; }
-
-Command* Button::GetCommand() { return command_; }
+Command* Button::GetCommand() const { return command_; }
 
 const vector<sf::Drawable*>& Button::GetDrawable() const { return draw_; }
 

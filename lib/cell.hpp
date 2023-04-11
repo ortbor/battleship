@@ -11,6 +11,7 @@ class Cell {
   State GetState() const;
   Ship* GetShip() const;
   Cell* GetTwin() const;
+  sf::RectangleShape* GetShape() const;
   void SetState(State state);
   void SetShip(Ship* ship);
   void SetTwins(Cell* other_cell);

@@ -37,7 +37,7 @@ template <typename Type>
 void ExecCommand<Type>::Empty(Type* val) {}
 
 CellCommand::CellCommand(Player* player, Cell* cell)
-    : Command(), player_(player), cell_(cell) {}
+    : player_(player), cell_(cell) {}
 
 AddCellCommand::AddCellCommand(Player* player, Cell* cell)
     : CellCommand(player, cell) {}
