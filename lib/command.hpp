@@ -15,6 +15,8 @@ class Command {
 
  protected:
   Event::EventType type_;
+  static GameLoop* loop_;
+  static GameWindow* window_;
 
   virtual bool IsValid() const = 0;
 };

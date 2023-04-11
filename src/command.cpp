@@ -50,6 +50,11 @@ bool AddCellCommand::Execute() {
     } else {
       player_->ship_in_process_.EraseCell(cell_);
     }
+    loop_->buttons_[player_->GetIndex() + 2][5]->SetShow(false);
+    loop_->buttons_[player_->GetIndex() + 2][6]->SetShow(false);
+  } else {
+    loop_->buttons_[player_->GetIndex() + 2][4]->SetShow(false);
+    loop_->buttons_[player_->GetIndex() + 2][5]->SetShow(true);
   }
   return valid;
 }
@@ -65,6 +70,19 @@ bool AddShipCommand::Execute() {
   bool valid = IsValid();
   if (valid) {
     player_->AddShip();
+    loop_->buttons_[player_->GetIndex() + 2][5]->SetShow(false);
+    loop_->buttons_[player_->GetIndex() + 2][6]->SetShow(false);
+    loop_->buttons_[player_->GetIndex() + 2][4]->SetShow(true);
+    if (player_->GetShipCount() == 10) {
+      if (player_->GetIndex() == 0) {
+        window_->SetButtons(/схема для второго игрока);
+      } else {
+        window_->SetButtons(/infinity seconds);
+      }
+    }
+  } else {
+    loop_->buttons_[player_->GetIndex() + 2][4]->SetShow(false);
+    loop_->buttons_[player_->GetIndex() + 2][6]->SetShow(true);
   }
   return valid;
 }
@@ -77,11 +95,7 @@ bool AddShipCommand::IsValid() const {
       5 - player_->GetShipInProcess()->GetSize()) {
     return false;
   }
-
-  auto cells = player_->GetShipInProcess()->GetCells();
-  return std::all_of(cells.begin(), cells.end(), [](const Cell* cell) {
-    return cell->GetState() != State::Clear;
-  });
+  return true;
 }
 
 ShootCommand::ShootCommand(Player* player, Cell* cell)
@@ -92,14 +106,13 @@ bool ShootCommand::Execute() {
   if (valid) {
     ShotResult shot_result;
     player_->Shoot(cell_, shot_result);
-    if (shot_result == ShotResult::Miss) {
-      // cell_->Color(State::Clear);
-    } else if (shot_result == ShotResult::Harm) {
-      // cell_->Color(State::Harmed);
-    } else if (shot_result == ShotResult::Kill) {
-      // for (auto killed_cell : cell_->GetTwin()->GetShip()->GetCells()) {
-      //  killed_cell->Color(State::Killed);
-      //}
+    if (player_->GetRival()->GetShipCount() == 0) {
+      back_ = true;
+      std::cout << "Player " << current_player_index + 1 << " won.\n";
+      std::cout.flush();
+    }
+    if (player_->GetLastShotResult() == ShotResult::Miss) {
+      Svapaem polya;
     }
   }
   return valid;

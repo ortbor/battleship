@@ -6,6 +6,9 @@
 #include "window.hpp"
 
 class GameLoop {
+  friend class AddCellCommand;
+  friend class AddShipCommand;
+
  public:
   GameLoop(const Vector2f& size, size_t ships);
   ~GameLoop();
@@ -32,4 +35,5 @@ class GameLoop {
   void SetButtons();
   void Play();
   void Settings();
+  void Go();
 };

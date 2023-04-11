@@ -50,3 +50,5 @@ void Player::LinkWithRival(Player* rival) {
   my_field_.LinkField(&rival->rival_field_);
   rival_field_.LinkField(&rival->my_field_);
 }
+
+Player* Player::GetRival() { return rival_; }
