@@ -4,11 +4,13 @@
 
 class Button {
  public:
-  Button(Command* commandn, const vector<sf::Drawable*>& drawn ={}, bool show = true);
+  Button(Command* commandn, const vector<sf::Drawable*>& drawn = {},
+         bool show = true);
   virtual ~Button() = default;
 
   virtual bool IsPressed(const Event& event) const;
   bool GetShow() const;
+  void SetShow(bool show);
   Command* GetCommand() const;
   const vector<sf::Drawable*>& GetDrawable() const;
 
