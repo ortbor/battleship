@@ -11,6 +11,8 @@ bool Button::IsPressed(const Event& event) const {
 
 bool Button::GetShow() const { return show_; }
 
+void Button::SetShow(bool show) { show_ = show; }
+
 Command* Button::GetCommand() const { return command_; }
 
 const vector<sf::Drawable*>& Button::GetDrawable() const { return draw_; }

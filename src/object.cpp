@@ -5,7 +5,7 @@
 void GameLoop::Clear() {
   for (auto& scr : buttons_) {
     for (auto& item : scr.second) {
-      for (auto &draw : item.second->GetDrawable()) {
+      for (auto& draw : item.second->GetDrawable()) {
         delete draw;
       }
       delete item.second->GetCommand();
@@ -32,30 +32,10 @@ RectangleShape* GameLoop::GetShape(const Vector2f& size, const Color& color,
   return box;
 }
 void GameLoop::SetButtons() {
-  buttons_["all"]["close"] = new Button(new ExecCommand<GameWindow>(
-      &window_, Event::Closed, [](GameWindow* window) { window->close(); }));
-
-  buttons_["all"]["resize"] = new Button(new ExecCommand<GameWindow>(
-      &window_, Event::Closed, [](GameWindow* window) { window->Refresh(); }));
-
-  buttons_["all"]["back"] = new MouseButton(
-      Mouse::Button::Left,
-      new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
-                                [](GameLoop* game) { game->back_ = true; }),
-      {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-       GetText("<-", 60, Color::Red, {85, 93})});
-
   buttons_["menu"]["background"] = new Button(
       nullptr,
       {new sf::Sprite(background_), GetText(kName, 140, Color::Red, {475, 0},
                                             Text::Bold | Text::Underlined)});
-
-  buttons_["menu"]["exit"] = new MouseButton(
-      Mouse::Button::Left,
-      new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
-                                [](GameLoop* game) { game->back_ = true; }),
-      {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-       GetText("X", 60, Color::Red, {98, 75})});
 
   buttons_["menu"]["play"] = new MouseButton(
       Mouse::Button::Left,
@@ -71,7 +51,7 @@ void GameLoop::SetButtons() {
       {GetShape(Vector2f(530, 150), Color(0, 255, 95), Vector2f(700, 820)),
        GetText("Settings", 140, Color::Red, {720, 790})});
 
-  buttons_["settings"]["go back!"] = new Button(
+  buttons_["settings"]["nothing"] = new Button(
       nullptr, {GetText("Nothing yet!", 140, Color::Red, {570, 530})});
 
   for (size_t pl = 1; pl < 3; ++pl) {
@@ -120,44 +100,23 @@ void GameLoop::SetButtons() {
       }
     }
 
-    buttons_["select_" + std::to_string(pl) + "_ok"]["text"] =
-        buttons_["select_" + std::to_string(pl)]["text"];
+    buttons_["select_" + std::to_string(pl)]["ok"] =
+        new Button(nullptr,
+                   {GetText("Success!", 80, Color::Green,
+                            {2080 - pl * 850, 750}, Text::Bold)},
+                   false);
 
-    buttons_["select_" + std::to_string(pl) + "_ok"]["add"] =
-        buttons_["select_" + std::to_string(pl)]["add"];
+    buttons_["select_" + std::to_string(pl)]["errcell"] =
+        new Button(nullptr,
+                   {GetText("Cannot select\n    this cell!", 80, Color::Red,
+                            {1970 - pl * 850, 750}, Text::Bold)},
+                   false);
 
-    buttons_["select_" + std::to_string(pl) + "_ok"]["field"] =
-        buttons_["select_" + std::to_string(pl)]["field"];
-
-    buttons_["select_" + std::to_string(pl) + "_errcell"]["text"] =
-        buttons_["select_" + std::to_string(pl)]["text"];
-
-    buttons_["select_" + std::to_string(pl) + "_errcell"]["add"] =
-        buttons_["select_" + std::to_string(pl)]["add"];
-
-    buttons_["select_" + std::to_string(pl) + "_errcell"]["field"] =
-        buttons_["select_" + std::to_string(pl)]["field"];
-
-    buttons_["select_" + std::to_string(pl) + "_errship"]["text"] =
-        buttons_["select_" + std::to_string(pl)]["text"];
-
-    buttons_["select_" + std::to_string(pl) + "_errship"]["add"] =
-        buttons_["select_" + std::to_string(pl)]["add"];
-
-    buttons_["select_" + std::to_string(pl) + "_errship"]["field"] =
-        buttons_["select_" + std::to_string(pl)]["field"];
-
-    buttons_["select_" + std::to_string(pl) + "_ok"]["ok"] =
-        new Button(nullptr, {GetText("Success!", 80, Color::Green,
-                                     {2080 - pl * 850, 750}, Text::Bold)});
-
-    buttons_["select_" + std::to_string(pl) + "_errcell"]["err"] = new Button(
-        nullptr, {GetText("Cannot select\n    this cell!", 80, Color::Red,
-                          {1970 - pl * 850, 750}, Text::Bold)});
-
-    buttons_["select_" + std::to_string(pl) + "_errship"]["err"] =
-        new Button(nullptr, {GetText("Wrong shaped ship!", 80, Color::Red,
-                                     {1880 - pl * 850, 750}, Text::Bold)});
+    buttons_["select_" + std::to_string(pl)]["errship"] =
+        new Button(nullptr,
+                   {GetText("Wrong shaped ship!", 80, Color::Red,
+                            {1880 - pl * 850, 750}, Text::Bold)},
+                   false);
 
     buttons_["play_" + std::to_string(pl)]["turn"] = new Button(
         nullptr, {GetText("Player " + std::to_string(pl) + " turn ", 100,
@@ -174,4 +133,20 @@ void GameLoop::SetButtons() {
   buttons_["starts"]["text"] =
       new Button(nullptr, {GetText("Game starts in infinity seconds!", 120,
                                    Color::Red, {150, 450})});
+
+  for (auto& item : buttons_) {
+    item.second["close"] = new Button(new ExecCommand<GameWindow>(
+        &window_, Event::Closed, [](GameWindow* window) { window->close(); }));
+
+    item.second["resize"] = new Button(new ExecCommand<GameWindow>(
+        &window_, Event::Closed,
+        [](GameWindow* window) { window->Refresh(); }));
+
+    item.second["back"] = new MouseButton(
+        Mouse::Button::Left,
+        new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
+                                  [](GameLoop* game) { game->back_ = true; }),
+        {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
+         GetText("<-", 60, Color::Red, {85, 93})});
+  }
 }
