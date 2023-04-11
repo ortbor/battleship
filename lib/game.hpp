@@ -8,6 +8,7 @@
 class GameLoop {
   friend class AddCellCommand;
   friend class AddShipCommand;
+  friend class ShootCommand;
 
  public:
   GameLoop(const Vector2f& size, size_t ships);
