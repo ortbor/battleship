@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(SRC_PATH src/)
 set(SOURCES ${SRC_PATH}/button.cpp 
             ${SRC_PATH}/cell.cpp 
-            ${SRC_PATH}/common.cpp
             ${SRC_PATH}/field.cpp 
             ${SRC_PATH}/game.cpp 
             ${SRC_PATH}/player.cpp 
