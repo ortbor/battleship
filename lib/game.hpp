@@ -25,7 +25,7 @@ class GameLoop {
 
   sf::Font font_;
   sf::Texture background_;
-  unordered_map<string, unordered_map<string, Button*>> buttons_;
+  unordered_map<string, map<string, Button*>> buttons_;
 
   Text* GetText(const std::string& str, size_t size, const Color& color,
                 const Vector2f& pos, int style = Text::Regular);

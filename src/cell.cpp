@@ -34,18 +34,18 @@ void Cell::SetTwins(Cell* other_cell) {
 void Cell::SetShape(sf::RectangleShape* shape) { shape_ = shape; }
 
 void Cell::UpdateColor() {
-  auto col = shape_->getFillColor();
   switch (state_) {
     case State::Alive:
-      shape_->setFillColor(sf::Color(0, 135, 255));
+      shape_->setFillColor(Color(0, 135, 255));
       break;
     case State::Chosen:
-      shape_->setFillColor(sf::Color(255 - col.r, 255 - col.g, 255 - col.b));
+      shape_->setFillColor(Color(0, 255 - 120, 0));
       break;
     case State::Clear:
-      shape_->setFillColor(sf::Color(255, 120, 255));
+      shape_->setFillColor(Color(255, 120, 255));
       break;
     case State::Prohibited:
+      shape_->setFillColor(Color(255, 0, 0));
       break;
     default:
       throw std::runtime_error("Unknown state!");

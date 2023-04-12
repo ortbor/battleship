@@ -16,19 +16,17 @@ class Command {
 
  protected:
   Event::EventType type_;
-
-
 };
 
 class SetButtonsCommand final : public Command {
  public:
-  SetButtonsCommand(unordered_map<string, Button*>* buttons);
+  SetButtonsCommand(map<string, Button*>* buttons);
   ~SetButtonsCommand() final = default;
 
   bool Execute() final;
 
  private:
-  unordered_map<string, Button*>* buttons_;
+  map<string, Button*>* buttons_;
 };
 
 template <typename Type>
