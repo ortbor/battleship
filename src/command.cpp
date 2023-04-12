@@ -56,6 +56,7 @@ bool AddCellCommand::Execute() {
     loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]
         ->SetShow(true);
   }
+  loop_->window_.DrawObjects();
   return valid;
 }
 
@@ -76,13 +77,13 @@ bool AddShipCommand::Execute() {
         ->SetShow(false);
     loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]
         ->SetShow(true);
-    if (player_->GetShipCount() == 10) {
+    if (player_->GetShipCount() == loop_->kShips) {
       if (player_->GetIndex() == 0) {
-        loop_->window_.SetButtons(&loop_->buttons_["select_2"]);
+        loop_->window_.SetButtons(&loop_->buttons_["select_1"]);
       } else {
         loop_->window_.SetButtons(&loop_->buttons_["starts"]);
         sf::sleep(sf::milliseconds(1000));
-        loop_->window_.SetButtons(&loop_->buttons_["play_1"]);
+        loop_->window_.SetButtons(&loop_->buttons_["play_0"]);
       }
     }
   } else {
@@ -91,6 +92,7 @@ bool AddShipCommand::Execute() {
     loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]
         ->SetShow(true);
   }
+  loop_->window_.DrawObjects();
   return valid;
 }
 
@@ -122,6 +124,7 @@ bool ShootCommand::Execute() {
           &loop_->buttons_["play_" + std::to_string(1 - player_->GetIndex())]);
     }
   }
+  loop_->window_.DrawObjects();
   return valid;
 }
 
