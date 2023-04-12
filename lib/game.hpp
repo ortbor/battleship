@@ -10,6 +10,7 @@ class GameLoop {
   GameLoop(const Vector2f& size, size_t ships);
   ~GameLoop() = default;
   void Go();
+  void Clear();
 
   GameWindow* GetWindow();
   const size_t kShips = 10;

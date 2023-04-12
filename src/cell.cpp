@@ -2,10 +2,11 @@
 
 Cell::Cell(const Vector2f& coord)
     : coord_(coord),
-      state_(State::Unknown),
       ship_(nullptr),
       twin_cell_(nullptr),
-      shape_(nullptr) {}
+      shape_(nullptr) {
+  SetState(State::Unknown);
+}
 
 const Vector2f& Cell::GetCoord() const { return coord_; }
 

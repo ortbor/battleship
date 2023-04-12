@@ -18,6 +18,6 @@ class Ship {
   bool IsClassic() const;
 
  protected:
-  int health_;
+  int health_ = 0;
   deque<Cell*> cells_;
 };
