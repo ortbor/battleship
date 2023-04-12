@@ -17,8 +17,6 @@ const Event::EventType& Command::GetType() { return type_; }
 SetButtonsCommand::SetButtonsCommand(const string& str) : str_(str) {}
 
 bool SetButtonsCommand::Execute() {
-  std::cout << str_ << "ds";
-  std::cout.flush();
   loop_->GetWindow()->SetButtons(str_);
   return true;
 }
@@ -79,7 +77,7 @@ bool AddShipCommand::Execute() {
         loop_->GetWindow()->SetButtons("select_1");
       } else {
         loop_->GetWindow()->SetButtons("starts");
-        sf::sleep(sf::milliseconds(1000));
+        sf::sleep(sf::milliseconds(4000));
         loop_->GetWindow()->SetButtons("play_0");
       }
     }

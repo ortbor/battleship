@@ -132,35 +132,6 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
         {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
          GetText("<-", 60, Color::Red, {85, 72})});
 
-    for (size_t i = 0; i < size.x; ++i) {
-      for (size_t j = 0; j < size.y; ++j) {
-        auto pos_my = Vector2f(140 + i * 70 + pl * 940, 250 + j * 70);
-        auto pos_rv = Vector2f(1080 + i * 70 - pl * 940, 250 + j * 70);
-        std::string ind = std::to_string(i * size.y + j);
-        auto* cell_my = players[pl].GetField()->GetCell(Vector2f(i, j));
-        auto* cell_rv = players[pl].GetRField()->GetCell(Vector2f(i, j));
-
-        cell_my->SetShape(
-            GetShape(Vector2f(65, 65), Color(255, 120, 255), pos_my));
-
-        cell_rv->SetShape(
-            GetShape(Vector2f(65, 65), Color(255, 120, 255), pos_rv));
-
-        buttons_["select_" + std::to_string(pl)]["cell" + ind] =
-            new MouseButton(Mouse::Button::Left,
-                            new AddCellCommand(players.data() + pl, cell_my),
-                            {cell_my->GetShape()});
-
-        buttons_["play_" + std::to_string(pl)]["cell_my" + ind] =
-            new Button(nullptr, {cell_my->GetShape()});
-
-        buttons_["play_" + std::to_string(pl)]["cell_rival" + ind] =
-            new MouseButton(Mouse::Button::Left,
-                            new ShootCommand(players.data() + pl, cell_rv),
-                            {cell_rv->GetShape()});
-      }
-    }
-
     buttons_["select_" + std::to_string(pl)]["ok"] =
         new Button(nullptr,
                    {GetText("Success!", 80, Color::Green,
@@ -195,22 +166,55 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
         Mouse::Left, new SetButtonsCommand("menu"),
         {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
          GetText("<-", 60, Color::Red, {85, 72})});
+
+    for (size_t i = 0; i < size.x; ++i) {
+      for (size_t j = 0; j < size.y; ++j) {
+        auto pos_my = Vector2f(140 + i * 70 + pl * 940, 250 + j * 70);
+        auto pos_rv = Vector2f(1080 + i * 70 - pl * 940, 250 + j * 70);
+        std::string ind = std::to_string(i * size.y + j);
+        auto* cell_my = players[pl].GetField()->GetCell(Vector2f(i, j));
+        auto* cell_rv = players[pl].GetRField()->GetCell(Vector2f(i, j));
+
+        cell_my->SetShape(
+            GetShape(Vector2f(65, 65), Color(255, 120, 255), pos_my));
+
+        cell_rv->SetShape(
+            GetShape(Vector2f(65, 65), Color(255, 120, 255), pos_rv));
+
+        buttons_["select_" + std::to_string(pl)]["cell" + ind] =
+            new MouseButton(Mouse::Button::Left,
+                            new AddCellCommand(players.data() + pl, cell_my),
+                            {cell_my->GetShape()});
+
+        buttons_["play_" + std::to_string(pl)]["cell_my" + ind] =
+            new Button(nullptr, {cell_my->GetShape()});
+
+        buttons_["play_" + std::to_string(pl)]["cell_rival" + ind] =
+            new MouseButton(Mouse::Button::Left,
+                            new ShootCommand(players.data() + pl, cell_rv),
+                            {cell_rv->GetShape()});
+      }
+    }
   }
 
-  buttons_["starts"]["text"] =
-      new Button(nullptr, {GetText("Game starts in infinity seconds!", 120,
-                                   Color::Red, {150, 450})});
+  buttons_["starts"]["text"] = new Button(
+      nullptr,
+      {GetText("Game starts in 2 seconds!", 120, Color::Red, {290, 450})});
+
+  buttons_["menu"]["close"] = new Button(new ExecCommand<GameWindow>(
+      this, Event::Closed, [](GameWindow* window) { window->close(); }));
+
+  buttons_["menu"]["resize"] = new Button(new ExecCommand<GameWindow>(
+      this, Event::Resized, [](GameWindow* window) { window->Refresh(); }));
+
+  buttons_["menu"]["background"] = new Button(
+      nullptr,
+      {new sf::Sprite(background_), GetText(kName, 140, Color::Red, {475, 0},
+                                            Text::Bold | Text::Underlined)});
 
   for (auto& item : buttons_) {
-    item.second["close"] = new Button(new ExecCommand<GameWindow>(
-        this, Event::Closed, [](GameWindow* window) { window->close(); }));
-
-    item.second["resize"] = new Button(new ExecCommand<GameWindow>(
-        this, Event::Resized, [](GameWindow* window) { window->Refresh(); }));
-
-    item.second["aaa, background, ponyaaaaatno!"] = new Button(
-        nullptr,
-        {new sf::Sprite(background_), GetText(kName, 140, Color::Red, {475, 0},
-                                              Text::Bold | Text::Underlined)});
+    item.second["close"] = buttons_["menu"]["close"];
+    item.second["resize"] = buttons_["menu"]["resize"];
+    item.second["background"] = buttons_["menu"]["background"];
   }
 }
