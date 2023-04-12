@@ -8,7 +8,7 @@ Player::Player(size_t index, const Vector2f& size)
       ship_count_(0),
       my_field_(MyField(size)),
       rival_field_(RivalField(size)),
-      ships_(vector<vector<Ship>>(5)),
+      ships_(deque<deque<Ship>>(5)),
       rival_(nullptr) {}
 
 size_t Player::GetIndex() const { return index_; }

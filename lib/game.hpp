@@ -17,6 +17,6 @@ class GameLoop {
  protected:
   const Vector2f size_;
   array<Player, 2> players_;
-  vector<Command*> turns_;
+  deque<Command*> turns_;
   GameWindow window_;
 };

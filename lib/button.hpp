@@ -4,7 +4,7 @@
 
 class Button {
  public:
-  Button(Command* commandn, const vector<sf::Drawable*>& drawn = {},
+  Button(Command* commandn, const deque<sf::Drawable*>& drawn = {},
          bool show = true);
   virtual ~Button();
 
@@ -13,18 +13,18 @@ class Button {
   bool GetShow() const;
   void SetShow(bool show);
   Command* GetCommand() const;
-  const vector<sf::Drawable*>& GetDrawable() const;
+  const deque<sf::Drawable*>& GetDrawable() const;
 
  protected:
   Command* command_;
-  vector<sf::Drawable*> draw_;
+  deque<sf::Drawable*> draw_;
   bool show_ = true;
 };
 
 class MouseButton final : public Button {
  public:
   MouseButton(const Mouse::Button& button, Command* command,
-              const vector<sf::Drawable*>& drawn);
+              const deque<sf::Drawable*>& drawn);
 
   bool IsPressed(const Event& event,
                  const sf::RenderWindow& window) const final;
@@ -38,7 +38,7 @@ class MouseButton final : public Button {
 class KeyboardButton final : public Button {
  public:
   KeyboardButton(const Keyboard::Key& button, Command* command,
-                 const vector<sf::Drawable*>& drawn);
+                 const deque<sf::Drawable*>& drawn);
 
   bool IsPressed(const Event& event,
                  const sf::RenderWindow& window) const final;

@@ -5,13 +5,13 @@
 class Ship {
  public:
   Ship() = default;
-  Ship(const std::vector<Cell*>& chosen_cells);
+  Ship(const std::deque<Cell*>& chosen_cells);
   ~Ship() = default;
   
   void Clear();
   void DecrementHealth();
   bool IsAlive() const;
-  const vector<Cell*>& GetCells() const;
+  const deque<Cell*>& GetCells() const;
   size_t GetSize() const;
   void AddCell(Cell* cell_);
   void EraseCell(Cell* cell_);
@@ -19,5 +19,5 @@ class Ship {
 
  protected:
   int health_;
-  vector<Cell*> cells_;
+  deque<Cell*> cells_;
 };

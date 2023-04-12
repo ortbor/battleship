@@ -2,7 +2,7 @@
 
 #include "../lib/cell.hpp"
 
-Ship::Ship(const std::vector<Cell*>& chosen_cells)
+Ship::Ship(const std::deque<Cell*>& chosen_cells)
     : health_(chosen_cells.size()), cells_(chosen_cells) {
   std::sort(cells_.begin(), cells_.end(), CellComparator);
 }
@@ -20,7 +20,7 @@ void Ship::DecrementHealth() {
 
 bool Ship::IsAlive() const { return health_ > 0; }
 
-const vector<Cell*>& Ship::GetCells() const { return cells_; }
+const deque<Cell*>& Ship::GetCells() const { return cells_; }
 
 size_t Ship::GetSize() const { return cells_.size(); }
 

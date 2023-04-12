@@ -4,7 +4,7 @@
 #include "../lib/ship.hpp"
 
 Field::Field(const Vector2f& sizen)
-    : size_(sizen), cells_(vector<vector<Cell>>(size_.x)) {
+    : size_(sizen), cells_(deque<deque<Cell>>(size_.x)) {
   for (size_t i = 0; i < size_.x; ++i) {
     for (size_t j = 0; j < size_.y; ++j) {
       cells_[i].push_back(Cell(Vector2f(i, j)));
@@ -21,7 +21,7 @@ void Field::LinkField(Field* other_field) {
 }
 
 Cell* Field::GetCell(const Vector2f& coord) {
-  return cells_[coord.x].data() + Vector2u(coord).y;
+  return &cells_[coord.x][Vector2u(coord).y];
 }
 
 MyField::MyField(const Vector2f& sizen) : Field(sizen) {

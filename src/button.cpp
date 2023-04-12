@@ -2,7 +2,7 @@
 
 #include "../lib/command.hpp"
 
-Button::Button(Command* commandn, const vector<sf::Drawable*>& drawn, bool show)
+Button::Button(Command* commandn, const deque<sf::Drawable*>& drawn, bool show)
     : command_(commandn), draw_(drawn), show_(show) {}
 
 Button::~Button() {
@@ -23,10 +23,10 @@ void Button::SetShow(bool show) { show_ = show; }
 
 Command* Button::GetCommand() const { return command_; }
 
-const vector<sf::Drawable*>& Button::GetDrawable() const { return draw_; }
+const deque<sf::Drawable*>& Button::GetDrawable() const { return draw_; }
 
 MouseButton::MouseButton(const Mouse::Button& button, Command* command,
-                         const vector<sf::Drawable*>& drawn)
+                         const deque<sf::Drawable*>& drawn)
     : Button(command, drawn), button_(button) {}
 
 bool MouseButton::IsPressed(const Event& event,
@@ -53,7 +53,7 @@ bool MouseButton::Inside(const Vector2f& mouse) const {
 }
 
 KeyboardButton::KeyboardButton(const Keyboard::Key& button, Command* command,
-                               const vector<sf::Drawable*>& drawn)
+                               const deque<sf::Drawable*>& drawn)
     : Button(command, drawn), button_(button) {}
 
 bool KeyboardButton::IsPressed(const Event& event,

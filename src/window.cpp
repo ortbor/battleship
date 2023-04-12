@@ -67,7 +67,7 @@ void GameWindow::DrawObjects() {
   display();
 }
 
-Text* GameWindow::GetText(const std::string& str, size_t size,
+Text* GameWindow::GetText(const string& str, size_t size,
                           const Color& color, const Vector2f& pos, int style) {
   Text* title = new Text(str, font_, size);
   title->setFillColor(color);
