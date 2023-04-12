@@ -12,7 +12,8 @@ Button::~Button() {
   }
 }
 
-bool Button::IsPressed(const Event& event) const {
+bool Button::IsPressed(const Event& event,
+                       const sf::RenderWindow& window) const {
   return command_ != nullptr && event.type == command_->GetType();
 }
 
@@ -28,9 +29,10 @@ MouseButton::MouseButton(const Mouse::Button& button, Command* command,
                          const vector<sf::Drawable*>& drawn)
     : Button(command, drawn), button_(button) {}
 
-bool MouseButton::IsPressed(const Event& event) const {
+bool MouseButton::IsPressed(const Event& event,
+                            const sf::RenderWindow& window) const {
   return command_ != nullptr && event.type == Event::MouseButtonPressed &&
-         Inside(Vector2f(Mouse::getPosition())) &&
+         Inside(window.mapPixelToCoords(Mouse::getPosition())) &&
          Mouse::isButtonPressed(button_);
 }
 
@@ -51,7 +53,8 @@ KeyboardButton::KeyboardButton(const Keyboard::Key& button, Command* command,
                                const vector<sf::Drawable*>& drawn)
     : Button(command, drawn), button_(button) {}
 
-bool KeyboardButton::IsPressed(const Event& event) const {
+bool KeyboardButton::IsPressed(const Event& event,
+                               const sf::RenderWindow& window) const {
   return command_ != nullptr && event.type == Event::KeyPressed &&
          Keyboard::isKeyPressed(button_);
 }

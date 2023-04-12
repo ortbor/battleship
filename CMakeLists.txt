@@ -7,7 +7,6 @@ set(SOURCES ${SRC_PATH}/button.cpp
             ${SRC_PATH}/cell.cpp 
             ${SRC_PATH}/common.cpp
             ${SRC_PATH}/field.cpp 
-            ${SRC_PATH}/object.cpp 
             ${SRC_PATH}/game.cpp 
             ${SRC_PATH}/player.cpp 
             ${SRC_PATH}/ship.cpp

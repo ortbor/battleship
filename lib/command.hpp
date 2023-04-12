@@ -20,13 +20,13 @@ class Command {
 
 class SetButtonsCommand final : public Command {
  public:
-  SetButtonsCommand(map<string, Button*>* buttons);
+  SetButtonsCommand(const string& str);
   ~SetButtonsCommand() final = default;
 
   bool Execute() final;
 
  private:
-  map<string, Button*>* buttons_;
+  string str_;
 };
 
 template <typename Type>
