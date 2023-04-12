@@ -16,7 +16,7 @@ void GameLoop::Clear() {
 }
 
 Text* GameLoop::GetText(const std::string& str, size_t size, const Color& color,
-                        const Vector2f& pos, int style = Text::Regular) {
+                        const Vector2f& pos, int style) {
   Text* title = new Text(str, font_, size);
   title->setFillColor(color);
   title->setPosition(pos);
@@ -40,14 +40,20 @@ void GameLoop::SetButtons() {
   buttons_["menu"]["play"] = new MouseButton(
       Mouse::Button::Left,
       new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
-                                [](GameLoop* game) { game->Play(); }),
+                                [](GameLoop* game) {
+                                  game->window_.SetButtons(
+                                      game->buttons_["play"]);
+                                }),
       {GetShape(Vector2f(340, 150), Color(0, 255, 95), Vector2f(790, 300)),
        GetText("Play", 140, Color::Red, {820, 270})});
 
   buttons_["menu"]["settings"] = new MouseButton(
       Mouse::Button::Left,
       new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
-                                [](GameLoop* game) { game->Settings(); }),
+                                [](GameLoop* game) {
+                                  game->window_.SetButtons(
+                                      game->buttons_["settings"]);
+                                }),
       {GetShape(Vector2f(530, 150), Color(0, 255, 95), Vector2f(700, 820)),
        GetText("Settings", 140, Color::Red, {720, 790})});
 
@@ -58,12 +64,12 @@ void GameLoop::SetButtons() {
     buttons_["select_" + std::to_string(pl)]["text"] = new Button(
         nullptr,
         {GetText("Player " + std::to_string(pl) + ", select\n    your ships!",
-                 80, Color::Blue, {1960 - pl * 850, 300})});
+                 80, Color::Blue, Vector2f(1960 - pl * 850, 300))});
 
     buttons_["select_" + std::to_string(pl)]["add"] = new MouseButton(
         Mouse::Button::Left, new AddShipCommand(players_.data()),
         {GetShape(Vector2f(335, 110), Color(0, 255, 95), Vector2f(1210, 550)),
-         GetText("Add ship", 80, Color::Red, {2070 - pl * 850, 550})});
+         GetText("Add ship", 80, Color::Red, Vector2f(2070 - pl * 850, 550))});
 
     for (size_t i = 0; i < size_.x; ++i) {
       for (size_t j = 0; j < size_.y; ++j) {
@@ -103,19 +109,19 @@ void GameLoop::SetButtons() {
     buttons_["select_" + std::to_string(pl)]["ok"] =
         new Button(nullptr,
                    {GetText("Success!", 80, Color::Green,
-                            {2080 - pl * 850, 750}, Text::Bold)},
+                            Vector2f(2080 - pl * 850, 750), Text::Bold)},
                    false);
 
     buttons_["select_" + std::to_string(pl)]["errcell"] =
         new Button(nullptr,
                    {GetText("Cannot select\n    this cell!", 80, Color::Red,
-                            {1970 - pl * 850, 750}, Text::Bold)},
+                            Vector2f(1970 - pl * 850, 750), Text::Bold)},
                    false);
 
     buttons_["select_" + std::to_string(pl)]["errship"] =
         new Button(nullptr,
                    {GetText("Wrong shaped ship!", 80, Color::Red,
-                            {1880 - pl * 850, 750}, Text::Bold)},
+                            Vector2f(1880 - pl * 850, 750), Text::Bold)},
                    false);
 
     buttons_["play_" + std::to_string(pl)]["turn"] = new Button(
@@ -123,11 +129,12 @@ void GameLoop::SetButtons() {
                           Color::Red, {675, 930}, sf::Text::Bold)});
 
     buttons_["play_" + std::to_string(pl)]["field_my"] = new Button(
-        nullptr, {GetText("My field", 80, Color::Red, {-717 + pl * 850, 950})});
-
-    buttons_["play_" + std::to_string(pl)]["field_rival"] = new Button(
         nullptr,
-        {GetText("Rival field", 80, Color::Red, {2260 - pl * 850, 950})});
+        {GetText("My field", 80, Color::Red, Vector2f(-717 + pl * 850, 950))});
+
+    buttons_["play_" + std::to_string(pl)]["field_rival"] =
+        new Button(nullptr, {GetText("Rival field", 80, Color::Red,
+                                     Vector2f(2260 - pl * 850, 950))});
   }
 
   buttons_["starts"]["text"] =

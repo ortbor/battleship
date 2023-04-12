@@ -13,11 +13,11 @@ class GameLoop {
  public:
   GameLoop(const Vector2f& size, size_t ships);
   ~GameLoop();
-  void StartMenu();
+  void Go();
 
  protected:
   bool back_ = false;
-  const size_t ships_;
+  //const size_t ships_;
   const Vector2f size_;
   array<Player, 2> players_;
   vector<Command*> turns_;
@@ -31,10 +31,9 @@ class GameLoop {
                 const Vector2f& pos, int style = Text::Regular);
   RectangleShape* GetShape(const Vector2f& size, const Color& color,
                            const Vector2f& pos);
-  void Link();
   void Clear();
   void SetButtons();
-  void Play();
-  void Settings();
-  void Go();
+  //void Play();
+  //void Settings();
+  //void StartMenu();
 };

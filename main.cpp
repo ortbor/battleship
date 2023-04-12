@@ -7,7 +7,7 @@ int main() {
   const size_t kShips = 1;
 
   GameLoop game(Vector2f(kSize, kSize), kShips);
-  game.StartMenu();
+  game.Go();
 
   return 0;
 }
