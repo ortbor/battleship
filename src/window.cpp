@@ -26,7 +26,7 @@ void GameWindow::Refresh() {
 Command* GameWindow::GetCommand() {
   while (true) {
     waitEvent(event_);
-    for (auto& button : buttons_) {
+    for (auto& button : *buttons_) {
       if (button.second->IsPressed(event_)) {
         return button.second->GetCommand();
       }
@@ -34,14 +34,14 @@ Command* GameWindow::GetCommand() {
   }
 }
 
-void GameWindow::SetButtons(const unordered_map<string, Button*>& other) {
+void GameWindow::SetButtons(unordered_map<string, Button*>* other) {
   buttons_ = other;
   DrawObjects();
 }
 
 void GameWindow::DrawObjects() {
   clear();
-  for (const auto& item : buttons_) {
+  for (const auto& item : *buttons_) {
     if (item.second->GetShow()) {
       for (const auto& object : item.second->GetDrawable()) {
         draw(*object);

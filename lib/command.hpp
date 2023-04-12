@@ -17,13 +17,23 @@ class Command {
  protected:
   Event::EventType type_;
 
-  virtual bool IsValid() const = 0;
+
+};
+
+class SetButtonsCommand final : public Command {
+ public:
+  SetButtonsCommand(unordered_map<string, Button*>* buttons);
+  ~SetButtonsCommand() final = default;
+
+  bool Execute() final;
+
+ private:
+  unordered_map<string, Button*>* buttons_;
 };
 
 template <typename Type>
 class ExecCommand final : public Command {
  public:
-  ExecCommand();
   ExecCommand(Type* obj, const Event::EventType& type_,
               void (*func)(Type* obj));
   ~ExecCommand() final = default;
@@ -33,9 +43,6 @@ class ExecCommand final : public Command {
  protected:
   Type* obj_;
   void (*func_)(Type* obj);
-
-  bool IsValid() const final;
-  static void Empty(Type* val);
 };
 
 class CellCommand : public Command {
@@ -47,6 +54,8 @@ class CellCommand : public Command {
  protected:
   Player* player_;
   Cell* cell_;
+
+  virtual bool IsValid() const = 0;
 };
 
 class AddCellCommand final : public CellCommand {
@@ -80,5 +89,5 @@ class AddShipCommand : public Command {
  protected:
   Player* player_;
 
-  bool IsValid() const final;
+  bool IsValid() const;
 };

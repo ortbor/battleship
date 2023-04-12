@@ -110,7 +110,7 @@ void GameLoop::Settings() {
 */
 void GameLoop::Go() {
   Command::loop_ = this;
-  window_.SetButtons(buttons_["menu"]);
+  window_.SetButtons(&buttons_["menu"]);
   while (window_.isOpen()) {
     window_.GetCommand()->Execute();
   }

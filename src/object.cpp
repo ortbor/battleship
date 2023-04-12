@@ -5,10 +5,6 @@
 void GameLoop::Clear() {
   for (auto& scr : buttons_) {
     for (auto& item : scr.second) {
-      for (const auto& draw : item.second->GetDrawable()) {
-        delete draw;
-      }
-      delete item.second->GetCommand();
       delete item.second;
     }
   }
@@ -34,27 +30,27 @@ RectangleShape* GameLoop::GetShape(const Vector2f& size, const Color& color,
 
 void GameLoop::SetButtons() {
   buttons_["menu"]["play"] = new MouseButton(
-      Mouse::Button::Left,
-      new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
-                                [](GameLoop* game) {
-                                  game->window_.SetButtons(
-                                      game->buttons_["select_0"]);
-                                }),
+      Mouse::Button::Left, new SetButtonsCommand(&buttons_["select_0"]),
       {GetShape(Vector2f(340, 150), Color(0, 255, 95), Vector2f(790, 300)),
        GetText("Play", 140, Color::Red, {820, 270})});
 
   buttons_["menu"]["settings"] = new MouseButton(
-      Mouse::Button::Left,
-      new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
-                                [](GameLoop* game) {
-                                  game->window_.SetButtons(
-                                      game->buttons_["settings"]);
-                                }),
+      Mouse::Button::Left, new SetButtonsCommand(&buttons_["settings"]),
       {GetShape(Vector2f(530, 150), Color(0, 255, 95), Vector2f(700, 820)),
        GetText("Settings", 140, Color::Red, {720, 790})});
 
-  buttons_["settings"]["nothing"] = new Button(
-      nullptr, {GetText("Nothing yet!", 140, Color::Red, {570, 530})});
+  buttons_["menu"]["back"] = new MouseButton(
+      Mouse::Button::Left,
+      new ExecCommand<GameWindow>(&window_, Event::Closed,
+                                  [](GameWindow* window) { window->close(); }),
+      {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
+       GetText("X", 60, Color::Red, {97, 75})});
+
+  buttons_["settings"]["back"] = new MouseButton(
+      Mouse::Button::Left, new SetButtonsCommand(&buttons_["menu"]),
+      {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
+       GetText("<-", 60, Color::Red, {85, 70}),
+       GetText("Nothing yet!", 140, Color::Red, {570, 530})});
 
   for (size_t pl = 0; pl < 2; ++pl) {
     buttons_["select_" + std::to_string(pl)]["text"] = new Button(
@@ -67,49 +63,37 @@ void GameLoop::SetButtons() {
         {GetShape(Vector2f(335, 110), Color(0, 255, 95), Vector2f(1210, 550)),
          GetText("Add ship", 80, Color::Red, Vector2f(1220 - pl * 850, 550))});
 
+    buttons_["select_" + std::to_string(pl)]["back"] = new MouseButton(
+        Mouse::Button::Left, new SetButtonsCommand(&buttons_["menu"]),
+        {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
+         GetText("<-", 60, Color::Red, {85, 72})});
+
     for (size_t i = 0; i < size_.x; ++i) {
       for (size_t j = 0; j < size_.y; ++j) {
-        players_[pl]
-            .GetField()
-            ->GetCell(Vector2f(i, j))
-            ->SetShape(
-                GetShape(Vector2f(65, 65), Color(255, 120, 255),
-                         Vector2f(140 + i * 70 + pl * 940, 250 + j * 70)));
+        auto pos_my = Vector2f(140 + i * 70 + pl * 940, 250 + j * 70);
+        auto pos_rv = Vector2f(1080 + i * 70 - pl * 940, 250 + j * 70);
+        std::string ind = std::to_string(i * size_.y + j);
+        auto* cell_my = players_[pl].GetField()->GetCell(Vector2f(i, j));
+        auto* cell_rv = players_[pl].GetRField()->GetCell(Vector2f(i, j));
 
-        players_[pl]
-            .GetRField()
-            ->GetCell(Vector2f(i, j))
-            ->SetShape(
-                GetShape(Vector2f(65, 65), Color(255, 120, 255),
-                         Vector2f(1080 + i * 70 - pl * 940, 250 + j * 70)));
+        cell_my->SetShape(
+            GetShape(Vector2f(65, 65), Color(255, 120, 255), pos_my));
 
-        buttons_["select_" +
-                 std::to_string(pl)]["cell" + std::to_string(i * size_.y + j)] =
-            new MouseButton(
-                Mouse::Button::Left,
-                new AddCellCommand(
-                    players_.data() + pl,
-                    players_[pl].GetField()->GetCell(Vector2f(i, j))),
-                {players_[pl].GetField()->GetCell(Vector2f(i, j))->GetShape()});
+        cell_rv->SetShape(
+            GetShape(Vector2f(65, 65), Color(255, 120, 255), pos_rv));
 
-        buttons_["play_" +
-                 std::to_string(pl)]["cell_my" +
-                                     std::to_string(i * size_.y + j)] =
-            new Button(
-                nullptr,
-                {players_[pl].GetField()->GetCell(Vector2f(i, j))->GetShape()});
+        buttons_["select_" + std::to_string(pl)]["cell" + ind] =
+            new MouseButton(Mouse::Button::Left,
+                            new AddCellCommand(players_.data() + pl, cell_my),
+                            {cell_my->GetShape()});
 
-        buttons_["play_" + std::to_string(pl)]
-                ["cell_rival" + std::to_string(i * size_.y + j)] =
-                    new MouseButton(
-                        Mouse::Button::Left,
-                        new ShootCommand(
-                            players_.data() + pl,
-                            players_[pl].GetRField()->GetCell(Vector2f(i, j))),
-                        {players_[pl]
-                             .GetRField()
-                             ->GetCell(Vector2f(i, j))
-                             ->GetShape()});
+        buttons_["play_" + std::to_string(pl)]["cell_my" + ind] =
+            new Button(nullptr, {cell_my->GetShape()});
+
+        buttons_["play_" + std::to_string(pl)]["cell_rival" + ind] =
+            new MouseButton(Mouse::Button::Left,
+                            new ShootCommand(players_.data() + pl, cell_rv),
+                            {cell_rv->GetShape()});
       }
     }
 
@@ -121,7 +105,7 @@ void GameLoop::SetButtons() {
 
     buttons_["select_" + std::to_string(pl)]["errcell"] =
         new Button(nullptr,
-                   {GetText("Cannot select\n    this cell!", 80, Color::Red,
+                   {GetText("Cannot select\n    this ind!", 80, Color::Red,
                             Vector2f(1120 - pl * 850, 750), Text::Bold)},
                    false);
 
@@ -142,6 +126,11 @@ void GameLoop::SetButtons() {
     buttons_["play_" + std::to_string(pl)]["field_rival"] =
         new Button(nullptr, {GetText("Rival field", 80, Color::Red,
                                      Vector2f(1410 - pl * 850, 950))});
+
+    buttons_["play_" + std::to_string(pl)]["back"] = new MouseButton(
+        Mouse::Left, new SetButtonsCommand(&buttons_["menu"]),
+        {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
+         GetText("<-", 60, Color::Red, {85, 72})});
   }
 
   buttons_["starts"]["text"] =
@@ -155,13 +144,6 @@ void GameLoop::SetButtons() {
     item.second["resize"] = new Button(new ExecCommand<GameWindow>(
         &window_, Event::Resized,
         [](GameWindow* window) { window->Refresh(); }));
-
-    item.second["back"] = new MouseButton(
-        Mouse::Button::Left,
-        new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
-                                  [](GameLoop* game) { game->back_ = true; }),
-        {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-         GetText("<-", 60, Color::Red, {85, 93})});
 
     item.second["background"] = new Button(
         nullptr,

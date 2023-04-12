@@ -14,8 +14,12 @@ Command::Command(const Event::EventType& type) : type_(type) {}
 
 const Event::EventType& Command::GetType() { return type_; }
 
-template <typename Type>
-ExecCommand<Type>::ExecCommand() : Command(), obj_(nullptr), func_(Empty) {}
+SetButtonsCommand::SetButtonsCommand(unordered_map<string, Button*>* buttons)
+    : buttons_(buttons) {}
+
+bool SetButtonsCommand::Execute() { loop_->window_.SetButtons(buttons_);
+  return true;
+}
 
 template <typename Type>
 ExecCommand<Type>::ExecCommand(Type* obj, const Event::EventType& type,
@@ -24,22 +28,9 @@ ExecCommand<Type>::ExecCommand(Type* obj, const Event::EventType& type,
 
 template <typename Type>
 bool ExecCommand<Type>::Execute() {
-  bool valid = IsValid();
-  std::cout << "kukarek" << (void*)func_;
-  std::cout.flush();
-  if (valid) {
-    (*func_)(obj_);
-  }
-  return valid;
+  (*func_)(obj_);
+  return true;
 }
-
-template <typename Type>
-bool ExecCommand<Type>::IsValid() const {
-  return (void*)func_ != nullptr;
-}
-
-template <typename Type>
-void ExecCommand<Type>::Empty(Type* val) {}
 
 CellCommand::CellCommand(Player* player, Cell* cell)
     : player_(player), cell_(cell) {}
@@ -87,11 +78,11 @@ bool AddShipCommand::Execute() {
         ->SetShow(true);
     if (player_->GetShipCount() == 10) {
       if (player_->GetIndex() == 0) {
-        loop_->window_.SetButtons(loop_->buttons_["select_2"]);
+        loop_->window_.SetButtons(&loop_->buttons_["select_2"]);
       } else {
-        loop_->window_.SetButtons(loop_->buttons_["starts"]);
+        loop_->window_.SetButtons(&loop_->buttons_["starts"]);
         sf::sleep(sf::milliseconds(1000));
-        loop_->window_.SetButtons(loop_->buttons_["play_1"]);
+        loop_->window_.SetButtons(&loop_->buttons_["play_1"]);
       }
     }
   } else {
@@ -127,7 +118,8 @@ bool ShootCommand::Execute() {
       std::cout.flush();
     }
     if (player_->GetLastShotResult() == ShotResult::Miss) {
-      loop_->buttons_["play_" + std::to_string(1 - player_->GetIndex())];
+      loop_->window_.SetButtons(
+          &loop_->buttons_["play_" + std::to_string(1 - player_->GetIndex())]);
     }
   }
   return valid;
