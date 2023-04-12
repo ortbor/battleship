@@ -27,8 +27,6 @@ Cell* Field::GetCell(const Vector2f& coord) {
 void Field::SurroundExcept(Cell* cell, State around, State except) {
   size_t current_w = cell->GetCoord().x;
   size_t current_l = cell->GetCoord().y;
-  std::cout << "iwilsurvive\n";
-  std::cout.flush();
   if (current_w != 0) {
     cells_[current_w - 1][current_l].SetStateExcept(around, except);
     if (current_l != 0) {
@@ -53,8 +51,6 @@ void Field::SurroundExcept(Cell* cell, State around, State except) {
   if (current_l != size_.y - 1) {
     cells_[current_w][current_l + 1].SetStateExcept(around, except);
   }
-  std::cout << "oops\n";
-  std::cout.flush();
 }
 
 MyField::MyField(const Vector2f& sizen) : Field(sizen) {
