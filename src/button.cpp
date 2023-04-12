@@ -31,8 +31,11 @@ MouseButton::MouseButton(const Mouse::Button& button, Command* command,
 
 bool MouseButton::IsPressed(const Event& event,
                             const sf::RenderWindow& window) const {
+  auto coord = Mouse::getPosition() - window.getPosition();
+  float coeffx = 1920 / Vector2f(window.getSize()).x,
+        coeffy = 1080 / Vector2f(window.getSize()).y;
   return command_ != nullptr && event.type == Event::MouseButtonPressed &&
-         Inside(window.mapPixelToCoords(Mouse::getPosition())) &&
+         Inside(Vector2f(coord.x * coeffx, coord.y * coeffy)) &&
          Mouse::isButtonPressed(button_);
 }
 
