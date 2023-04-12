@@ -17,8 +17,8 @@ class GameLoop {
   void Go();
 
  protected:
-  bool back_ = false;
   const Vector2f size_;
+  const size_t kShips = 10;
   array<Player, 2> players_;
   vector<Command*> turns_;
   GameWindow window_;

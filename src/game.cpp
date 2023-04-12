@@ -6,7 +6,7 @@
 #include "../lib/window.hpp"
 
 GameLoop::GameLoop(const Vector2f& size, size_t ships)
-    : size_(size),
+    : size_(size), kShips(ships),
       players_(std::array<Player, 2>{Player(0, size), Player(1, size)}),
       window_(kName) {
   if (!font_.loadFromFile(Path().string() + kRes + "symbola.ttf")) {

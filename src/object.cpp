@@ -60,7 +60,8 @@ void GameLoop::SetButtons() {
 
     buttons_["select_" + std::to_string(pl)]["add"] = new MouseButton(
         Mouse::Button::Left, new AddShipCommand(players_.data() + pl),
-        {GetShape(Vector2f(335, 110), Color(0, 255, 95), Vector2f(1210, 550)),
+        {GetShape(Vector2f(335, 110), Color(0, 255, 95),
+                  Vector2f(1210 - pl * 850, 550)),
          GetText("Add ship", 80, Color::Red, Vector2f(1220 - pl * 850, 550))});
 
     buttons_["select_" + std::to_string(pl)]["back"] = new MouseButton(
