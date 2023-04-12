@@ -24,9 +24,9 @@ void Cell::SetState(State state) {
   }
 }
 
-void Cell::TryToProhibit() {
-  if (GetState() != State::Alive) {
-    SetState(State::Prohibited);
+void Cell::SetStateExcept(State set_state, State except) {
+  if (GetState() != except) {
+    SetState(set_state);
   }
 };
 
