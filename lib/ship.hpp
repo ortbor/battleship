@@ -18,6 +18,6 @@ class Ship {
   bool IsClassic() const;
 
  protected:
-  size_t health_;
+  int health_;
   vector<Cell*> cells_;
 };

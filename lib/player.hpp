@@ -14,8 +14,10 @@ class Player {
   size_t GetIndex() const;
   ShotResult GetLastShotResult() const;
   size_t GetShipCount() const;
-  Field* GetField();
-  Field* GetRField();
+  /*Field* GetField();
+  Field* GetRField();*/
+  MyField* GetField();
+  RivalField* GetRField();
   void DecrementShipCount();
   void AddShip();
   void Shoot(Cell* cell, ShotResult& shot_result);

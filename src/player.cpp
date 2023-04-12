@@ -17,16 +17,20 @@ ShotResult Player::GetLastShotResult() const { return last_shot_result_; }
 
 size_t Player::GetShipCount() const { return ship_count_; }
 
-Field* Player::GetField() { return dynamic_cast<Field*>(&my_field_); }
+/*Field* Player::GetField() { return dynamic_cast<Field*>(&my_field_); }
 
-Field* Player::GetRField() { return dynamic_cast<Field*>(&rival_field_); }
+Field* Player::GetRField() { return dynamic_cast<Field*>(&rival_field_); }*/
+
+MyField* Player::GetField() { return &my_field_; }
+
+RivalField* Player::GetRField() { return &rival_field_; }
 
 void Player::DecrementShipCount() { --ship_count_; }
 
 void Player::AddShip() {
   ships_[ship_in_process_.GetSize()].push_back(ship_in_process_);
   ++ship_count_;
-  my_field_.SetShip(&ship_in_process_);
+  my_field_.SetShip(&*ships_[ship_in_process_.GetSize()].rbegin());
   ship_in_process_.Clear();
 }
 
