@@ -5,7 +5,7 @@
 void GameLoop::Clear() {
   for (auto& scr : buttons_) {
     for (auto& item : scr.second) {
-      for (auto& draw : item.second->GetDrawable()) {
+      for (const auto& draw : item.second->GetDrawable()) {
         delete draw;
       }
       delete item.second->GetCommand();
@@ -31,18 +31,14 @@ RectangleShape* GameLoop::GetShape(const Vector2f& size, const Color& color,
   box->setPosition(pos);
   return box;
 }
-void GameLoop::SetButtons() {
-  buttons_["menu"]["background"] = new Button(
-      nullptr,
-      {new sf::Sprite(background_), GetText(kName, 140, Color::Red, {475, 0},
-                                            Text::Bold | Text::Underlined)});
 
+void GameLoop::SetButtons() {
   buttons_["menu"]["play"] = new MouseButton(
       Mouse::Button::Left,
       new ExecCommand<GameLoop>(this, Event::MouseButtonPressed,
                                 [](GameLoop* game) {
                                   game->window_.SetButtons(
-                                      game->buttons_["play"]);
+                                      game->buttons_["select_1"]);
                                 }),
       {GetShape(Vector2f(340, 150), Color(0, 255, 95), Vector2f(790, 300)),
        GetText("Play", 140, Color::Red, {820, 270})});
@@ -67,42 +63,55 @@ void GameLoop::SetButtons() {
                  80, Color::Blue, Vector2f(1960 - pl * 850, 300))});
 
     buttons_["select_" + std::to_string(pl)]["add"] = new MouseButton(
-        Mouse::Button::Left, new AddShipCommand(players_.data()),
+        Mouse::Button::Left, new AddShipCommand(players_.data() + pl - 1),
         {GetShape(Vector2f(335, 110), Color(0, 255, 95), Vector2f(1210, 550)),
          GetText("Add ship", 80, Color::Red, Vector2f(2070 - pl * 850, 550))});
 
     for (size_t i = 0; i < size_.x; ++i) {
       for (size_t j = 0; j < size_.y; ++j) {
-        players_[pl]
+        players_[pl - 1]
             .GetField()
             ->GetCell(Vector2f(i, j))
             ->SetShape(
                 GetShape(Vector2f(65, 65), Color(255, 120, 255),
-                         Vector2f(140 + i * 70 + pl * 940, 250 + j * 70)));
+                         Vector2f(-800 + i * 70 + pl * 940, 250 + j * 70)));
 
-        players_[pl]
+        players_[pl - 1]
             .GetRField()
             ->GetCell(Vector2f(i, j))
-            ->SetShape(GetShape(
-                Vector2f(65, 65), Color(255, 120, 255),
-                Vector2f(140 + i * 70 + (1 - pl) * 940, 250 + j * 70)));
+            ->SetShape(
+                GetShape(Vector2f(65, 65), Color(255, 120, 255),
+                         Vector2f(2020 + i * 70 - pl * 940, 250 + j * 70)));
 
-        buttons_["select_" + std::to_string(pl)]["field"] = new MouseButton(
-            Mouse::Button::Left,
-            new AddCellCommand(
-                players_.data() + pl,
-                players_[pl].GetField()->GetCell(Vector2f(i, j))),
-            {players_[pl].GetField()->GetCell(Vector2f(i, j))->GetShape()});
+        buttons_["select_" + std::to_string(pl)]
+                ["cell" + std::to_string(i * size_.y + j)] = new MouseButton(
+                    Mouse::Button::Left,
+                    new AddCellCommand(
+                        players_.data() + pl - 1,
+                        players_[pl - 1].GetField()->GetCell(Vector2f(i, j))),
+                    {players_[pl - 1]
+                         .GetField()
+                         ->GetCell(Vector2f(i, j))
+                         ->GetShape()});
 
-        buttons_["play_" + std::to_string(pl)]["field_my"] = new Button(
-            nullptr,
-            {players_[pl].GetField()->GetCell(Vector2f(i, j))->GetShape()});
+        buttons_["play_" + std::to_string(pl)]
+                ["cell_my" + std::to_string(i * size_.y + j)] =
+                    new Button(nullptr, {players_[pl - 1]
+                                             .GetField()
+                                             ->GetCell(Vector2f(i, j))
+                                             ->GetShape()});
 
-        buttons_["play_" + std::to_string(pl)]["field_rival"] = new MouseButton(
-            Mouse::Button::Left,
-            new ShootCommand(players_.data() + pl,
-                             players_[pl].GetRField()->GetCell(Vector2f(i, j))),
-            {players_[pl].GetRField()->GetCell(Vector2f(i, j))->GetShape()});
+        buttons_["play_" + std::to_string(pl)]
+                ["cell_rival" + std::to_string(i * size_.y + j)] =
+                    new MouseButton(
+                        Mouse::Button::Left,
+                        new ShootCommand(players_.data() + pl - 1,
+                                         players_[pl - 1].GetRField()->GetCell(
+                                             Vector2f(i, j))),
+                        {players_[pl - 1]
+                             .GetRField()
+                             ->GetCell(Vector2f(i, j))
+                             ->GetShape()});
       }
     }
 
@@ -146,7 +155,7 @@ void GameLoop::SetButtons() {
         &window_, Event::Closed, [](GameWindow* window) { window->close(); }));
 
     item.second["resize"] = new Button(new ExecCommand<GameWindow>(
-        &window_, Event::Closed,
+        &window_, Event::Resized,
         [](GameWindow* window) { window->Refresh(); }));
 
     item.second["back"] = new MouseButton(
@@ -155,5 +164,10 @@ void GameLoop::SetButtons() {
                                   [](GameLoop* game) { game->back_ = true; }),
         {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
          GetText("<-", 60, Color::Red, {85, 93})});
+
+    item.second["background"] = new Button(
+        nullptr,
+        {new sf::Sprite(background_), GetText(kName, 140, Color::Red, {475, 0},
+                                              Text::Bold | Text::Underlined)});
   }
 }

@@ -20,8 +20,6 @@ class Command {
   virtual bool IsValid() const = 0;
 };
 
-
-
 template <typename Type>
 class ExecCommand final : public Command {
  public:

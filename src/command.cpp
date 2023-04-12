@@ -2,9 +2,9 @@
 
 #include "../lib/button.hpp"
 #include "../lib/cell.hpp"
+#include "../lib/game.hpp"
 #include "../lib/player.hpp"
 #include "../lib/window.hpp"
-#include "../lib/game.hpp"
 
 GameLoop* Command::loop_ = nullptr;
 
@@ -25,6 +25,8 @@ ExecCommand<Type>::ExecCommand(Type* obj, const Event::EventType& type,
 template <typename Type>
 bool ExecCommand<Type>::Execute() {
   bool valid = IsValid();
+  std::cout << "kukarek" << (void*)func_;
+  std::cout.flush();
   if (valid) {
     (*func_)(obj_);
   }
@@ -33,7 +35,7 @@ bool ExecCommand<Type>::Execute() {
 
 template <typename Type>
 bool ExecCommand<Type>::IsValid() const {
-  return *func_ != nullptr;
+  return (void*)func_ != nullptr;
 }
 
 template <typename Type>
@@ -53,11 +55,15 @@ bool AddCellCommand::Execute() {
     } else {
       player_->ship_in_process_.EraseCell(cell_);
     }
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]->SetShow(false);
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]
+        ->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]
+        ->SetShow(false);
   } else {
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]->SetShow(false);
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]->SetShow(true);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]
+        ->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]
+        ->SetShow(true);
   }
   return valid;
 }
@@ -73,9 +79,12 @@ bool AddShipCommand::Execute() {
   bool valid = IsValid();
   if (valid) {
     player_->AddShip();
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]->SetShow(false);
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]->SetShow(false);
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]->SetShow(true);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]
+        ->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]
+        ->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]
+        ->SetShow(true);
     if (player_->GetShipCount() == 10) {
       if (player_->GetIndex() == 0) {
         loop_->window_.SetButtons(loop_->buttons_["select_2"]);
@@ -86,8 +95,10 @@ bool AddShipCommand::Execute() {
       }
     }
   } else {
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]->SetShow(false);
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]->SetShow(true);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]
+        ->SetShow(false);
+    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]
+        ->SetShow(true);
   }
   return valid;
 }
