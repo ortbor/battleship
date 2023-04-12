@@ -9,6 +9,7 @@ class Field {
   void LinkField(Field* other_field);
 
   Cell* GetCell(const Vector2f& coord);
+  void SurroundExcept(Cell* cell, State around, State except);
 
  protected:
   Vector2f size_;
@@ -24,5 +25,5 @@ class MyField : public Field {
 class RivalField : public Field {
  public:
   RivalField(const Vector2f& sizen);
-  static void UpdateShot(Cell* cell, ShotResult& shot_result);
+  void UpdateShot(Cell* cell, ShotResult& shot_result);
 };

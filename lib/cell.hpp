@@ -13,7 +13,7 @@ class Cell {
   Cell* GetTwin() const;
   sf::RectangleShape* GetShape() const;
   void SetState(State state);
-  void TryToProhibit();
+  void SetStateExcept(State set_state, State except);
   void SetShip(Ship* ship);
   void SetTwins(Cell* other_cell);
   void SetShape(sf::RectangleShape* shape);

@@ -24,6 +24,39 @@ Cell* Field::GetCell(const Vector2f& coord) {
   return cells_[coord.x].data() + Vector2u(coord).y;
 }
 
+void Field::SurroundExcept(Cell* cell, State around, State except) {
+  size_t current_w = cell->GetCoord().x;
+  size_t current_l = cell->GetCoord().y;
+  std::cout << "iwilsurvive\n";
+  std::cout.flush();
+  if (current_w != 0) {
+    cells_[current_w - 1][current_l].SetStateExcept(around, except);
+    if (current_l != 0) {
+      cells_[current_w - 1][current_l - 1].SetStateExcept(around, except);
+    }
+    if (current_l != size_.y - 1) {
+      cells_[current_w - 1][current_l + 1].SetStateExcept(around, except);
+    }
+  }
+  if (current_w != size_.x - 1) {
+    cells_[current_w + 1][current_l].SetStateExcept(around, except);
+    if (current_l != 0) {
+      cells_[current_w + 1][current_l - 1].SetStateExcept(around, except);
+    }
+    if (current_l != size_.y - 1) {
+      cells_[current_w + 1][current_l + 1].SetStateExcept(around, except);
+    }
+  }
+  if (current_l != 0) {
+    cells_[current_w][current_l - 1].SetStateExcept(around, except);
+  }
+  if (current_l != size_.y - 1) {
+    cells_[current_w][current_l + 1].SetStateExcept(around, except);
+  }
+  std::cout << "oops\n";
+  std::cout.flush();
+}
+
 MyField::MyField(const Vector2f& sizen) : Field(sizen) {
   for (size_t i = 0; i < sizen.x; ++i) {
     for (size_t j = 0; j < sizen.y; ++j) {
@@ -36,32 +69,7 @@ void MyField::SetShip(Ship* ship) {
   for (Cell* cell : ship->GetCells()) {
     cell->SetState(State::Alive);
     cell->SetShip(ship);
-    size_t current_w = cell->GetCoord().x;
-    size_t current_l = cell->GetCoord().y;
-    if (current_w != 0) {
-      cells_[current_w - 1][current_l].TryToProhibit();
-      if (current_l != 0) {
-        cells_[current_w - 1][current_l - 1].TryToProhibit();
-      }
-      if (current_l != size_.y - 1) {
-        cells_[current_w - 1][current_l + 1].TryToProhibit();
-      }
-    }
-    if (current_w != size_.x - 1) {
-      cells_[current_w + 1][current_l].TryToProhibit();
-      if (current_l != 0) {
-        cells_[current_w + 1][current_l - 1].TryToProhibit();
-      }
-      if (current_l != size_.y - 1) {
-        cells_[current_w + 1][current_l + 1].TryToProhibit();
-      }
-    }
-    if (current_l != 0) {
-      cells_[current_w][current_l - 1].TryToProhibit();
-    }
-    if (current_l != size_.y - 1) {
-      cells_[current_w][current_l + 1].TryToProhibit();
-    }
+    SurroundExcept(cell, State::Prohibited, State::Alive);
   }
 }
 
@@ -72,19 +80,20 @@ void RivalField::UpdateShot(Cell* cell, ShotResult& shot_result) {
   if (twin->GetState() == State::Alive) {
     cell->SetState(State::Harmed);
     twin->SetState(State::Harmed);
-    twin->GetShip()->DecrementHealth();
-    std::cout << twin->GetShip()->health_ << "\n";
+
+    twin->GetShip()->DecrementHealth();/*
     if (!twin->GetShip()->IsAlive()) {
       std::cout << "Kill.\n";
       shot_result = ShotResult::Kill;
       for (Cell* killed_cell : twin->GetShip()->GetCells()) {
         killed_cell->SetState(State::Killed);
         killed_cell->GetTwin()->SetState(State::Killed);
+        SurroundExcept(killed_cell, State::Clear, State::Killed);
       }
     } else {
       std::cout << "Harm.\n";
       shot_result = ShotResult::Harm;
-    }
+    }*/
   } else if (twin->GetState() == State::Clear) {
     cell->SetState(State::Missed);
     twin->SetState(State::Missed);

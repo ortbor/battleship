@@ -35,7 +35,7 @@ void Player::AddShip() {
 }
 
 void Player::Shoot(Cell* cell, ShotResult& shot_result) {
-  RivalField::UpdateShot(cell, shot_result);
+  rival_field_.UpdateShot(cell, shot_result);
   if (shot_result == ShotResult::Kill) {
     rival_->DecrementShipCount();
   }

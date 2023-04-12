@@ -17,7 +17,7 @@ class Ship {
   void EraseCell(Cell* cell_);
   bool IsClassic() const;
 
- protected:
-  int health_;
+// protected:
+  int health_ = 0;
   vector<Cell*> cells_;
 };
