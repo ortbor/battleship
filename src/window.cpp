@@ -5,8 +5,8 @@
 #include "../lib/player.hpp"
 #include "command.cpp"
 
-GameWindow::GameWindow(array<Player, 2>& players,
-                       const Vector2f& size, Vector2f sides) {
+GameWindow::GameWindow(array<Player, 2>& players, const Vector2f& size,
+                       Vector2f sides) {
   if (sides.x < 0) {
     sides.x = screen_.x;
     sides.y = screen_.y;
@@ -30,7 +30,7 @@ GameWindow::GameWindow(array<Player, 2>& players,
 GameWindow::~GameWindow() {
   for (auto& scr : buttons_) {
     for (auto& item : scr.second) {
-      delete item.second;
+      delete item.second->GetCommand();
     }
   }
 }
@@ -142,7 +142,7 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
     buttons_["select_" + std::to_string(pl)]["ok"] =
         new Button(nullptr,
                    {GetText("Success!", 80, Color::Green,
-                            Vector2f(1230 - pl * 850, 750), Text::Bold)},
+                            Vector2f(1240 - pl * 850, 750), Text::Bold)},
                    false);
 
     buttons_["select_" + std::to_string(pl)]["errcell"] =
@@ -174,6 +174,19 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
         {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
          GetText("<-", 60, Color::Red, {85, 72})});
 
+    buttons_["won_" + std::to_string(pl)]["text"] = new Button(
+        nullptr, {GetText("Player " + std::to_string(pl) + " won!\n", 120,
+                          Color::Red, {450, 350}, Text::Bold),
+                  GetText("  Do you feel proud of yourself after\n"
+                          "killimg all innocent other player's ships?..",
+                          60, Color::Red, {250, 550}, Text::Bold)});
+
+    buttons_["settings"]["return"] = new MouseButton(
+        Mouse::Button::Left, new SetButtonsCommand("menu"),
+        {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
+         GetText("<-", 60, Color::Red, {85, 70}),
+         GetText("Nothing yet!", 140, Color::Red, {570, 530})});
+
     for (size_t i = 0; i < size.x; ++i) {
       for (size_t j = 0; j < size.y; ++j) {
         auto pos_my = Vector2f(140 + i * 70 + pl * 940, 250 + j * 70);
@@ -204,24 +217,31 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
     }
   }
 
+  buttons_["shift_select"]["text"] =
+      new Button(nullptr, {GetText("Player 2, be ready to select\n"
+                                   "        ships in 2 seconds!\n"
+                                   " Player 1, DO NOT LOOK!",
+                                   120, Color::Cyan, {250, 350}, Text::Bold)});
+
   buttons_["starts"]["text"] = new Button(
       nullptr,
       {GetText("Game starts in 2 seconds!", 120, Color::Red, {290, 450})});
 
-  buttons_["menu"]["close"] = new Button(new ExecCommand<GameWindow>(
-      this, Event::Closed, [](GameWindow* window) { window->close(); }));
-
-  buttons_["menu"]["resize"] = new Button(new ExecCommand<GameWindow>(
-      this, Event::Resized, [](GameWindow* window) { window->DrawObjects(); }));
-
-  buttons_["menu"]["background"] = new Button(
+  buttons_["won"]["first"] = new Button(
       nullptr,
-      {new sf::Sprite(background_), GetText(kName, 140, Color::Red, {475, 0},
-                                            Text::Bold | Text::Underlined)});
+      {GetText("Player 1 won", 120, Color::Red, {450, 350}, Text::Bold)});
 
   for (auto& item : buttons_) {
-    item.second["close"] = buttons_["menu"]["close"];
-    item.second["resize"] = buttons_["menu"]["resize"];
-    item.second["background"] = buttons_["menu"]["background"];
+    item.second["close"] = new Button(new ExecCommand<GameWindow>(
+        this, Event::Closed, [](GameWindow* window) { window->close(); }));
+
+    item.second["resize"] = new Button(new ExecCommand<GameWindow>(
+        this, Event::Resized,
+        [](GameWindow* window) { window->DrawObjects(); }));
+
+    item.second["background"] = new Button(
+        nullptr,
+        {new sf::Sprite(background_), GetText(kName, 140, Color::Red, {475, 0},
+                                              Text::Bold | Text::Underlined)});
   }
 }
