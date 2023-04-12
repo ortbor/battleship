@@ -11,8 +11,9 @@ GameWindow::GameWindow(const sf::String& title, array<Player, 2>& players,
     sides.x = screen_.x;
     sides.y = screen_.y;
   }
+  create(VideoMode(sides.x, sides.y), title);
   view_.setSize(sides);
-  create(VideoMode(sides.x, sides.y), title, sf::Style::Fullscreen);
+  view_.setCenter(Vector2f(view_.getSize().x / 2, view_.getSize().y / 2));
   setView(view_);
 
   if (!font_.loadFromFile(Path().string() + kRes + "symbola.ttf")) {
@@ -32,12 +33,6 @@ GameWindow::~GameWindow() {
       delete item.second;
     }
   }
-}
-
-void GameWindow::Refresh() {
-  view_.setCenter(Vector2f(view_.getSize().x / 2, view_.getSize().y / 2));
-  setView(view_);
-  DrawObjects();
 }
 
 Command* GameWindow::GetCommand() {
@@ -72,7 +67,7 @@ void GameWindow::DrawObjects() {
   display();
 }
 
-Text* GameWindow::GetText(const std::string& str, size_t size,
+Text* GameWindow::GetText(const string& str, size_t size,
                           const Color& color, const Vector2f& pos, int style) {
   Text* title = new Text(str, font_, size);
   title->setFillColor(color);
@@ -203,7 +198,7 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       this, Event::Closed, [](GameWindow* window) { window->close(); }));
 
   buttons_["menu"]["resize"] = new Button(new ExecCommand<GameWindow>(
-      this, Event::Resized, [](GameWindow* window) { window->Refresh(); }));
+      this, Event::Resized, [](GameWindow* window) { window->DrawObjects(); }));
 
   buttons_["menu"]["background"] = new Button(
       nullptr,

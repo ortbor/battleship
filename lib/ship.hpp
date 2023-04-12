@@ -20,13 +20,13 @@ class Ship {
   void Clear();
   void DecrementHealth();
   bool IsAlive() const;
-  const vector<Cell*>& GetCells() const;
+  const deque<Cell*>& GetCells() const;
   size_t GetSize() const;
   void AddCell(Cell* cell_);
   void EraseCell(Cell* cell_);
   bool IsClassic() const;
 
-// protected:
-  int health_ = 0;
-  vector<Cell*> cells_;
+ protected:
+  int health_;
+  deque<Cell*> cells_;
 };

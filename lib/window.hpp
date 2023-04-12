@@ -8,7 +8,6 @@ class GameWindow : public sf::RenderWindow {
              const Vector2f& size, Vector2f sides = {-1, -1});
   ~GameWindow();
 
-  void Refresh();
   Command* GetCommand();
   void SetButtons(const string& str);
   void SetShow(const string& scene, const string& elem, bool show);

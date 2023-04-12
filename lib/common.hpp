@@ -9,7 +9,7 @@
 #include <map>
 #include <memory>
 #include <unordered_map>
-#include <vector>
+#include <deque>
 
 using sf::Color;
 using sf::Event;
@@ -24,12 +24,13 @@ using sf::Vector2u;
 using sf::VideoMode;
 using sf::View;
 
+
 using std::array;
 using std::map;
 using std::pair;
 using std::string;
 using std::unordered_map;
-using std::vector;
+using std::deque;
 
 class Cell;
 class Ship;

@@ -13,7 +13,7 @@ class Field {
 
  protected:
   Vector2f size_;
-  vector<vector<Cell>> cells_;
+  deque<deque<Cell>> cells_;
 };
 
 class MyField : public Field {

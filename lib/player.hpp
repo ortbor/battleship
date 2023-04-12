@@ -32,7 +32,7 @@ class Player {
   size_t ship_count_;
   MyField my_field_;
   RivalField rival_field_;
-  vector<vector<Ship>> ships_;
+  deque<deque<Ship>> ships_;
   Ship ship_in_process_;
   Player* rival_;
 };
