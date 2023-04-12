@@ -32,6 +32,13 @@ GameWindow::~GameWindow() {
     for (auto& item : scr.second) {
       delete item.second->GetCommand();
     }
+    if (scr.first != "select_0" && scr.first != "select_1") {
+      for (auto& item : scr.second) {
+        for (auto& draw : item.second->GetDrawable()) {
+          delete draw;
+        }
+      }
+    }
   }
 }
 
@@ -174,18 +181,22 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
         {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
          GetText("<-", 60, Color::Red, {85, 72})});
 
-    buttons_["won_" + std::to_string(pl)]["text"] = new Button(
-        nullptr, {GetText("Player " + std::to_string(pl) + " won!\n", 120,
-                          Color::Red, {450, 350}, Text::Bold),
-                  GetText("  Do you feel proud of yourself after\n"
-                          "killimg all innocent other player's ships?..",
-                          60, Color::Red, {250, 550}, Text::Bold)});
+    buttons_["turn_" + std::to_string(pl)]["text"] = new Button(
+        nullptr,
+        {GetText("Player " + std::to_string(pl + 1) + ", FIGHT!\n", 120,
+                 Color::Red, {530, 450}, Text::Bold | Text::Underlined)});
 
-    buttons_["settings"]["return"] = new MouseButton(
+    buttons_["won_" + std::to_string(pl)]["text"] = new Button(
+        nullptr, {GetText("Player " + std::to_string(pl + 1) + " won!\n", 120,
+                          Color::Red, {600, 350}, Text::Bold),
+                  GetText("        Do you feel proud of yourself after\n"
+                          "you killed all innocent other player's ships?..",
+                          60, Color::Red, {360, 750}, Text::Bold)});
+
+    buttons_["won_" + std::to_string(pl)]["return"] = new MouseButton(
         Mouse::Button::Left, new SetButtonsCommand("menu"),
         {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-         GetText("<-", 60, Color::Red, {85, 70}),
-         GetText("Nothing yet!", 140, Color::Red, {570, 530})});
+         GetText("<-", 60, Color::Red, {85, 70})});
 
     for (size_t i = 0; i < size.x; ++i) {
       for (size_t j = 0; j < size.y; ++j) {
@@ -225,11 +236,11 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
 
   buttons_["starts"]["text"] = new Button(
       nullptr,
-      {GetText("Game starts in 2 seconds!", 120, Color::Red, {290, 450})});
+      {GetText("Game starts in 2 seconds!", 120, Color::Red, {300, 450})});
 
   buttons_["won"]["first"] = new Button(
       nullptr,
-      {GetText("Player 1 won", 120, Color::Red, {450, 350}, Text::Bold)});
+      {GetText("Player 1 won", 120, Color::Red, {420, 350}, Text::Bold)});
 
   for (auto& item : buttons_) {
     item.second["close"] = new Button(new ExecCommand<GameWindow>(

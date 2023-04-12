@@ -73,14 +73,17 @@ bool AddShipCommand::Execute() {
     loop_->GetWindow()->SetShow(scene, "errship", false);
     loop_->GetWindow()->SetShow(scene, "ok", true);
     loop_->GetWindow()->DrawObjects();
+    sf::sleep(sf::milliseconds(500));
     if (player_->GetShipCount() == loop_->kShips) {
       if (player_->GetIndex() == 0) {
-        sf::sleep(sf::milliseconds(500));
         loop_->GetWindow()->SetButtons("shift_select");
         sf::sleep(sf::milliseconds(2000));
         loop_->GetWindow()->SetButtons("select_1");
       } else {
         loop_->GetWindow()->SetButtons("starts");
+        sf::sleep(sf::milliseconds(2000));
+        loop_->GetWindow()->SetButtons("turn_" +
+                                       std::to_string(0));
         sf::sleep(sf::milliseconds(2000));
         loop_->GetWindow()->SetButtons("play_0");
       }
@@ -117,6 +120,9 @@ bool ShootCommand::Execute() {
                                      std::to_string(player_->GetIndex()));
     }
     if (player_->GetLastShotResult() == ShotResult::Miss) {
+      loop_->GetWindow()->SetButtons("turn_" +
+                                     std::to_string(1 - player_->GetIndex()));
+      sf::sleep(sf::milliseconds(2000));
       loop_->GetWindow()->SetButtons("play_" +
                                      std::to_string(1 - player_->GetIndex()));
     }
