@@ -35,7 +35,7 @@ bool MouseButton::IsPressed(const Event& event,
   float coeffx = 1920 / Vector2f(window.getSize()).x,
         coeffy = 1080 / Vector2f(window.getSize()).y;
   return command_ != nullptr && event.type == Event::MouseButtonPressed &&
-         Inside(Vector2f(coord.x * coeffx, coord.y * coeffy)) &&
+         Inside(Vector2f(coord.x * coeffx, (coord.y - 37) * coeffy)) &&
          Mouse::isButtonPressed(button_);
 }
 

@@ -6,7 +6,7 @@ int main() {
   const size_t kSize = 10;
   const size_t kShips = 1;
 
-  sf::RenderWindow wnd;
+  /*sf::RenderWindow wnd;
   wnd.create(VideoMode(1920, VideoMode::getDesktopMode().height), "sds");
 
   sf::View view;
@@ -27,7 +27,9 @@ int main() {
         std::cout << (Mouse::getPosition().y - wnd.getPosition().y) * 1080 /
                          wnd.getSize().y
                   << ' ' << Mouse::getPosition().y << ' ' << wnd.getPosition().y
-                  << ' ' << wnd.mapPixelToCoords(Mouse::getPosition()).y
+                  << ' '
+                  << wnd.mapPixelToCoords(Mouse::getPosition()).y *
+                         wnd.getSize().y / 1080
                   << '\n';
 
         if (event.type == Event::Resized) {
@@ -38,7 +40,7 @@ int main() {
     wnd.clear();
     wnd.draw(str);
     wnd.display();
-  }
+  }*/
 
   GameLoop game(Vector2f(kSize, kSize), kShips);
   game.Go();
