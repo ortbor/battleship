@@ -28,14 +28,20 @@ RivalField* Player::GetRField() { return &rival_field_; }
 void Player::DecrementShipCount() { --ship_count_; }
 
 void Player::AddShip() {
-  ships_[ship_in_process_.GetSize()].push_back(ship_in_process_);
+  std::cout << ships_.size() << " bro here\n";
+  std::cout.flush();
+  Ship temp_ship = ship_in_process_;
+  ships_[ship_in_process_.GetSize()].emplace_back();
+  *ships_[ship_in_process_.GetSize()].rbegin() = temp_ship;
+  std::cout << ship_in_process_.GetSize() << " bro where\n";
+  std::cout.flush();
   ++ship_count_;
   my_field_.SetShip(&*ships_[ship_in_process_.GetSize()].rbegin());
   ship_in_process_.Clear();
 }
 
 void Player::Shoot(Cell* cell, ShotResult& shot_result) {
-  RivalField::UpdateShot(cell, shot_result);
+  rival_field_.UpdateShot(cell, shot_result);
   if (shot_result == ShotResult::Kill) {
     rival_->DecrementShipCount();
   }
