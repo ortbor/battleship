@@ -14,10 +14,12 @@ Command::Command(const Event::EventType& type) : type_(type) {}
 
 const Event::EventType& Command::GetType() { return type_; }
 
-SetButtonsCommand::SetButtonsCommand(map<string, Button*>* buttons)
-    : buttons_(buttons) {}
+SetButtonsCommand::SetButtonsCommand(const string& str) : str_(str) {}
 
-bool SetButtonsCommand::Execute() { loop_->window_.SetButtons(buttons_);
+bool SetButtonsCommand::Execute() {
+  std::cout << str_ << "ds";
+  std::cout.flush();
+  loop_->GetWindow()->SetButtons(str_);
   return true;
 }
 
@@ -40,23 +42,20 @@ AddCellCommand::AddCellCommand(Player* player, Cell* cell)
 
 bool AddCellCommand::Execute() {
   bool valid = IsValid();
+  string scene = "select_" + std::to_string(player_->GetIndex());
   if (valid) {
     if (cell_->GetState() == State::Clear) {
       player_->ship_in_process_.AddCell(cell_);
     } else {
       player_->ship_in_process_.EraseCell(cell_);
     }
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]
-        ->SetShow(false);
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]
-        ->SetShow(false);
+    loop_->GetWindow()->SetShow(scene, "errcell", false);
+    loop_->GetWindow()->SetShow(scene, "errship", false);
   } else {
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]
-        ->SetShow(false);
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]
-        ->SetShow(true);
+    loop_->GetWindow()->SetShow(scene, "ok", false);
+    loop_->GetWindow()->SetShow(scene, "errcell", true);
   }
-  loop_->window_.DrawObjects();
+  loop_->GetWindow()->DrawObjects();
   return valid;
 }
 
@@ -69,30 +68,26 @@ AddShipCommand::AddShipCommand(Player* player) : player_(player) {}
 
 bool AddShipCommand::Execute() {
   bool valid = IsValid();
+  string scene = "select_" + std::to_string(player_->GetIndex());
   if (valid) {
     player_->AddShip();
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errcell"]
-        ->SetShow(false);
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]
-        ->SetShow(false);
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]
-        ->SetShow(true);
+    loop_->GetWindow()->SetShow(scene, "errcell", false);
+    loop_->GetWindow()->SetShow(scene, "errship", false);
+    loop_->GetWindow()->SetShow(scene, "ok", true);
     if (player_->GetShipCount() == loop_->kShips) {
       if (player_->GetIndex() == 0) {
-        loop_->window_.SetButtons(&loop_->buttons_["select_1"]);
+        loop_->GetWindow()->SetButtons("select_1");
       } else {
-        loop_->window_.SetButtons(&loop_->buttons_["starts"]);
+        loop_->GetWindow()->SetButtons("starts");
         sf::sleep(sf::milliseconds(1000));
-        loop_->window_.SetButtons(&loop_->buttons_["play_0"]);
+        loop_->GetWindow()->SetButtons("play_0");
       }
     }
   } else {
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]
-        ->SetShow(false);
-    loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["errship"]
-        ->SetShow(true);
+    loop_->GetWindow()->SetShow(scene, "ok", false);
+    loop_->GetWindow()->SetShow(scene, "errship", true);
   }
-  loop_->window_.DrawObjects();
+  loop_->GetWindow()->DrawObjects();
   return valid;
 }
 
@@ -120,11 +115,11 @@ bool ShootCommand::Execute() {
       std::cout.flush();
     }
     if (player_->GetLastShotResult() == ShotResult::Miss) {
-      loop_->window_.SetButtons(
-          &loop_->buttons_["play_" + std::to_string(1 - player_->GetIndex())]);
+      loop_->GetWindow()->SetButtons("play_" +
+                                     std::to_string(1 - player_->GetIndex()));
     }
   }
-  loop_->window_.DrawObjects();
+  loop_->GetWindow()->DrawObjects();
   return valid;
 }
 

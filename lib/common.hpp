@@ -13,12 +13,16 @@
 
 using sf::Color;
 using sf::Event;
+using sf::Font;
 using sf::Keyboard;
 using sf::Mouse;
 using sf::RectangleShape;
 using sf::Text;
+using sf::Texture;
 using sf::Vector2f;
 using sf::Vector2u;
+using sf::VideoMode;
+using sf::View;
 
 using std::array;
 using std::map;
