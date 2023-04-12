@@ -5,13 +5,13 @@
 #include "../lib/player.hpp"
 #include "command.cpp"
 
-GameWindow::GameWindow(const sf::String& title, array<Player, 2>& players,
+GameWindow::GameWindow(array<Player, 2>& players,
                        const Vector2f& size, Vector2f sides) {
   if (sides.x < 0) {
     sides.x = screen_.x;
     sides.y = screen_.y;
   }
-  create(VideoMode(sides.x, sides.y), title);
+  create(VideoMode(sides.x, sides.y), kName, sf::Style::Fullscreen);
   view_.setSize(sides);
   view_.setCenter(Vector2f(view_.getSize().x / 2, view_.getSize().y / 2));
   setView(view_);
@@ -67,8 +67,22 @@ void GameWindow::DrawObjects() {
   display();
 }
 
-Text* GameWindow::GetText(const string& str, size_t size,
-                          const Color& color, const Vector2f& pos, int style) {
+std::filesystem::path GameWindow::Path() {
+  std::string path_str(PATH_MAX + 1, 0);
+#if defined(__unix)
+  if (readlink("/proc/self/exe", path_str.data(), PATH_MAX) == -1) {
+    throw std::runtime_error("Cannot specify program path!");
+  }
+#elif defined(_WIN32)
+  GetModuleFileName(NULL, path_str.data(), PATH_MAX);
+#else
+  throw std::runtime_error("Unsupported OS");
+#endif
+  return std::filesystem::path(path_str).parent_path().parent_path();
+}
+
+Text* GameWindow::GetText(const string& str, size_t size, const Color& color,
+                          const Vector2f& pos, int style) {
   Text* title = new Text(str, font_, size);
   title->setFillColor(color);
   title->setPosition(pos);

@@ -7,7 +7,7 @@ GameLoop::GameLoop(const Vector2f& size, size_t ships)
     : kShips(ships),
       size_(size),
       players_(array<Player, 2>{Player(0, size), Player(1, size)}),
-      window_(kName, players_, size_) {
+      window_(players_, size_) {
   players_[0].LinkWithRival(&players_[1]);
 }
 

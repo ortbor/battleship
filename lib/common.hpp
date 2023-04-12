@@ -23,8 +23,6 @@ using sf::Vector2f;
 using sf::Vector2u;
 using sf::VideoMode;
 using sf::View;
-
-
 using std::array;
 using std::map;
 using std::pair;
@@ -39,13 +37,18 @@ class MyField;
 class RivalField;
 class Player;
 class Command;
-class EmergencyCommand;
-class AddCellToShipCommand;
+class SetButtonsCommand;
+template <typename Type>
+class ExecCommand;
+class CellCommand;
+class AddCellCommand;
 class AddShipCommand;
 class ShootCommand;
 class GameLoop;
 class GameWindow;
 class Button;
+class MouseButton;
+class KeyboardButton;
 
 enum class ShotResult { Kill, Harm, Miss, Unknown };
 enum class State {
@@ -58,7 +61,3 @@ enum class State {
   Killed,
   Chosen
 };
-
-static const std::string kName = "BATTLESH!P!!";
-static const std::string kRes = "/share/battlesh1p/";
-std::filesystem::path Path();

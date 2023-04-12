@@ -31,12 +31,11 @@ MouseButton::MouseButton(const Mouse::Button& button, Command* command,
 
 bool MouseButton::IsPressed(const Event& event,
                             const sf::RenderWindow& window) const {
-  auto coord = Mouse::getPosition() - window.getPosition();
+  /*auto coord = Mouse::getPosition() - window.getPosition();
   float coeffx = 1920 / Vector2f(window.getSize()).x,
-        coeffy = 1080 / Vector2f(window.getSize()).y;
+        coeffy = 1080 / Vector2f(window.getSize()).y;*/
   return command_ != nullptr && event.type == Event::MouseButtonPressed &&
-         Inside(Vector2f(coord.x * coeffx, (coord.y - 37) * coeffy)) &&
-         Mouse::isButtonPressed(button_);
+         Inside(Vector2f(Mouse::getPosition())) && Mouse::isButtonPressed(button_);
 }
 
 bool MouseButton::Inside(const Vector2f& mouse) const {

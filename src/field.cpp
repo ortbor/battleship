@@ -76,8 +76,7 @@ void RivalField::UpdateShot(Cell* cell, ShotResult& shot_result) {
   if (twin->GetState() == State::Alive) {
     cell->SetState(State::Harmed);
     twin->SetState(State::Harmed);
-
-    twin->GetShip()->DecrementHealth();/*
+    twin->GetShip()->DecrementHealth();
     if (!twin->GetShip()->IsAlive()) {
       std::cout << "Kill.\n";
       shot_result = ShotResult::Kill;
@@ -89,7 +88,7 @@ void RivalField::UpdateShot(Cell* cell, ShotResult& shot_result) {
     } else {
       std::cout << "Harm.\n";
       shot_result = ShotResult::Harm;
-    }*/
+    }
   } else if (twin->GetState() == State::Clear) {
     cell->SetState(State::Missed);
     twin->SetState(State::Missed);
