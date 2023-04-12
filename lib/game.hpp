@@ -29,7 +29,7 @@ class GameLoop {
 
   Text* GetText(const std::string& str, size_t size, const Color& color,
                 const Vector2f& pos, int style = Text::Regular);
-  RectangleShape* GetShape(const Vector2f& size, const Color& color,
+  static RectangleShape* GetShape(const Vector2f& size, const Color& color,
                            const Vector2f& pos);
   void Clear();
   void SetButtons();
