@@ -14,7 +14,7 @@ Command::Command(const Event::EventType& type) : type_(type) {}
 
 const Event::EventType& Command::GetType() { return type_; }
 
-SetButtonsCommand::SetButtonsCommand(unordered_map<string, Button*>* buttons)
+SetButtonsCommand::SetButtonsCommand(map<string, Button*>* buttons)
     : buttons_(buttons) {}
 
 bool SetButtonsCommand::Execute() { loop_->window_.SetButtons(buttons_);

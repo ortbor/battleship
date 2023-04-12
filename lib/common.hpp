@@ -6,6 +6,7 @@
 #include <array>
 #include <filesystem>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <unordered_map>
 #include <vector>
@@ -20,10 +21,11 @@ using sf::Vector2f;
 using sf::Vector2u;
 
 using std::array;
+using std::map;
 using std::pair;
+using std::string;
 using std::unordered_map;
 using std::vector;
-using std::string;
 
 class Cell;
 class Ship;

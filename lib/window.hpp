@@ -9,12 +9,12 @@ class GameWindow : public sf::RenderWindow {
   void Refresh();
   Command* GetCommand();
   void SetPlayer(Player* playern);
-  void SetButtons(unordered_map<string, Button*>* buttons);
+  void SetButtons(map<string, Button*>* buttons);
   void DrawObjects();
 
  protected:
   Vector2f screen_;
   sf::View view_;
   Event event_;
-  unordered_map<string, Button*>* buttons_;
+  map<string, Button*>* buttons_;
 };

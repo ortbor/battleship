@@ -34,7 +34,7 @@ Command* GameWindow::GetCommand() {
   }
 }
 
-void GameWindow::SetButtons(unordered_map<string, Button*>* other) {
+void GameWindow::SetButtons(map<string, Button*>* other) {
   buttons_ = other;
   DrawObjects();
 }
