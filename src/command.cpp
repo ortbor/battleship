@@ -68,11 +68,7 @@ bool AddShipCommand::Execute() {
   bool valid = IsValid();
   string scene = "select_" + std::to_string(player_->GetIndex());
   if (valid) {
-    std::cout << "tobeadded\n";
-    std::cout.flush();
     player_->AddShip();
-    std::cout << "added\n";
-    std::cout.flush();
     loop_->GetWindow()->SetShow(scene, "errcell", false);
     loop_->GetWindow()->SetShow(scene, "errship", false);
     loop_->GetWindow()->SetShow(scene, "ok", true);
