@@ -39,28 +39,28 @@ void MyField::SetShip(Ship* ship) {
     size_t current_w = cell->GetCoord().x;
     size_t current_l = cell->GetCoord().y;
     if (current_w != 0) {
-      cells_[current_w - 1][current_l].SetState(State::Prohibited);
+      cells_[current_w - 1][current_l].TryToProhibit();
       if (current_l != 0) {
-        cells_[current_w - 1][current_l - 1].SetState(State::Prohibited);
+        cells_[current_w - 1][current_l - 1].TryToProhibit();
       }
       if (current_l != size_.y - 1) {
-        cells_[current_w - 1][current_l + 1].SetState(State::Prohibited);
+        cells_[current_w - 1][current_l + 1].TryToProhibit();
       }
     }
     if (current_w != size_.x - 1) {
-      cells_[current_w + 1][current_l].SetState(State::Prohibited);
+      cells_[current_w + 1][current_l].TryToProhibit();
       if (current_l != 0) {
-        cells_[current_w + 1][current_l - 1].SetState(State::Prohibited);
+        cells_[current_w + 1][current_l - 1].TryToProhibit();
       }
       if (current_l != size_.y - 1) {
-        cells_[current_w + 1][current_l + 1].SetState(State::Prohibited);
+        cells_[current_w + 1][current_l + 1].TryToProhibit();
       }
     }
     if (current_l != 0) {
-      cells_[current_w][current_l - 1].SetState(State::Prohibited);
+      cells_[current_w][current_l - 1].TryToProhibit();
     }
     if (current_l != size_.y - 1) {
-      cells_[current_w][current_l + 1].SetState(State::Prohibited);
+      cells_[current_w][current_l + 1].TryToProhibit();
     }
   }
 }
@@ -73,6 +73,7 @@ void RivalField::UpdateShot(Cell* cell, ShotResult& shot_result) {
     cell->SetState(State::Harmed);
     twin->SetState(State::Harmed);
     twin->GetShip()->DecrementHealth();
+    std::cout << twin->GetShip()->health_ << "\n";
     if (!twin->GetShip()->IsAlive()) {
       std::cout << "Kill.\n";
       shot_result = ShotResult::Kill;

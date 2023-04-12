@@ -24,6 +24,12 @@ void Cell::SetState(State state) {
   }
 }
 
+void Cell::TryToProhibit() {
+  if (GetState() != State::Alive) {
+    SetState(State::Prohibited);
+  }
+};
+
 void Cell::SetShip(Ship* ship) { ship_ = ship; }
 
 void Cell::SetTwins(Cell* other_cell) {
@@ -46,6 +52,18 @@ void Cell::UpdateColor() {
       break;
     case State::Prohibited:
       shape_->setFillColor(Color(255, 0, 0));
+      break;
+    case State::Harmed:
+      shape_->setFillColor(Color(100, 100, 0));
+      break;
+    case State::Missed:
+      shape_->setFillColor(Color(0, 0, 255));
+      break;
+    case State::Killed:
+      shape_->setFillColor(Color(0, 0, 0));
+      break;
+    case State::Unknown:
+      shape_->setFillColor(Color(255, 255, 255));
       break;
     default:
       throw std::runtime_error("Unknown state!");

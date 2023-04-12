@@ -81,7 +81,7 @@ void GameLoop::SetButtons() {
             GetShape(Vector2f(65, 65), Color(255, 120, 255), pos_my));
 
         cell_rv->SetShape(
-            GetShape(Vector2f(65, 65), Color(255, 120, 255), pos_rv));
+            GetShape(Vector2f(65, 65), Color(255, 255, 255), pos_rv));
 
         buttons_["select_" + std::to_string(pl)]["cell" + ind] =
             new MouseButton(Mouse::Button::Left,
