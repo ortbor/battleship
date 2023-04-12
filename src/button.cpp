@@ -5,6 +5,13 @@
 Button::Button(Command* commandn, const vector<sf::Drawable*>& drawn, bool show)
     : command_(commandn), draw_(drawn), show_(show) {}
 
+Button::~Button() {
+  delete command_;
+  for (const auto& item : draw_) {
+    delete item;
+  }
+}
+
 bool Button::IsPressed(const Event& event) const {
   return command_ != nullptr && event.type == command_->GetType();
 }

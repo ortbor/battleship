@@ -9,6 +9,7 @@ class GameLoop {
   friend class AddCellCommand;
   friend class AddShipCommand;
   friend class ShootCommand;
+  friend class SetButtonsCommand;
 
  public:
   GameLoop(const Vector2f& size, size_t ships);
@@ -17,7 +18,6 @@ class GameLoop {
 
  protected:
   bool back_ = false;
-  //const size_t ships_;
   const Vector2f size_;
   array<Player, 2> players_;
   vector<Command*> turns_;
@@ -33,7 +33,4 @@ class GameLoop {
                            const Vector2f& pos);
   void Clear();
   void SetButtons();
-  //void Play();
-  //void Settings();
-  //void StartMenu();
 };
