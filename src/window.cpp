@@ -11,9 +11,9 @@ GameWindow::GameWindow(const sf::String& title, array<Player, 2>& players,
     sides.x = screen_.x;
     sides.y = screen_.y;
   }
-  // view_.setSize(sides);
+  view_.setSize(sides);
   create(VideoMode(sides.x, sides.y), title, sf::Style::Fullscreen);
-  // setView(view_);
+  setView(view_);
 
   if (!font_.loadFromFile(Path().string() + kRes + "symbola.ttf")) {
     throw std::runtime_error("Cannot load font");
@@ -35,17 +35,16 @@ GameWindow::~GameWindow() {
 }
 
 void GameWindow::Refresh() {
-  // view_.setCenter(Vector2f(view_.getSize().x / 2, view_.getSize().y / 2));
-  // view_.setViewport(sf::FloatRect(0, 0, screen_.x / Vector2f(getSize()).x,
-  //                                 screen_.x / Vector2f(getSize()).y));
-  // setView(view_);
+  view_.setCenter(Vector2f(view_.getSize().x / 2, view_.getSize().y / 2));
+  setView(view_);
+  DrawObjects();
 }
 
 Command* GameWindow::GetCommand() {
   while (true) {
     waitEvent(event_);
     for (auto& button : buttons_[button_str_]) {
-      if (button.second->IsPressed(event_)) {
+      if (button.second->IsPressed(event_, *this)) {
         return button.second->GetCommand();
       }
     }
@@ -54,7 +53,6 @@ Command* GameWindow::GetCommand() {
 
 void GameWindow::SetButtons(const string& str) {
   button_str_ = str;
-
   DrawObjects();
 }
 

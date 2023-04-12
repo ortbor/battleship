@@ -8,7 +8,8 @@ class Button {
          bool show = true);
   virtual ~Button();
 
-  virtual bool IsPressed(const Event& event) const;
+  virtual bool IsPressed(const Event& event,
+                         const sf::RenderWindow& window) const;
   bool GetShow() const;
   void SetShow(bool show);
   Command* GetCommand() const;
@@ -25,7 +26,8 @@ class MouseButton final : public Button {
   MouseButton(const Mouse::Button& button, Command* command,
               const vector<sf::Drawable*>& drawn);
 
-  bool IsPressed(const Event& event) const final;
+  bool IsPressed(const Event& event,
+                 const sf::RenderWindow& window) const final;
 
  protected:
   Mouse::Button button_;
@@ -38,7 +40,8 @@ class KeyboardButton final : public Button {
   KeyboardButton(const Keyboard::Key& button, Command* command,
                  const vector<sf::Drawable*>& drawn);
 
-  bool IsPressed(const Event& event) const final;
+  bool IsPressed(const Event& event,
+                 const sf::RenderWindow& window) const final;
 
  protected:
   Keyboard::Key button_;
