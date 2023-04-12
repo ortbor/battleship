@@ -6,8 +6,7 @@
 #include "../lib/window.hpp"
 
 GameLoop::GameLoop(const Vector2f& size, size_t ships)
-    : ships_(ships),
-      size_(size),
+    : size_(size),
       players_(std::array<Player, 2>{Player(0, size), Player(1, size)}),
       window_(kName) {
   if (!font_.loadFromFile(Path().string() + kRes + "symbola.ttf")) {
@@ -16,15 +15,13 @@ GameLoop::GameLoop(const Vector2f& size, size_t ships)
   if (!background_.loadFromFile(Path().string() + kRes + "background.jpg")) {
     throw std::runtime_error("Cannot load background");
   }
-
-  Link();
+  players_[0].LinkWithRival(&players_[1]);
   SetButtons();
 }
 
 GameLoop::~GameLoop() { Clear(); }
 
-void GameLoop::Link() { players_[0].LinkWithRival(&players_[1]); }
-
+/*
 void GameLoop::StartMenu() {
   while (window_.isOpen() && !back_) {
     window_.SetButtons(buttons_[0]);
@@ -110,8 +107,10 @@ void GameLoop::Settings() {
   }
   back_ = false;
 }
-
+*/
 void GameLoop::Go() {
+  Command::loop_ = this;
+  window_.SetButtons(buttons_["menu"]);
   while (window_.isOpen()) {
     window_.GetCommand()->Execute();
   }

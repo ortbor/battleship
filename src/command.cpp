@@ -4,6 +4,9 @@
 #include "../lib/cell.hpp"
 #include "../lib/player.hpp"
 #include "../lib/window.hpp"
+#include "../lib/game.hpp"
+
+GameLoop* Command::loop_ = nullptr;
 
 Command::Command() : type_(Event::Count) {}
 
@@ -75,11 +78,11 @@ bool AddShipCommand::Execute() {
     loop_->buttons_["select_" + std::to_string(player_->GetIndex())]["ok"]->SetShow(true);
     if (player_->GetShipCount() == 10) {
       if (player_->GetIndex() == 0) {
-        window_->SetButtons(loop_->buttons_["select_2"]);
+        loop_->window_.SetButtons(loop_->buttons_["select_2"]);
       } else {
-        window_->SetButtons(loop_->buttons_["starts"]);
+        loop_->window_.SetButtons(loop_->buttons_["starts"]);
         sf::sleep(sf::milliseconds(1000));
-        window_->SetButtons(loop_->buttons_["play_1"]);
+        loop_->window_.SetButtons(loop_->buttons_["play_1"]);
       }
     }
   } else {

@@ -12,14 +12,15 @@ class Command {
 
   virtual bool Execute() = 0;
   const Event::EventType& GetType();
+  static GameLoop* loop_;
 
  protected:
   Event::EventType type_;
-  static GameLoop* loop_;
-  static GameWindow* window_;
 
   virtual bool IsValid() const = 0;
 };
+
+
 
 template <typename Type>
 class ExecCommand final : public Command {
