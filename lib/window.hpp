@@ -4,7 +4,7 @@
 
 class GameWindow : public sf::RenderWindow {
  public:
-  GameWindow(const sf::String& title, array<Player, 2>& players,
+  GameWindow(array<Player, 2>& players,
              const Vector2f& size, Vector2f sides = {-1, -1});
   ~GameWindow();
 
@@ -15,6 +15,9 @@ class GameWindow : public sf::RenderWindow {
   void Configure(array<Player, 2>& players, const Vector2f& size);
 
  protected:
+  const std::string kName = "BATTLESH!P!!";
+  const std::string kRes = "/share/battlesh1p/";
+
   Vector2f screen_ = Vector2f(VideoMode::getDesktopMode().width,
                               VideoMode::getDesktopMode().height);
   View view_;
@@ -25,6 +28,7 @@ class GameWindow : public sf::RenderWindow {
   string button_str_ = "menu";
   unordered_map<string, map<string, Button*>> buttons_;
 
+  static std::filesystem::path Path();
   Text* GetText(const std::string& str, size_t size, const Color& color,
                 const Vector2f& pos, int style = Text::Regular);
   static RectangleShape* GetShape(const Vector2f& size, const Color& color,

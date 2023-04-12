@@ -4,7 +4,7 @@
 
 int main() {
   const size_t kSize = 10;
-  const size_t kShips = 1;
+  const size_t kShips = 2;
 
   /*sf::RenderWindow wnd;
   wnd.create(VideoMode(1920, VideoMode::getDesktopMode().height), "sds");
