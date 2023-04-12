@@ -68,20 +68,20 @@ bool AddShipCommand::Execute() {
   bool valid = IsValid();
   string scene = "select_" + std::to_string(player_->GetIndex());
   if (valid) {
-    std::cout << "tobeadded\n";
-    std::cout.flush();
     player_->AddShip();
-    std::cout << "added\n";
-    std::cout.flush();
     loop_->GetWindow()->SetShow(scene, "errcell", false);
     loop_->GetWindow()->SetShow(scene, "errship", false);
     loop_->GetWindow()->SetShow(scene, "ok", true);
+    loop_->GetWindow()->DrawObjects();
     if (player_->GetShipCount() == loop_->kShips) {
       if (player_->GetIndex() == 0) {
+        sf::sleep(sf::milliseconds(500));
+        loop_->GetWindow()->SetButtons("shift_select");
+        sf::sleep(sf::milliseconds(2000));
         loop_->GetWindow()->SetButtons("select_1");
       } else {
         loop_->GetWindow()->SetButtons("starts");
-        sf::sleep(sf::milliseconds(40));
+        sf::sleep(sf::milliseconds(2000));
         loop_->GetWindow()->SetButtons("play_0");
       }
     }
@@ -113,9 +113,8 @@ bool ShootCommand::Execute() {
     ShotResult shot_result;
     player_->Shoot(cell_, shot_result);
     if (player_->GetRival()->GetShipCount() == 0) {
-      std::cout << "Player " << player_->GetIndex() << " won.\n";
-      std::cout.flush();
-      loop_->GetWindow()->SetButtons("menu");
+      loop_->GetWindow()->SetButtons("won_" +
+                                     std::to_string(player_->GetIndex()));
     }
     if (player_->GetLastShotResult() == ShotResult::Miss) {
       loop_->GetWindow()->SetButtons("play_" +

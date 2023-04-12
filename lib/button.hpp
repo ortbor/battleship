@@ -6,7 +6,7 @@ class Button {
  public:
   Button(Command* commandn, const deque<sf::Drawable*>& drawn = {},
          bool show = true);
-  virtual ~Button();
+  virtual ~Button() = default;
 
   virtual bool IsPressed(const Event& event,
                          const sf::RenderWindow& window) const;
