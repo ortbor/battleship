@@ -52,3 +52,12 @@ void Player::LinkWithRival(Player* rival) {
 }
 
 Player* Player::GetRival() { return rival_; }
+
+void Player::Clear() {
+  my_field_.Clear();
+  rival_field_.Clear();
+  for (int i = 0; i < 5; ++i) {
+    ships_[i].clear();
+  }
+  ship_in_process_.Clear();
+}

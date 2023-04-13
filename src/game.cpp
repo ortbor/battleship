@@ -21,5 +21,7 @@ void GameLoop::Go() {
 GameWindow* GameLoop::GetWindow() { return &window_; }
 
 void GameLoop::Clear() {
-  players_ = array<Player, 2>{Player(0, size_), Player(1, size_)};
+  for (int pl = 0; pl < 2; ++pl) {
+    players_[pl].Clear();
+  }
 }

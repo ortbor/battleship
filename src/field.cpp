@@ -95,3 +95,21 @@ void RivalField::UpdateShot(Cell* cell, ShotResult& shot_result) {
     shot_result = ShotResult::Miss;
   }
 }
+
+void MyField::Clear() {
+  for (int i = 0; i < size_.x; ++i) {
+    for (int j = 0; j < size_.y; ++j) {
+      cells_[i][j].SetState(State::Clear);
+      cells_[i][j].SetShip(nullptr);
+    }
+  }
+}
+
+void RivalField::Clear() {
+  for (int i = 0; i < size_.x; ++i) {
+    for (int j = 0; j < size_.y; ++j) {
+      cells_[i][j].SetState(State::Unknown);
+      cells_[i][j].SetShip(nullptr);
+    }
+  }
+}

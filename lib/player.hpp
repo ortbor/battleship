@@ -25,6 +25,7 @@ class Player {
   size_t GetNumberOfShipsSized(size_t size) const;
   void LinkWithRival(Player* rival);
   Player* GetRival();
+  void Clear();
 
  protected:
   size_t index_;
