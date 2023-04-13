@@ -17,6 +17,9 @@ const Event::EventType& Command::GetType() { return type_; }
 SetButtonsCommand::SetButtonsCommand(const string& str) : str_(str) {}
 
 bool SetButtonsCommand::Execute() {
+  if(str_ == "menu") {
+    loop_->Clear();
+  }
   loop_->GetWindow()->SetButtons(str_);
   return true;
 }

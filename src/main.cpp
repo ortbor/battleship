@@ -1,10 +1,10 @@
 #include <iostream>
 
-#include "lib/game.hpp"
+#include "../lib/game.hpp"
 
 int main() {
   const size_t kSize = 10;
-  const size_t kShips = 1;
+  const size_t kShips = 10;
 
   /*sf::RenderWindow wnd;
   wnd.create(VideoMode(1920, VideoMode::getDesktopMode().height), "sds");
@@ -19,7 +19,6 @@ int main() {
     throw std::runtime_error("Cannot load background");
   }
   sf::Sprite str(background);
-
   Event event;
   while (wnd.isOpen()) {
     while (wnd.pollEvent(event)) {
