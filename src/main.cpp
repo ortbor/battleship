@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "lib/game.hpp"
+#include "../lib/game.hpp"
 
 int main() {
   const size_t kSize = 10;
@@ -19,7 +19,6 @@ int main() {
     throw std::runtime_error("Cannot load background");
   }
   sf::Sprite str(background);
-
   Event event;
   while (wnd.isOpen()) {
     while (wnd.pollEvent(event)) {
