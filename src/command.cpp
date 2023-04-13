@@ -2,8 +2,11 @@
 
 #include "../lib/button.hpp"
 #include "../lib/cell.hpp"
+#include "../lib/game.hpp"
 #include "../lib/player.hpp"
 #include "../lib/window.hpp"
+
+GameLoop* Command::loop_ = nullptr;
 
 Command::Command() : type_(Event::Count) {}
 
@@ -11,8 +14,15 @@ Command::Command(const Event::EventType& type) : type_(type) {}
 
 const Event::EventType& Command::GetType() { return type_; }
 
-template <typename Type>
-ExecCommand<Type>::ExecCommand() : Command(), obj_(nullptr), func_(Empty) {}
+SetButtonsCommand::SetButtonsCommand(const string& str) : str_(str) {}
+
+bool SetButtonsCommand::Execute() {
+  if(str_ == "menu") {
+    loop_->Clear();
+  }
+  loop_->GetWindow()->SetButtons(str_);
+  return true;
+}
 
 template <typename Type>
 ExecCommand<Type>::ExecCommand(Type* obj, const Event::EventType& type,
@@ -21,36 +31,32 @@ ExecCommand<Type>::ExecCommand(Type* obj, const Event::EventType& type,
 
 template <typename Type>
 bool ExecCommand<Type>::Execute() {
-  bool valid = IsValid();
-  if (valid) {
-    (*func_)(obj_);
-  }
-  return valid;
+  (*func_)(obj_);
+  return true;
 }
-
-template <typename Type>
-bool ExecCommand<Type>::IsValid() const {
-  return *func_ != nullptr;
-}
-
-template <typename Type>
-void ExecCommand<Type>::Empty(Type* val) {}
 
 CellCommand::CellCommand(Player* player, Cell* cell)
-    : Command(), player_(player), cell_(cell) {}
+    : player_(player), cell_(cell) {}
 
 AddCellCommand::AddCellCommand(Player* player, Cell* cell)
     : CellCommand(player, cell) {}
 
 bool AddCellCommand::Execute() {
   bool valid = IsValid();
+  string scene = "select_" + std::to_string(player_->GetIndex());
   if (valid) {
     if (cell_->GetState() == State::Clear) {
       player_->ship_in_process_.AddCell(cell_);
     } else {
       player_->ship_in_process_.EraseCell(cell_);
     }
+    loop_->GetWindow()->SetShow(scene, "errcell", false);
+    loop_->GetWindow()->SetShow(scene, "errship", false);
+  } else {
+    loop_->GetWindow()->SetShow(scene, "ok", false);
+    loop_->GetWindow()->SetShow(scene, "errcell", true);
   }
+  loop_->GetWindow()->DrawObjects();
   return valid;
 }
 
@@ -63,9 +69,33 @@ AddShipCommand::AddShipCommand(Player* player) : player_(player) {}
 
 bool AddShipCommand::Execute() {
   bool valid = IsValid();
+  string scene = "select_" + std::to_string(player_->GetIndex());
   if (valid) {
     player_->AddShip();
+    loop_->GetWindow()->SetShow(scene, "errcell", false);
+    loop_->GetWindow()->SetShow(scene, "errship", false);
+    loop_->GetWindow()->SetShow(scene, "ok", true);
+    loop_->GetWindow()->DrawObjects();
+    sf::sleep(sf::milliseconds(500));
+    if (player_->GetShipCount() == loop_->kShips) {
+      if (player_->GetIndex() == 0) {
+        loop_->GetWindow()->SetButtons("shift_select");
+        sf::sleep(sf::milliseconds(2000));
+        loop_->GetWindow()->SetButtons("select_1");
+      } else {
+        loop_->GetWindow()->SetButtons("starts");
+        sf::sleep(sf::milliseconds(2000));
+        loop_->GetWindow()->SetButtons("turn_" +
+                                       std::to_string(0));
+        sf::sleep(sf::milliseconds(2000));
+        loop_->GetWindow()->SetButtons("play_0");
+      }
+    }
+  } else {
+    loop_->GetWindow()->SetShow(scene, "ok", false);
+    loop_->GetWindow()->SetShow(scene, "errship", true);
   }
+  loop_->GetWindow()->DrawObjects();
   return valid;
 }
 
@@ -77,11 +107,7 @@ bool AddShipCommand::IsValid() const {
       5 - player_->GetShipInProcess()->GetSize()) {
     return false;
   }
-
-  auto cells = player_->GetShipInProcess()->GetCells();
-  return std::all_of(cells.begin(), cells.end(), [](const Cell* cell) {
-    return cell->GetState() != State::Clear;
-  });
+  return true;
 }
 
 ShootCommand::ShootCommand(Player* player, Cell* cell)
@@ -92,16 +118,19 @@ bool ShootCommand::Execute() {
   if (valid) {
     ShotResult shot_result;
     player_->Shoot(cell_, shot_result);
-    if (shot_result == ShotResult::Miss) {
-      // cell_->Color(State::Clear);
-    } else if (shot_result == ShotResult::Harm) {
-      // cell_->Color(State::Harmed);
-    } else if (shot_result == ShotResult::Kill) {
-      // for (auto killed_cell : cell_->GetTwin()->GetShip()->GetCells()) {
-      //  killed_cell->Color(State::Killed);
-      //}
+    if (player_->GetRival()->GetShipCount() == 0) {
+      loop_->GetWindow()->SetButtons("won_" +
+                                     std::to_string(player_->GetIndex()));
+    }
+    if (player_->GetLastShotResult() == ShotResult::Miss) {
+      loop_->GetWindow()->SetButtons("turn_" +
+                                     std::to_string(1 - player_->GetIndex()));
+      sf::sleep(sf::milliseconds(2000));
+      loop_->GetWindow()->SetButtons("play_" +
+                                     std::to_string(1 - player_->GetIndex()));
     }
   }
+  loop_->GetWindow()->DrawObjects();
   return valid;
 }
 

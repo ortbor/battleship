@@ -12,17 +12,26 @@ class Command {
 
   virtual bool Execute() = 0;
   const Event::EventType& GetType();
+  static GameLoop* loop_;
 
  protected:
   Event::EventType type_;
+};
 
-  virtual bool IsValid() const = 0;
+class SetButtonsCommand final : public Command {
+ public:
+  SetButtonsCommand(const string& str);
+  ~SetButtonsCommand() final = default;
+
+  bool Execute() final;
+
+ private:
+  string str_;
 };
 
 template <typename Type>
 class ExecCommand final : public Command {
  public:
-  ExecCommand();
   ExecCommand(Type* obj, const Event::EventType& type_,
               void (*func)(Type* obj));
   ~ExecCommand() final = default;
@@ -32,20 +41,19 @@ class ExecCommand final : public Command {
  protected:
   Type* obj_;
   void (*func_)(Type* obj);
-
-  bool IsValid() const final;
-  static void Empty(Type* val);
 };
 
 class CellCommand : public Command {
  public:
   CellCommand(Player* player, Cell* cell);
   ~CellCommand() override = default;
-  virtual bool Execute() = 0;
+  virtual bool Execute() override = 0;
 
  protected:
   Player* player_;
   Cell* cell_;
+
+  virtual bool IsValid() const = 0;
 };
 
 class AddCellCommand final : public CellCommand {
@@ -73,11 +81,11 @@ class ShootCommand final : public CellCommand {
 class AddShipCommand : public Command {
  public:
   AddShipCommand(Player* player);
-  ~AddShipCommand() final = default;
+  ~AddShipCommand() = default;
   bool Execute() final;
 
  protected:
   Player* player_;
 
-  bool IsValid() const final;
+  bool IsValid() const;
 };

@@ -5,14 +5,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(SRC_PATH src/)
 set(SOURCES ${SRC_PATH}/button.cpp 
             ${SRC_PATH}/cell.cpp 
-            ${SRC_PATH}/common.cpp
             ${SRC_PATH}/field.cpp 
-            ${SRC_PATH}/object.cpp 
             ${SRC_PATH}/game.cpp 
             ${SRC_PATH}/player.cpp 
             ${SRC_PATH}/ship.cpp
             ${SRC_PATH}/window.cpp
-            main.cpp)
+            ${SRC_PATH}/main.cpp)
 
 set(CMAKE_INSTALL_PREFIX /usr/local)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")

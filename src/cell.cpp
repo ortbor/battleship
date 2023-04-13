@@ -2,10 +2,11 @@
 
 Cell::Cell(const Vector2f& coord)
     : coord_(coord),
-      state_(State::Unknown),
       ship_(nullptr),
       twin_cell_(nullptr),
-      shape_(nullptr) {}
+      shape_(nullptr) {
+  SetState(State::Unknown);
+}
 
 const Vector2f& Cell::GetCoord() const { return coord_; }
 
@@ -15,12 +16,20 @@ Ship* Cell::GetShip() const { return ship_; }
 
 Cell* Cell::GetTwin() const { return twin_cell_; }
 
+sf::RectangleShape* Cell::GetShape() const { return shape_; }
+
 void Cell::SetState(State state) {
   state_ = state;
   if (shape_ != nullptr) {
     UpdateColor();
   }
 }
+
+void Cell::SetStateExcept(State set_state, State except) {
+  if (GetState() != except) {
+    SetState(set_state);
+  }
+};
 
 void Cell::SetShip(Ship* ship) { ship_ = ship; }
 
@@ -32,18 +41,30 @@ void Cell::SetTwins(Cell* other_cell) {
 void Cell::SetShape(sf::RectangleShape* shape) { shape_ = shape; }
 
 void Cell::UpdateColor() {
-  auto col = shape_->getFillColor();
   switch (state_) {
     case State::Alive:
-      shape_->setFillColor(sf::Color(0, 135, 255));
+      shape_->setFillColor(Color(0, 135, 255));
       break;
     case State::Chosen:
-      shape_->setFillColor(sf::Color(255 - col.r, 255 - col.g, 255 - col.b));
+      shape_->setFillColor(Color(0, 255 - 120, 0));
       break;
     case State::Clear:
-      shape_->setFillColor(sf::Color(255, 120, 255));
+      shape_->setFillColor(Color(255, 120, 255));
       break;
     case State::Prohibited:
+      shape_->setFillColor(Color(255, 0, 0));
+      break;
+    case State::Harmed:
+      shape_->setFillColor(Color(100, 100, 0));
+      break;
+    case State::Missed:
+      shape_->setFillColor(Color(0, 0, 255));
+      break;
+    case State::Killed:
+      shape_->setFillColor(Color(0, 0, 0));
+      break;
+    case State::Unknown:
+      shape_->setFillColor(Color(255, 255, 255));
       break;
     default:
       throw std::runtime_error("Unknown state!");

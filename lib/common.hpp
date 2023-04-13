@@ -6,19 +6,29 @@
 #include <array>
 #include <filesystem>
 #include <iostream>
+#include <map>
 #include <memory>
-#include <vector>
+#include <unordered_map>
+#include <deque>
 
+using sf::Color;
 using sf::Event;
+using sf::Font;
 using sf::Keyboard;
 using sf::Mouse;
+using sf::RectangleShape;
+using sf::Text;
+using sf::Texture;
 using sf::Vector2f;
 using sf::Vector2u;
+using sf::VideoMode;
+using sf::View;
 using std::array;
+using std::map;
 using std::pair;
-
-using std::unique_ptr;
-using std::vector;
+using std::string;
+using std::unordered_map;
+using std::deque;
 
 class Cell;
 class Ship;
@@ -27,13 +37,18 @@ class MyField;
 class RivalField;
 class Player;
 class Command;
-class EmergencyCommand;
-class AddCellToShipCommand;
+class SetButtonsCommand;
+template <typename Type>
+class ExecCommand;
+class CellCommand;
+class AddCellCommand;
 class AddShipCommand;
 class ShootCommand;
 class GameLoop;
 class GameWindow;
 class Button;
+class MouseButton;
+class KeyboardButton;
 
 enum class ShotResult { Kill, Harm, Miss, Unknown };
 enum class State {
@@ -46,7 +61,3 @@ enum class State {
   Killed,
   Chosen
 };
-
-static const std::string kName = "BATTLESH!P!!";
-static const std::string kRes = "/share/battlesh1p/";
-std::filesystem::path Path();

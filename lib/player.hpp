@@ -14,14 +14,18 @@ class Player {
   size_t GetIndex() const;
   ShotResult GetLastShotResult() const;
   size_t GetShipCount() const;
-  Field* GetField();
-  Field* GetRField();
+  /*Field* GetField();
+  Field* GetRField();*/
+  MyField* GetField();
+  RivalField* GetRField();
   void DecrementShipCount();
   void AddShip();
   void Shoot(Cell* cell, ShotResult& shot_result);
   const Ship* GetShipInProcess() const;
   size_t GetNumberOfShipsSized(size_t size) const;
   void LinkWithRival(Player* rival);
+  Player* GetRival();
+  void Clear();
 
  protected:
   size_t index_;
@@ -29,7 +33,7 @@ class Player {
   size_t ship_count_;
   MyField my_field_;
   RivalField rival_field_;
-  vector<vector<Ship>> ships_;
+  deque<deque<Ship>> ships_;
   Ship ship_in_process_;
   Player* rival_;
 };
