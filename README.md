@@ -23,8 +23,8 @@ _Now you can start to build and install game_
 
 1. Clone the repo and go to project folder
   ```sh
-  git clone https://github.com/NTheme/File-Manager.git
-  cd File-Manager
+  git clone https://gitlab.akhcheck.ru/artiom.borisov/battleship.git
+  cd battleship
   ```
 
 2. Make a build directory and go inside
