@@ -96,6 +96,8 @@ bool AddShipCommand::Execute() {
         sf::sleep(sf::milliseconds(2000));
         loop_->GetWindow().SetButtons("select_1");
       } else {
+        loop_->GetWindow().main_theme_.stop();
+        loop_->GetWindow().game_theme_.play();
         loop_->GetWindow().SetButtons("starts");
         sf::sleep(sf::milliseconds(2000));
         loop_->GetWindow().SetButtons("turn_" + std::to_string(0));

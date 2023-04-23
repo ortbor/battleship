@@ -18,6 +18,8 @@ class GameWindow : public sf::RenderWindow {
   void SetVolume(Volume value);
   void Configure(array<Player, 2>& players, const Vector2f& size);
 
+  Music main_theme_;
+  Music game_theme_;
  protected:
   const std::string kName = "BATTLESH!P!!";
   const std::string kRes = "/share/battlesh1p/";
@@ -29,8 +31,6 @@ class GameWindow : public sf::RenderWindow {
 
   Font font_;
   Texture background_;
-  Music main_theme_;
-  Music game_theme_;
 
   string button_str_ = "menu";
   unordered_map<string, map<string, std::shared_ptr<Button>>> buttons_;
