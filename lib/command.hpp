@@ -98,5 +98,5 @@ class AddShipCommand : public Command {
   Player* player_;
 
   bool IsValid() const;
-  void Send();
+  static void Send();
 };

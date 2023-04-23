@@ -24,11 +24,11 @@ GameWindow::GameWindow(array<Player, 2>& players, const Vector2f& size,
   if (!background_.loadFromFile(kPath + kRes + "background.jpg")) {
     throw std::runtime_error("Cannot load background");
   }
-  if (!game_theme_.openFromFile(kPath + kRes + "ficha1.what")) {
+  if (!game_theme_.openFromFile(kPath + kRes + "ficha3.whaaaat")) {
     throw std::runtime_error("Cannot load ficha");
   }
   if (!main_theme_.openFromFile(kPath + kRes + "ficha2.what")) {
-    throw std::runtime_error("Cannot load ficha");
+    throw std::runtime_error("Cannot load fichaaaa");
   }
 
   main_theme_.setLoop(true);
@@ -91,6 +91,10 @@ void GameWindow::SetVolume(Volume value) {
     case Volume::Less:
       main_theme_.setVolume(std::max(0.F, main_theme_.getVolume() - 10));
       game_theme_.setVolume(std::max(0.F, main_theme_.getVolume() - 10));
+      if (main_theme_.getVolume() == 0) {
+        main_theme_.pause();
+        game_theme_.pause();
+      }
       break;
 
     case Volume::More:
@@ -136,15 +140,15 @@ std::filesystem::path GameWindow::Path() {
 }
 
 void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
+  buttons_["menu"]["play"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("play"),
+      RectObject({340, 150}, {0, 255, 95}, {790, 300}),
+      TextObject("Play", 140, Color::Red, {820, 270}, font_));
+
   buttons_["menu"]["settings"] = std::make_unique<MouseButton>(
       Mouse::Button::Left, std::make_unique<SetCommand>("settings"),
       RectObject({530, 150}, {0, 255, 95}, {700, 820}),
       TextObject("Settings", 140, Color::Red, {720, 790}, font_));
-
-  buttons_["menu"]["play"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("ip"),
-      RectObject({340, 150}, {0, 255, 95}, {790, 300}),
-      TextObject("Play", 140, Color::Red, {820, 270}, font_));
 
   buttons_["menu"]["return"] = std::make_unique<MouseButton>(
       Mouse::Button::Left,
@@ -152,11 +156,6 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
                                     [](GameWindow& window) { window.close(); }),
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("X", 60, Color::Red, {97, 75}, font_));
-
-  buttons_["ip"]["return"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
-      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-      TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
   buttons_["settings"]["return"] = std::make_unique<MouseButton>(
       Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
@@ -199,11 +198,38 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       RectObject({100, 100}, {0, 255, 95}, {1350, 530}),
       TextObject("<))", 60, Color::Red, {1355, 535}, font_));
 
-  buttons_["ip"]["number"] = std::make_unique<KeyboardButton>(
-      Keyboard::Key::Num0, std::make_unique<AddSymbolCommand>());
-/*
-  buttons_["ip"]["enter"] = new KeyboardButton(
-      Keyboard::Key::Enter, new SetButtonsCommand("select_0"), {});*/
+  buttons_["play"]["return"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
+      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+      TextObject("<-", 60, Color::Red, {85, 70}, font_));
+
+  buttons_["play"]["connect"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("ip"),
+      RectObject({665, 150}, {0, 255, 95}, {630, 300}),
+      TextObject("Throw a glove", 100, Color::Red, {640, 300}, font_));
+
+  buttons_["play"]["wait"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("connect"),
+      RectObject({1210, 150}, {0, 255, 95}, {360, 820}),
+      TextObject("Wait for a dick to your ass", 100, Color::Red, {370, 820},
+                 font_));
+
+  buttons_["ip"]["return"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("play"),
+      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+      TextObject("<-", 60, Color::Red, {85, 70}, font_));
+
+  buttons_["ip"]["number"] =
+      std::make_unique<KeyboardButton>(std::make_unique<AddSymbolCommand>());
+
+  buttons_["connect"]["return"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("play"),
+      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+      TextObject("<-", 60, Color::Red, {85, 70}, font_));
+
+  /*
+    buttons_["ip"]["enter"] = new KeyboardButton(
+        Keyboard::Key::Enter, new SetButtonsCommand("select_0"), {});*/
 
   for (auto& item : buttons_) {
     item.second["close"] =
@@ -221,123 +247,3 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
                    Text::Bold | Text::Underlined));
   }
 }
-
-// void GameWindow::Configure(array<Player, 2> & players, const Vector2f& size)
-// {
-/*
-  for (size_t pl = 0; pl < 2; ++pl) {
-    buttons_["select_" + std::to_string(pl)]["text"] = new Button(
-        nullptr, {GetText("Player " + std::to_string(pl + 1) +
-                              ", select\n    your ships!",
-                          80, Color::Blue, Vector2f(1110 - pl * 850,
-  300))});
-
-    buttons_["select_" + std::to_string(pl)]["ship"] = new MouseButton(
-        Mouse::Button::Left, new AddShipCommand(players.data() + pl),
-        {GetShape(Vector2f(335, 110), Color(0, 255, 95),
-                  Vector2f(1210 - pl * 850, 530)),
-         GetText("Add ship", 80, Color::Red, Vector2f(1220 - pl * 850,
-  530))});
-
-    buttons_["select_" + std::to_string(pl)]["return"] = new MouseButton(
-        Mouse::Button::Left, new SetButtonsCommand("menu"),
-        {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-         GetText("<-", 60, Color::Red, {85, 72})});
-
-    buttons_["select_" + std::to_string(pl)]["ok"] =
-        new Button(nullptr,
-                   {GetText("Success!", 80, Color::Green,
-                            Vector2f(1240 - pl * 850, 750), Text::Bold)},
-                   false);
-
-    buttons_["select_" + std::to_string(pl)]["errcell"] =
-        new Button(nullptr,
-                   {GetText("Cannot select\n    this cell!", 80, Color::Red,
-                            Vector2f(1120 - pl * 850, 750), Text::Bold)},
-                   false);
-
-    buttons_["select_" + std::to_string(pl)]["errship"] =
-        new Button(nullptr,
-                   {GetText("Wrong shaped ship!", 80, Color::Red,
-                            Vector2f(1030 - pl * 850, 750), Text::Bold)},
-                   false);
-
-    buttons_["play_" + std::to_string(pl)]["turn"] = new Button(
-        nullptr, {GetText("Player " + std::to_string(pl + 1) + " turn ",
-  100, Color::Red, {675, 930}, sf::Text::Bold)});
-
-    buttons_["play_" + std::to_string(pl)]["field_my"] = new Button(
-        nullptr,
-        {GetText("My field", 80, Color::Red, Vector2f(133 + pl * 1200,
-  950))});
-
-    buttons_["play_" + std::to_string(pl)]["field_rival"] =
-        new Button(nullptr, {GetText("Rival field", 80, Color::Red,
-                                     Vector2f(1410 - pl * 1200, 950))});
-
-    buttons_["play_" + std::to_string(pl)]["return"] = new MouseButton(
-        Mouse::Left, new SetButtonsCommand("menu"),
-        {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-         GetText("<-", 60, Color::Red, {85, 72})});
-
-    buttons_["turn_" + std::to_string(pl)]["text"] = new Button(
-        nullptr,
-        {GetText("Player " + std::to_string(pl + 1) + ", FIGHT!\n", 120,
-                 Color::Red, {530, 450}, Text::Bold | Text::Underlined)});
-
-    buttons_["won_" + std::to_string(pl)]["text"] = new Button(
-        nullptr, {GetText("Player " + std::to_string(pl + 1) + " won!\n",
-  120, Color::Red, {600, 350}, Text::Bold), GetText("        Do you feel
-  proud of yourself after\n" "you killed all innocent other player's
-  ships?..", 60, Color::Red, {360, 750}, Text::Bold)});
-
-    buttons_["won_" + std::to_string(pl)]["return"] = new MouseButton(
-        Mouse::Button::Left, new SetButtonsCommand("menu"),
-        {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-         GetText("<-", 60, Color::Red, {85, 70})});
-
-    for (size_t i = 0; i < size.x; ++i) {
-      for (size_t j = 0; j < size.y; ++j) {
-        auto pos_my = Vector2f(140 + i * 70 + pl * 940, 250 + j * 70);
-        auto pos_rv = Vector2f(1080 + i * 70 - pl * 940, 250 + j * 70);
-        std::string ind = std::to_string(i * size.y + j);
-        auto* cell_my = players[pl].GetField()->GetCell(Vector2f(i, j));
-        auto* cell_rv = players[pl].GetRField()->GetCell(Vector2f(i, j));
-
-        cell_my->SetShape(
-            GetShape(Vector2f(65, 65), Color(255, 120, 255), pos_my));
-
-        cell_rv->SetShape(
-            GetShape(Vector2f(65, 65), Color(255, 255, 255), pos_rv));
-
-        buttons_["select_" + std::to_string(pl)]["cell" + ind] =
-            new MouseButton(Mouse::Button::Left,
-                            new AddCellCommand(players.data() + pl,
-  cell_my), {cell_my->GetShape()});
-
-        buttons_["play_" + std::to_string(pl)]["cell_my" + ind] =
-            new Button(nullptr, {cell_my->GetShape()});
-
-        buttons_["play_" + std::to_string(pl)]["cell_rival" + ind] =
-            new MouseButton(Mouse::Button::Left,
-                            new ShootCommand(players.data() + pl, cell_rv),
-                            {cell_rv->GetShape()});
-      }
-    }
-  }
-
-
-  buttons_["shift_select"]["text"] =
-      new Button(nullptr, {GetText("Player 2, be ready to select\n"
-                                   "        ships in 2 seconds!\n"
-                                   " Player 1, DO NOT LOOK!",
-                                   120, Color::Cyan, {250, 350},
-  Text::Bold)});
-
-  buttons_["starts"]["text"] = new Button(
-      nullptr,
-      {GetText("Game starts in 2 seconds!", 120, Color::Red, {300, 450})});
-
-  buttons_["won"]["first"] = new Button(
-      nullptr,
-      {GetText("Player 1 won", 120, Color::Red, {420, 350}, Text::Bold)});*/

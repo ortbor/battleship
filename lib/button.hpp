@@ -37,13 +37,9 @@ class MouseButton final : public Button {
 class KeyboardButton final : public Button {
  public:
   template <typename... Args>
-  KeyboardButton(const Keyboard::Key& button, std::unique_ptr<Command> command,
-                 Args... obj);
+  KeyboardButton(std::unique_ptr<Command> command, Args... obj);
 
   bool IsPressed(const Event& event) const final;
-
-protected:
-    Keyboard::Key button_;
 };
 
 template <typename... Args>
@@ -60,8 +56,7 @@ MouseButton::MouseButton(const Mouse::Button& button,
 }
 
 template <typename... Args>
-KeyboardButton::KeyboardButton(const Keyboard::Key& button,
-                               std::unique_ptr<Command> command, Args... obj)
-    : Button(std::move(command)), button_(button) {
+KeyboardButton::KeyboardButton(std::unique_ptr<Command> command, Args... obj)
+    : Button(std::move(command)) {
   (..., draw_.push_back(std::move(obj)));
 }
