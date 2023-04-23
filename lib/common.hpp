@@ -33,7 +33,7 @@ using std::deque;
 using std::map;
 using std::pair;
 using std::string;
-using std::unique_ptr;
+using std::shared_ptr;
 using std::unordered_map;
 
 class Cell;

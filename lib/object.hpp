@@ -3,10 +3,10 @@
 #include "common.hpp"
 
 struct DrawObject {
-  DrawObject(unique_ptr<sf::Drawable> spriten);
-  DrawObject(unique_ptr<sf::Drawable> spriten, bool shown);
+  DrawObject(shared_ptr<sf::Drawable> spriten);
+  DrawObject(shared_ptr<sf::Drawable> spriten, bool shown);
   
-  unique_ptr<sf::Drawable> sprite;
+  shared_ptr<sf::Drawable> sprite;
   bool show = true;
 };
 

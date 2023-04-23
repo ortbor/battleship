@@ -7,13 +7,9 @@ bool Button::IsPressed(const Event& event) const {
   return command_ != nullptr && event.type == command_->GetType();
 }
 
-bool Button::GetShow() const { return show_; }
+const std::shared_ptr<Command>& Button::GetCommand() const { return command_; }
 
-void Button::SetShow(bool show) { show_ = show; }
-
-const std::unique_ptr<Command>& Button::GetCommand() const { return command_; }
-
-const deque<DrawObject>& Button::GetDrawable() const { return draw_; }
+deque<DrawObject>& Button::GetDrawable() { return draw_; }
 
 bool MouseButton::IsPressed(const Event& event) const {
   /*auto coord = Mouse::getPosition() - window.getPosition();
