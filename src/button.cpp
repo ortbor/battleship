@@ -39,6 +39,5 @@ bool MouseButton::Inside(const Vector2f& mouse) const {
 }
 
 bool KeyboardButton::IsPressed(const Event& event) const {
-  return command_ != nullptr && event.type == Event::KeyPressed &&
-         Keyboard::isKeyPressed(button_);
+  return command_ != nullptr && event.type == Event::TextEntered;
 }

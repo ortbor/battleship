@@ -14,7 +14,7 @@ class GameLoop {
   void Go();
   void Clear();
 
-  GameWindow* GetWindow();
+  GameWindow& GetWindow();
   Network* GetNetwork();
   int GetLocalPlayer() const;
   Vector2f GetSize() const;

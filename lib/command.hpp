@@ -20,13 +20,10 @@ class Command {
 
 class AddSymbolCommand final : public Command {
  public:
-    AddSymbolCommand(char symbol);
-    ~AddSymbolCommand() final = default;
+  AddSymbolCommand() = default;
+  ~AddSymbolCommand() final = default;
 
-    bool Execute();
-
- private:
-    char symbol_;
+  bool Execute();
 };
 
 class SetCommand final : public Command {
