@@ -24,7 +24,7 @@ void GameLoop::Go() {
   }
 }
 
-GameWindow* GameLoop::GetWindow() { return &window_; }
+GameWindow& GameLoop::GetWindow() { return window_; }
 
 Network* GameLoop::GetNetwork() { return &network_; }
 

@@ -9,6 +9,8 @@ class GameWindow : public sf::RenderWindow {
   ~GameWindow();
 
   const std::unique_ptr<Command>& GetCommand();
+  unordered_map<string, map<string, std::unique_ptr<Button>>>& GetButtons();
+  Event& GetEvent();
   void SetButtons(const string& str);
   void SetShow(const string& scene, const string& elem, bool show);
   void DrawObjects();

@@ -51,9 +51,12 @@ const std::unique_ptr<Command>& GameWindow::GetCommand() {
   }
 }
 
-unordered_map<string, map<string, Button*>>& GameWindow::GetButtons() {
+unordered_map<string, map<string, std::unique_ptr<Button>>>&
+GameWindow::GetButtons() {
   return buttons_;
 }
+
+Event& GameWindow::GetEvent() { return event_; }
 
 void GameWindow::SetButtons(const string& str) {
   button_str_ = str;
@@ -138,10 +141,10 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       RectObject({530, 150}, {0, 255, 95}, {700, 820}),
       TextObject("Settings", 140, Color::Red, {720, 790}, font_));
 
-  buttons_["menu"]["play"] =  std::make_unique<MouseButton>(
+  buttons_["menu"]["play"] = std::make_unique<MouseButton>(
       Mouse::Button::Left, std::make_unique<SetCommand>("ip"),
       RectObject({340, 150}, {0, 255, 95}, {790, 300}),
-       TextObject("Play", 140, Color::Red, {820, 270}, font_));
+      TextObject("Play", 140, Color::Red, {820, 270}, font_));
 
   buttons_["menu"]["return"] = std::make_unique<MouseButton>(
       Mouse::Button::Left,
@@ -150,7 +153,7 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("X", 60, Color::Red, {97, 75}, font_));
 
-  buttons_["play"]["return"] = std::make_unique<MouseButton>(
+  buttons_["ip"]["return"] = std::make_unique<MouseButton>(
       Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("<-", 60, Color::Red, {85, 70}, font_));
@@ -195,6 +198,12 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
           [](GameWindow& window) { window.SetVolume(Volume::Max); }),
       RectObject({100, 100}, {0, 255, 95}, {1350, 530}),
       TextObject("<))", 60, Color::Red, {1355, 535}, font_));
+
+  buttons_["ip"]["number"] = std::make_unique<KeyboardButton>(
+      Keyboard::Key::Num0, std::make_unique<AddSymbolCommand>());
+/*
+  buttons_["ip"]["enter"] = new KeyboardButton(
+      Keyboard::Key::Enter, new SetButtonsCommand("select_0"), {});*/
 
   for (auto& item : buttons_) {
     item.second["close"] =
@@ -317,18 +326,6 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
     }
   }
 
-  buttons_["ip"]["0"] = new KeyboardButton(Keyboard::Key::Num0, new AddSymbolCommand('0'), {});
-  buttons_["ip"]["1"] = new KeyboardButton(Keyboard::Key::Num1, new AddSymbolCommand('1'), {});
-  buttons_["ip"]["2"] = new KeyboardButton(Keyboard::Key::Num2, new AddSymbolCommand('2'), {});
-  buttons_["ip"]["3"] = new KeyboardButton(Keyboard::Key::Num3, new AddSymbolCommand('3'), {});
-  buttons_["ip"]["4"] = new KeyboardButton(Keyboard::Key::Num4, new AddSymbolCommand('4'), {});
-  buttons_["ip"]["5"] = new KeyboardButton(Keyboard::Key::Num5, new AddSymbolCommand('5'), {});
-  buttons_["ip"]["6"] = new KeyboardButton(Keyboard::Key::Num6, new AddSymbolCommand('6'), {});
-  buttons_["ip"]["7"] = new KeyboardButton(Keyboard::Key::Num7, new AddSymbolCommand('7'), {});
-  buttons_["ip"]["8"] = new KeyboardButton(Keyboard::Key::Num8, new AddSymbolCommand('8'), {});
-  buttons_["ip"]["9"] = new KeyboardButton(Keyboard::Key::Num9, new AddSymbolCommand('9'), {});
-  buttons_["ip"]["."] = new KeyboardButton(Keyboard::Key::Period, new AddSymbolCommand('.'), {});
-  buttons_["ip"]["enter"] = new KeyboardButton(Keyboard::Key::Enter, new SetButtonsCommand("select_0"), {});
 
   buttons_["shift_select"]["text"] =
       new Button(nullptr, {GetText("Player 2, be ready to select\n"
