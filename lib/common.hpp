@@ -45,6 +45,7 @@ class Player;
 class Command;
 class SetButtonsCommand;
 class ExecCommand;
+class AddSymbolCommand;
 class CellCommand;
 class AddCellCommand;
 class AddShipCommand;
@@ -57,6 +58,7 @@ struct RectObject;
 class Button;
 class MouseButton;
 class KeyboardButton;
+class Network;
 
 enum class ShotResult { Kill, Harm, Miss, Unknown };
 enum class State {

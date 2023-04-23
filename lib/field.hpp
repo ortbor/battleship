@@ -22,6 +22,7 @@ class MyField : public Field {
  public:
   MyField(const Vector2f& sizen);
   void SetShip(Ship* ship);
+  void RemoveProhibited();
 
   void Clear() final;
 };

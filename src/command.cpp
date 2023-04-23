@@ -24,6 +24,13 @@ bool SetCommand::Execute() {
   return true;
 }
 
+AddSymbolCommand::AddSymbolCommand(char symbol) : symbol_(symbol) {}
+
+bool AddSymbolCommand::Execute() {
+  loop_->AddToIP(symbol_);
+  return true;
+}
+
 ExecCommand::ExecCommand(GameWindow& obj, const Event::EventType& type,
                                void (*func)(GameWindow& obj))
     : Command(type), obj_(obj), func_(func) {}
@@ -40,6 +47,7 @@ AddCellCommand::AddCellCommand(Player* player, Cell* cell)
     : CellCommand(player, cell) {}
 
 bool AddCellCommand::Execute() {
+  Send();
   bool valid = IsValid();
   string scene = "select_" + std::to_string(player_->GetIndex());
   if (valid) {
@@ -63,9 +71,14 @@ bool AddCellCommand::IsValid() const {
          cell_->GetState() == State::Chosen;
 }
 
+void AddCellCommand::Send() {
+  loop_->GetNetwork()->Send("add_cell", std::to_string(cell_->GetCoord().x * loop_->GetSize().y + cell_->GetCoord().y));
+}
+
 AddShipCommand::AddShipCommand(Player* player) : player_(player) {}
 
 bool AddShipCommand::Execute() {
+  Send();
   bool valid = IsValid();
   string scene = "select_" + std::to_string(player_->GetIndex());
   if (valid) {
@@ -76,6 +89,8 @@ bool AddShipCommand::Execute() {
     loop_->GetWindow()->DrawObjects();
     sf::sleep(sf::milliseconds(500));
     if (player_->GetShipCount() == loop_->kShips) {
+      loop_->SwitchBlock();
+      player_->GetField()->RemoveProhibited();
       if (player_->GetIndex() == 0) {
         loop_->GetWindow()->SetButtons("shift_select");
         sf::sleep(sf::milliseconds(2000));
@@ -106,10 +121,15 @@ bool AddShipCommand::IsValid() const {
          5 - player_->GetShipInProcess()->GetSize();
 }
 
+void AddShipCommand::Send() {
+  loop_->GetNetwork()->Send("add_ship");
+}
+
 ShootCommand::ShootCommand(Player* player, Cell* cell)
     : CellCommand(player, cell) {}
 
 bool ShootCommand::Execute() {
+  Send();
   bool valid = IsValid();
   if (valid) {
     ShotResult shot_result;
@@ -117,6 +137,7 @@ bool ShootCommand::Execute() {
     if (player_->GetRival()->GetShipCount() == 0) {
       loop_->GetWindow()->SetButtons("won_" +
                                      std::to_string(player_->GetIndex()));
+      loop_->Unblock();
     }
     if (player_->GetLastShotResult() == ShotResult::Miss) {
       loop_->GetWindow()->SetButtons("turn_" +
@@ -124,6 +145,7 @@ bool ShootCommand::Execute() {
       sf::sleep(sf::milliseconds(2000));
       loop_->GetWindow()->SetButtons("play_" +
                                      std::to_string(1 - player_->GetIndex()));
+      loop_->SwitchBlock();
     }
   }
   loop_->GetWindow()->DrawObjects();
@@ -131,3 +153,7 @@ bool ShootCommand::Execute() {
 }
 
 bool ShootCommand::IsValid() const { return true; }
+
+void ShootCommand::Send() {
+  loop_->GetNetwork()->Send("shoot", std::to_string(cell_->GetCoord().x * loop_->GetSize().y + cell_->GetCoord().y));
+}

@@ -11,7 +11,8 @@ set(SOURCES ${SRC_PATH}/button.cpp
             ${SRC_PATH}/player.cpp 
             ${SRC_PATH}/ship.cpp
             ${SRC_PATH}/window.cpp
-            ${SRC_PATH}/main.cpp)
+            ${SRC_PATH}/main.cpp
+            ${SRC_PATH}/network.cpp )
 
 set(CMAKE_INSTALL_PREFIX /usr/local)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")

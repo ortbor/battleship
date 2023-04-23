@@ -42,8 +42,8 @@ class KeyboardButton final : public Button {
 
   bool IsPressed(const Event& event) const final;
 
- protected:
-  Keyboard::Key button_;
+protected:
+    Keyboard::Key button_;
 };
 
 template <typename... Args>
