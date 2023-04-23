@@ -43,3 +43,16 @@
 3	4934	1682273143961107723	CMakeFiles/battlesh1p.dir/src/network.cpp.o	5e8306bef17f265c
 2	8623	1682273147649101166	CMakeFiles/battlesh1p.dir/src/window.cpp.o	30fee4c1fdc3cc69
 8623	8796	1682273147821100860	/home/ortbor/TP/battleship/bin/battlesh1p	3e1acb49ee12a459
+3	3419	1682276486982853466	CMakeFiles/battlesh1p.dir/src/object.cpp.o	13e26bf17d0ee98d
+2	3421	1682276486978853475	CMakeFiles/battlesh1p.dir/src/button.cpp.o	bbd99bd242197485
+3	3507	1682276487070853299	CMakeFiles/battlesh1p.dir/src/main.cpp.o	69874ff57694d561
+2	3686	1682276487250852954	CMakeFiles/battlesh1p.dir/src/game.cpp.o	e7084effe1c9c59c
+3	3816	1682276487378852710	CMakeFiles/battlesh1p.dir/src/network.cpp.o	5e8306bef17f265c
+3	7021	1682276490582846593	CMakeFiles/battlesh1p.dir/src/window.cpp.o	30fee4c1fdc3cc69
+7021	7221	1682276490782846212	/home/ortbor/TP/battleship/bin/battlesh1p	3e1acb49ee12a459
+9	6084	1682276573806692042	CMakeFiles/battlesh1p.dir/src/window.cpp.o	30fee4c1fdc3cc69
+6084	6282	1682276574002691687	/home/ortbor/TP/battleship/bin/battlesh1p	3e1acb49ee12a459
+2	6365	1682276880454179063	CMakeFiles/battlesh1p.dir/src/window.cpp.o	30fee4c1fdc3cc69
+6365	6592	1682276880682178707	/home/ortbor/TP/battleship/bin/battlesh1p	3e1acb49ee12a459
+2	7026	1682277671873061589	CMakeFiles/battlesh1p.dir/src/window.cpp.o	30fee4c1fdc3cc69
+7027	7224	1682277672073061323	/home/ortbor/TP/battleship/bin/battlesh1p	3e1acb49ee12a459

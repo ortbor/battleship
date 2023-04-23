@@ -30,6 +30,8 @@ Network* GameLoop::GetNetwork() { return &network_; }
 
 int GameLoop::GetLocalPlayer() const { return local_player_; }
 
+void GameLoop::SetLocalPlayer(int local_player) { local_player_ = local_player; }
+
 const Vector2f& GameLoop::GetSize() const { return size_; }
 
 void GameLoop::Block() { is_blocked_ = true; }

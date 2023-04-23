@@ -17,6 +17,7 @@ class GameLoop {
   GameWindow& GetWindow();
   Network* GetNetwork();
   int GetLocalPlayer() const;
+  void SetLocalPlayer(int local_player);
   const Vector2f& GetSize() const;
   void Block();
   void Unblock();

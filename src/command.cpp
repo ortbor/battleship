@@ -41,6 +41,9 @@ bool AddSymbolCommand::Execute() {
 
 bool SaveIPCommand::Execute() {
   loop_->GetNetwork()->SetOtherIP(sf::IpAddress(loop_->GetIP()));
+  if (loop_->GetLocalPlayer() == 1) {
+    loop_->Block();
+  }
   loop_->GetWindow().SetButtons("select_0");
   return true;
 }

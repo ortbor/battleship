@@ -210,12 +210,16 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
   buttons_["play"]["connect"] = std::make_shared<MouseButton>(
-      Mouse::Button::Left, std::make_shared<ExecCommand>(*this, Event::MouseButtonPressed, [](GameWindow& window) { window.SetButtons("ip"); ExecCommand::loop_; }),
+      Mouse::Button::Left, std::make_shared<SetCommand>("ip"),
       RectObject({665, 150}, {0, 255, 95}, {630, 300}),
       TextObject("Throw a glove", 100, Color::Red, {640, 300}, font_));
 
   buttons_["play"]["wait"] = std::make_shared<MouseButton>(
-      Mouse::Button::Left, std::make_shared<SetCommand>("connect"),
+      Mouse::Button::Left,
+      std::make_shared<ExecCommand>(*this, Event::MouseButtonPressed, [](GameWindow& window) {
+          window.SetButtons("ip");
+          ExecCommand::loop_->SetLocalPlayer(1);
+      }),
       RectObject({1210, 150}, {0, 255, 95}, {360, 820}),
       TextObject("Wait for a dick to your ass", 100, Color::Red, {370, 820},
                  font_));
