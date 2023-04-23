@@ -24,7 +24,6 @@ bool SetCommand::Execute() {
   return true;
 }
 
-
 bool AddSymbolCommand::Execute() {
   loop_->AddToIP(static_cast<char>(loop_->GetWindow().GetEvent().text.unicode));
   return true;
@@ -49,17 +48,17 @@ bool AddCellCommand::Execute() {
   Send();
   bool valid = IsValid();
   string scene = "select_" + std::to_string(player_->GetIndex());
+  loop_->GetWindow().SetShow(scene, "status", 0, false);
+  loop_->GetWindow().SetShow(scene, "status", 2, false);
   if (valid) {
     if (cell_->GetState() == State::Clear) {
       player_->ship_in_process_.AddCell(cell_);
     } else {
       player_->ship_in_process_.EraseCell(cell_);
     }
-    loop_->GetWindow().SetShow(scene, "errcell", false);
-    loop_->GetWindow().SetShow(scene, "errship", false);
+    loop_->GetWindow().SetShow(scene, "status", 1, false);
   } else {
-    loop_->GetWindow().SetShow(scene, "ok", false);
-    loop_->GetWindow().SetShow(scene, "errcell", true);
+    loop_->GetWindow().SetShow(scene, "status", 1, true);
   }
   loop_->GetWindow().DrawObjects();
   return valid;
@@ -82,11 +81,11 @@ bool AddShipCommand::Execute() {
   Send();
   bool valid = IsValid();
   string scene = "select_" + std::to_string(player_->GetIndex());
+  loop_->GetWindow().SetShow(scene, "status", 1, false);
   if (valid) {
     player_->AddShip();
-    loop_->GetWindow().SetShow(scene, "errcell", false);
-    loop_->GetWindow().SetShow(scene, "errship", false);
-    loop_->GetWindow().SetShow(scene, "ok", true);
+    loop_->GetWindow().SetShow(scene, "status", 0, true);
+    loop_->GetWindow().SetShow(scene, "status", 2, false);
     loop_->GetWindow().DrawObjects();
     sf::sleep(sf::milliseconds(500));
     if (player_->GetShipCount() == loop_->kShips) {
@@ -105,8 +104,8 @@ bool AddShipCommand::Execute() {
       }
     }
   } else {
-    loop_->GetWindow().SetShow(scene, "ok", false);
-    loop_->GetWindow().SetShow(scene, "errship", true);
+    loop_->GetWindow().SetShow(scene, "status", 0, false);
+    loop_->GetWindow().SetShow(scene, "status", 2, true);
   }
   loop_->GetWindow().DrawObjects();
   return valid;
@@ -134,15 +133,15 @@ bool ShootCommand::Execute() {
     player_->Shoot(cell_, shot_result);
     if (player_->GetRival()->GetShipCount() == 0) {
       loop_->GetWindow().SetButtons("won_" +
-                                     std::to_string(player_->GetIndex()));
+                                    std::to_string(player_->GetIndex()));
       loop_->Unblock();
     }
     if (player_->GetLastShotResult() == ShotResult::Miss) {
       loop_->GetWindow().SetButtons("turn_" +
-                                     std::to_string(1 - player_->GetIndex()));
+                                    std::to_string(1 - player_->GetIndex()));
       sf::sleep(sf::milliseconds(2000));
       loop_->GetWindow().SetButtons("play_" +
-                                     std::to_string(1 - player_->GetIndex()));
+                                    std::to_string(1 - player_->GetIndex()));
       loop_->SwitchBlock();
     }
   }

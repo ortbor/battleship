@@ -8,11 +8,12 @@ class GameWindow : public sf::RenderWindow {
              Vector2f sides = {-1, -1});
   ~GameWindow();
 
-  const std::unique_ptr<Command>& GetCommand();
-  unordered_map<string, map<string, std::unique_ptr<Button>>>& GetButtons();
+  const std::shared_ptr<Command>& GetCommand();
+  unordered_map<string, map<string, std::shared_ptr<Button>>>& GetButtons();
   Event& GetEvent();
   void SetButtons(const string& str);
-  void SetShow(const string& scene, const string& elem, bool show);
+  void SetShow(const string& scene, const string& elem, size_t index,
+               bool show);
   void DrawObjects();
   void SetVolume(Volume value);
   void Configure(array<Player, 2>& players, const Vector2f& size);
@@ -32,7 +33,7 @@ class GameWindow : public sf::RenderWindow {
   Music game_theme_;
 
   string button_str_ = "menu";
-  unordered_map<string, map<string, std::unique_ptr<Button>>> buttons_;
+  unordered_map<string, map<string, std::shared_ptr<Button>>> buttons_;
 
   static std::filesystem::path Path();
   DrawObject GetText(const std::string& str, size_t size, const Color& color,

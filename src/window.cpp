@@ -40,7 +40,7 @@ GameWindow::GameWindow(array<Player, 2>& players, const Vector2f& size,
 
 GameWindow::~GameWindow() {}
 
-const std::unique_ptr<Command>& GameWindow::GetCommand() {
+const std::shared_ptr<Command>& GameWindow::GetCommand() {
   while (true) {
     waitEvent(event_);
     for (auto& button : buttons_[button_str_]) {
@@ -51,7 +51,7 @@ const std::unique_ptr<Command>& GameWindow::GetCommand() {
   }
 }
 
-unordered_map<string, map<string, std::unique_ptr<Button>>>&
+unordered_map<string, map<string, std::shared_ptr<Button>>>&
 GameWindow::GetButtons() {
   return buttons_;
 }
@@ -63,15 +63,15 @@ void GameWindow::SetButtons(const string& str) {
   DrawObjects();
 }
 
-void GameWindow::SetShow(const string& scene, const string& elem, bool show) {
-  buttons_[scene][elem]->SetShow(show);
+void GameWindow::SetShow(const string& scene, const string& elem, size_t index, bool show) {
+  buttons_[scene][elem].get()->GetDrawable()[index].show = show;
 }
 
 void GameWindow::DrawObjects() {
   clear();
   for (const auto& item : buttons_[button_str_]) {
-    if (item.second->GetShow()) {
-      for (const auto& object : item.second->GetDrawable()) {
+    for (const auto& object : item.second->GetDrawable()) {
+      if (object.show) {
         draw(*object.sprite);
       }
     }
@@ -140,228 +140,214 @@ std::filesystem::path GameWindow::Path() {
 }
 
 void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
-  buttons_["menu"]["play"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("play"),
+  buttons_["menu"]["play"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("play"),
       RectObject({340, 150}, {0, 255, 95}, {790, 300}),
       TextObject("Play", 140, Color::Red, {820, 270}, font_));
 
-  buttons_["menu"]["settings"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("settings"),
+  buttons_["menu"]["settings"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("settings"),
       RectObject({530, 150}, {0, 255, 95}, {700, 820}),
       TextObject("Settings", 140, Color::Red, {720, 790}, font_));
 
-  buttons_["menu"]["return"] = std::make_unique<MouseButton>(
+  buttons_["menu"]["return"] = std::make_shared<MouseButton>(
       Mouse::Button::Left,
-      std::make_unique<ExecCommand>(*this, Event::MouseButtonPressed,
+      std::make_shared<ExecCommand>(*this, Event::MouseButtonPressed,
                                     [](GameWindow& window) { window.close(); }),
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("X", 60, Color::Red, {97, 75}, font_));
 
-  buttons_["settings"]["return"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
+  buttons_["settings"]["return"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("menu"),
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
-  buttons_["settings"]["volume"] = std::make_unique<Button>(
+  buttons_["settings"]["volume"] = std::make_shared<Button>(
       nullptr,
       TextObject("Volume", 120, Color::Red, {430, 490}, font_, Text::Bold));
 
-  buttons_["settings"]["vol_silence"] = std::make_unique<MouseButton>(
+  buttons_["settings"]["vol_silence"] = std::make_shared<MouseButton>(
       Mouse::Button::Left,
-      std::make_unique<ExecCommand>(
+      std::make_shared<ExecCommand>(
           *this, Event::MouseButtonPressed,
           [](GameWindow& window) { window.SetVolume(Volume::Silence); }),
       RectObject({100, 100}, {0, 255, 95}, {900, 530}),
       TextObject("<X", 60, Color::Red, {902, 540}, font_));
 
-  buttons_["settings"]["vol_less"] = std::make_unique<MouseButton>(
+  buttons_["settings"]["vol_less"] = std::make_shared<MouseButton>(
       Mouse::Button::Left,
-      std::make_unique<ExecCommand>(
+      std::make_shared<ExecCommand>(
           *this, Event::MouseButtonPressed,
           [](GameWindow& window) { window.SetVolume(Volume::Less); }),
       RectObject({100, 100}, {0, 255, 95}, {1050, 530}),
       TextObject("-", 60, Color::Red, {1090, 535}, font_));
 
-  buttons_["settings"]["vol_more"] = std::make_unique<MouseButton>(
+  buttons_["settings"]["vol_more"] = std::make_shared<MouseButton>(
       Mouse::Button::Left,
-      std::make_unique<ExecCommand>(
+      std::make_shared<ExecCommand>(
           *this, Event::MouseButtonPressed,
           [](GameWindow& window) { window.SetVolume(Volume::More); }),
       RectObject({100, 100}, {0, 255, 95}, {1200, 530}),
       TextObject("+", 60, Color::Red, {1228, 535}, font_));
 
-  buttons_["settings"]["vol_max"] = std::make_unique<MouseButton>(
+  buttons_["settings"]["vol_max"] = std::make_shared<MouseButton>(
       Mouse::Button::Left,
-      std::make_unique<ExecCommand>(
+      std::make_shared<ExecCommand>(
           *this, Event::MouseButtonPressed,
           [](GameWindow& window) { window.SetVolume(Volume::Max); }),
       RectObject({100, 100}, {0, 255, 95}, {1350, 530}),
       TextObject("<))", 60, Color::Red, {1355, 535}, font_));
 
-  buttons_["ip"]["save"] = std::make_unique<MouseButton>(
-          Mouse::Button::Left, std::make_unique<SetCommand>("select_0"),
-          RectObject({340, 150}, {0, 255, 95}, {790, 300}),
-          TextObject("Save", 140, Color::Red, {820, 270}, font_));
-
-  buttons_["play"]["return"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
+  buttons_["play"]["return"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("menu"),
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
-  buttons_["play"]["connect"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("ip"),
+  buttons_["play"]["connect"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("ip"),
       RectObject({665, 150}, {0, 255, 95}, {630, 300}),
       TextObject("Throw a glove", 100, Color::Red, {640, 300}, font_));
 
-  buttons_["play"]["wait"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("connect"),
+  buttons_["play"]["wait"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("connect"),
       RectObject({1210, 150}, {0, 255, 95}, {360, 820}),
       TextObject("Wait for a dick to your ass", 100, Color::Red, {370, 820},
                  font_));
 
-  buttons_["ip"]["return"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("play"),
+  buttons_["ip"]["return"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("play"),
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
   buttons_["ip"]["number"] =
-      std::make_unique<KeyboardButton>(std::make_unique<AddSymbolCommand>());
+      std::make_shared<KeyboardButton>(std::make_shared<AddSymbolCommand>());
 
-  buttons_["connect"]["return"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("play"),
+  buttons_["ip"]["save"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("select_0"),
+      RectObject({340, 150}, {0, 255, 95}, {790, 300}),
+      TextObject("Save", 140, Color::Red, {820, 270}, font_));
+
+  buttons_["connect"]["return"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("play"),
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
-  /*
-    buttons_["ip"]["enter"] = new KeyboardButton(
-        Keyboard::Key::Enter, new SetButtonsCommand("select_0"), {});*/
+  buttons_["select_0"]["text"] = std::make_shared<Button>(
+      nullptr,
+      TextObject("Select your ships", 80, Color::Blue, {1110, 300}, font_));
 
-  for (auto& item : buttons_) {
-    item.second["close"] =
-        std::make_unique<Button>(std::make_unique<ExecCommand>(
-            *this, Event::Closed, [](GameWindow& window) { window.close(); }));
+  buttons_["select_0"]["ship"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<AddShipCommand>(players.data()),
+      RectObject({335, 110}, {0, 255, 95}, {1210, 530}),
+      TextObject("Add ship", 80, Color::Red, {1220, 530}, font_));
 
-    item.second["resize"] =
-        std::make_unique<Button>(std::make_unique<ExecCommand>(
-            *this, Event::Resized,
-            [](GameWindow& window) { window.DrawObjects(); }));
+  buttons_["select_0"]["return"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("play"),
+      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+      TextObject("<-", 60, Color::Red, {85, 72}, font_));
 
-    item.second["background"] = std::make_unique<Button>(
-        nullptr, DrawObject(std::make_unique<Sprite>(background_)),
-        TextObject(kName, 140, Color::Red, {475, 0}, font_,
-                   Text::Bold | Text::Underlined));
-  }
+  buttons_["select_0"]["status"] = std::make_shared<Button>(
+      nullptr,
+      TextObject("Success!", 80, Color::Green, {1240, 750}, font_, Text::Bold,
+                 false),
+      TextObject("Cannot select\n    this cell!", 80, Color::Red, {1120, 750},
+                 font_, Text::Bold, false),
+      TextObject("Wrong shaped ship!", 80, Color::Red, {1030, 750}, font_,
+                 Text::Bold, false));
+
+  buttons_["play_0"]["return"] = std::make_shared<MouseButton>(
+      Mouse::Left, std::make_shared<SetCommand>("play"),
+      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+      TextObject("<-", 60, Color::Red, {85, 72}, font_));
+
+  buttons_["play_0"]["turn"] = std::make_shared<Button>(
+      nullptr, TextObject("Your turn ", 100, Color::Red, {675, 930}, font_,
+                          sf::Text::Bold));
+
+  buttons_["play_0"]["field_your"] = std::make_shared<Button>(
+      nullptr, TextObject("Your field", 80, Color::Red, {133, 950}, font_));
+
+  buttons_["play_0"]["field_rival"] = std::make_shared<Button>(
+      nullptr, TextObject("Rival field", 80, Color::Red, {1410, 950}, font_));
+
+  buttons_["won_0"]["text"] = std::make_shared<Button>(
+      nullptr,
+      TextObject("You win!", 120, Color::Red, {600, 350}, font_, Text::Bold),
+      TextObject("        Do you feel proud of yourself after\n"
+                 "you killed all innocent other player's ships?..",
+                 60, Color::Red, {360, 750}, font_, Text::Bold));
+
+  buttons_["won_0"]["return"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("menu"),
+      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+      TextObject("<-", 60, Color::Red, {85, 70}, font_));
+
+  buttons_["won_1"]["text"] = std::make_shared<Button>(
+      nullptr,
+      TextObject("Rival win!", 120, Color::Red, {600, 350}, font_, Text::Bold),
+      TextObject("Don't worry, be happy!", 60, Color::Red, {360, 750}, font_,
+                 Text::Bold));
+
+  buttons_["won_1"]["return"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<SetCommand>("menu"),
+      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+      TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
   for (size_t pl = 0; pl < 2; ++pl) {
-    buttons_["select_" + std::to_string(pl)]["text"] = std::make_unique<Button>(
-        nullptr, TextObject("Player " + std::to_string(pl + 1) +
-                              ", select\n    your ships!",
-                          80, Color::Blue, Vector2f(1110 - pl * 850,
-  300), font_));
-
-    buttons_["select_" + std::to_string(pl)]["ship"] = std::make_unique<MouseButton>(
-        Mouse::Button::Left, std::make_unique<AddShipCommand>(players.data() + pl),
-        RectObject(Vector2f(335, 110), Color(0, 255, 95),
-                  Vector2f(1210 - pl * 850, 530)),
-         TextObject("Add ship", 80, Color::Red, Vector2f(1220 - pl * 850,
-  530), font_));
-
-    buttons_["select_" + std::to_string(pl)]["return"] = std::make_unique<MouseButton>(
-        Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
-        RectObject(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-         TextObject("<-", 60, Color::Red, {85, 72}, font_));
-
-    buttons_["select_" + std::to_string(pl)]["ok"] =
-        std::make_unique<Button>(nullptr,
-                   TextObject("Success!", 80, Color::Green,
-                            Vector2f(1240 - pl * 850, 750), font_, Text::Bold, false));
-
-    buttons_["select_" + std::to_string(pl)]["errcell"] =
-        std::make_unique<Button>(nullptr,
-                   TextObject("Cannot select\n    this cell!", 80, Color::Red,
-                            Vector2f(1120 - pl * 850, 750), font_, Text::Bold, false));
-
-    buttons_["select_" + std::to_string(pl)]["errship"] =
-        std::make_unique<Button>(nullptr,
-                   TextObject("Wrong shaped ship!", 80, Color::Red,
-                            Vector2f(1030 - pl * 850, 750), font_, Text::Bold, false));
-
-    buttons_["play_" + std::to_string(pl)]["turn"] = std::make_unique<Button>(
-        nullptr, TextObject("Player " + std::to_string(pl + 1) + " turn ",
-  100, Color::Red, {675, 930}, font_, sf::Text::Bold));
-
-    buttons_["play_" + std::to_string(pl)]["field_my"] = std::make_unique<Button>(
-        nullptr,
-        TextObject("My field", 80, Color::Red, Vector2f(133 + pl * 1200,
-  950), font_));
-
-    buttons_["play_" + std::to_string(pl)]["field_rival"] =
-        std::make_unique<Button>(nullptr, TextObject("Rival field", 80, Color::Red,
-                                     Vector2f(1410 - pl * 1200, 950), font_));
-
-    buttons_["play_" + std::to_string(pl)]["return"] = std::make_unique<MouseButton>(
-        Mouse::Left, std::make_unique<SetCommand>("menu"),
-        RectObject(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-         TextObject("<-", 60, Color::Red, {85, 72}, font_));
-
-    buttons_["turn_" + std::to_string(pl)]["text"] = std::make_unique<Button>(
-        nullptr,
-        TextObject("Player " + std::to_string(pl + 1) + ", FIGHT!\n", 120,
-                 Color::Red, {530, 450}, font_, Text::Bold | Text::Underlined));
-
-    buttons_["won_" + std::to_string(pl)]["text"] = std::make_unique<Button>(
-        nullptr, TextObject("Player " + std::to_string(pl + 1) + " won!\n",
-  120, Color::Red, {600, 350}, font_, Text::Bold), TextObject("        Do you feel proud of yourself after\n" "you killed all innocent other player's ships?..",
-                                                    60, Color::Red, {360, 750}, font_, Text::Bold));
-
-    buttons_["won_" + std::to_string(pl)]["return"] = std::make_unique<MouseButton>(
-        Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
-        RectObject(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-         TextObject("<-", 60, Color::Red, {85, 70}, font_));
-
     for (size_t i = 0; i < size.x; ++i) {
       for (size_t j = 0; j < size.y; ++j) {
-        auto pos_my = Vector2f(140 + i * 70 + pl * 940, 250 + j * 70);
+        auto pos_my = Vector2f(140 + i * 70, 250 + j * 70);
         auto pos_rv = Vector2f(1080 + i * 70 - pl * 940, 250 + j * 70);
         std::string ind = std::to_string(i * size.y + j);
         auto* cell_my = players[pl].GetField()->GetCell(Vector2f(i, j));
         auto* cell_rv = players[pl].GetRField()->GetCell(Vector2f(i, j));
 
-        cell_my->SetShape(
-           sf::RectangleShape(Vector2f(65, 65), Color(255, 120, 255), pos_my));
-
-        cell_rv->SetShape(
-            GetShape(Vector2f(65, 65), Color(255, 255, 255), pos_rv));
-
         buttons_["select_" + std::to_string(pl)]["cell" + ind] =
-            std::make_unique<MouseButton>(Mouse::Button::Left,
-                            std::make_unique<AddCellCommand>(players.data() + pl,
-  cell_my), {cell_my->GetShape()});
+            std::make_shared<MouseButton>(
+                Mouse::Button::Left,
+                std::make_shared<AddCellCommand>(players.data() + pl, cell_my),
+                RectObject({65, 65}, {255, 120, 255}, pos_my));
 
         buttons_["play_" + std::to_string(pl)]["cell_my" + ind] =
-            std::make_unique<Button>(nullptr, {cell_my->GetShape()});
+            std::make_shared<Button>(
+                nullptr, buttons_["select_" + std::to_string(pl)]["cell" + ind]
+                             .get()
+                             ->GetDrawable()[0]);
 
         buttons_["play_" + std::to_string(pl)]["cell_rival" + ind] =
-            std::make_unique<MouseButton>(Mouse::Button::Left,
-                            std::make_unique<ShootCommand>(players.data() + pl, cell_rv),
-                            {cell_rv->GetShape()});
+            std::make_shared<MouseButton>(
+                Mouse::Button::Left,
+                std::make_shared<ShootCommand>(players.data() + pl, cell_rv),
+                RectObject({65, 65}, {255, 255, 255}, pos_rv));
+
+        cell_my->SetShape(dynamic_cast<RectangleShape*>(
+            buttons_["select_" + std::to_string(pl)]["cell" + ind]
+                .get()
+                ->GetDrawable()[0]
+                .sprite.get()));
+
+        cell_rv->SetShape(dynamic_cast<RectangleShape*>(
+            buttons_["play_" + std::to_string(pl)]["cell_rival" + ind]
+                .get()
+                ->GetDrawable()[0]
+                .sprite.get()));
       }
     }
   }
 
+  for (auto& item : buttons_) {
+    item.second["close"] =
+        std::make_shared<Button>(std::make_shared<ExecCommand>(
+            *this, Event::Closed, [](GameWindow& window) { window.close(); }));
 
-  buttons_["shift_select"]["text"] =
-      std::make_unique<Button>(nullptr, {GetText("Player 2, be ready to select\n"
-                                   "        ships in 2 seconds!\n"
-                                   " Player 1, DO NOT LOOK!",
-                                   120, Color::Cyan, {250, 350},
-  Text::Bold)});
+    item.second["resize"] =
+        std::make_shared<Button>(std::make_shared<ExecCommand>(
+            *this, Event::Resized,
+            [](GameWindow& window) { window.DrawObjects(); }));
 
-  buttons_["starts"]["text"] = std::make_unique<Button>(
-      nullptr,
-      {GetText("Game starts in 2 seconds!", 120, Color::Red, {300, 450})});
-
-  buttons_["won"]["first"] = std::make_unique<Button>(
-      nullptr,
-      {GetText("Player 1 won", 120, Color::Red, {420, 350}, Text::Bold)});
+    item.second["background"] = std::make_shared<Button>(
+        nullptr, DrawObject(std::make_shared<Sprite>(background_)),
+        TextObject(kName, 140, Color::Red, {475, 0}, font_,
+                   Text::Bold | Text::Underlined));
+  }
 }
