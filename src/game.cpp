@@ -13,15 +13,25 @@ GameLoop::GameLoop(const Vector2f& size, size_t ships)
   players_[0].LinkWithRival(&players_[1]);
 }
 
+void GameLoop::ProcessWindow() {
+  while (window_.isOpen()) {
+    window_.GetCommand()->Execute();
+  }
+}
+
+void GameLoop::ProcessNetwork() {
+  while (window_.isOpen()) {
+    window_.GetCommand()->Execute();
+  }
+}
+
 void GameLoop::Go() {
   Command::loop_ = this;
-  while (window_.isOpen()) {
-    if (is_blocked_) {
-      network_.GetCommand()->Execute();
-    } else {
-      window_.GetCommand()->Execute();
-    }
-  }
+  XInitThreads();
+  sf::Thread window_thread(&GameLoop::ProcessWindow, this);
+  sf::Thread network_thread(&GameLoop::ProcessNetwork, this);
+  window_thread.launch();
+  network_thread.launch();
 }
 
 GameWindow& GameLoop::GetWindow() { return window_; }
@@ -39,6 +49,8 @@ void GameLoop::Block() { is_blocked_ = true; }
 void GameLoop::Unblock() { is_blocked_ = false; }
 
 void GameLoop::SwitchBlock() { is_blocked_ = !is_blocked_; }
+
+bool GameLoop::IsBlocked() const { return is_blocked_; }
 
 const string& GameLoop::GetIP() const { return ip_; }
 

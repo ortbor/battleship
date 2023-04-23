@@ -84,6 +84,9 @@ bool AddCellCommand::Execute() {
 }
 
 bool AddCellCommand::IsValid() const {
+  if (loop_->IsBlocked()) {
+    return false;
+  }
   return cell_->GetState() == State::Clear ||
          cell_->GetState() == State::Chosen;
 }
@@ -133,7 +136,7 @@ bool AddShipCommand::Execute() {
 }
 
 bool AddShipCommand::IsValid() const {
-  if (!player_->GetShipInProcess()->IsClassic()) {
+  if (loop_->IsBlocked() || !player_->GetShipInProcess()->IsClassic()) {
     return false;
   }
   return player_->GetNumberOfShipsSized(
@@ -170,7 +173,7 @@ bool ShootCommand::Execute() {
   return valid;
 }
 
-bool ShootCommand::IsValid() const { return true; }
+bool ShootCommand::IsValid() const { return !loop_->IsBlocked(); }
 
 void ShootCommand::Send() {
   loop_->GetNetwork()->Send(

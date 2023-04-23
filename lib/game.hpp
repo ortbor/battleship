@@ -22,6 +22,7 @@ class GameLoop {
   void Block();
   void Unblock();
   void SwitchBlock();
+  bool IsBlocked() const;
   const string& GetIP() const;
   void AddToIP(char ch);
   void RemoveLastIP();
@@ -38,4 +39,7 @@ class GameLoop {
   bool is_blocked_ = false;
   int local_player_ = 0;
   string ip_ = "";
+
+  void ProcessWindow();
+  void ProcessNetwork();
 };

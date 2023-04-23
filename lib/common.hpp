@@ -3,6 +3,8 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/System.hpp>
+#include <X11/Xlib.h>
 #include <algorithm>
 #include <array>
 #include <deque>
