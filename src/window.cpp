@@ -201,6 +201,12 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
 
   buttons_["ip"]["number"] = std::make_unique<KeyboardButton>(
       Keyboard::Key::Num0, std::make_unique<AddSymbolCommand>());
+
+  buttons_["ip"]["save"] = std::make_unique<MouseButton>(
+          Mouse::Button::Left, std::make_unique<SetCommand>("select_0"),
+          RectObject({340, 150}, {0, 255, 95}, {790, 300}),
+          TextObject("Save", 140, Color::Red, {820, 270}, font_));
+
 /*
   buttons_["ip"]["enter"] = new KeyboardButton(
       Keyboard::Key::Enter, new SetButtonsCommand("select_0"), {});*/
@@ -220,81 +226,74 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
         TextObject(kName, 140, Color::Red, {475, 0}, font_,
                    Text::Bold | Text::Underlined));
   }
-}
 
-// void GameWindow::Configure(array<Player, 2> & players, const Vector2f& size)
-// {
-/*
+
   for (size_t pl = 0; pl < 2; ++pl) {
-    buttons_["select_" + std::to_string(pl)]["text"] = new Button(
-        nullptr, {GetText("Player " + std::to_string(pl + 1) +
+    buttons_["select_" + std::to_string(pl)]["text"] = std::make_unique<Button>(
+        nullptr, TextObject("Player " + std::to_string(pl + 1) +
                               ", select\n    your ships!",
                           80, Color::Blue, Vector2f(1110 - pl * 850,
-  300))});
+  300), font_));
 
-    buttons_["select_" + std::to_string(pl)]["ship"] = new MouseButton(
-        Mouse::Button::Left, new AddShipCommand(players.data() + pl),
-        {GetShape(Vector2f(335, 110), Color(0, 255, 95),
+    buttons_["select_" + std::to_string(pl)]["ship"] = std::make_unique<MouseButton>(
+        Mouse::Button::Left, std::make_unique<AddShipCommand>(players.data() + pl),
+        RectObject(Vector2f(335, 110), Color(0, 255, 95),
                   Vector2f(1210 - pl * 850, 530)),
-         GetText("Add ship", 80, Color::Red, Vector2f(1220 - pl * 850,
-  530))});
+         TextObject("Add ship", 80, Color::Red, Vector2f(1220 - pl * 850,
+  530), font_));
 
-    buttons_["select_" + std::to_string(pl)]["return"] = new MouseButton(
-        Mouse::Button::Left, new SetButtonsCommand("menu"),
-        {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-         GetText("<-", 60, Color::Red, {85, 72})});
+    buttons_["select_" + std::to_string(pl)]["return"] = std::make_unique<MouseButton>(
+        Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
+        RectObject(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
+         TextObject("<-", 60, Color::Red, {85, 72}, font_));
 
     buttons_["select_" + std::to_string(pl)]["ok"] =
-        new Button(nullptr,
-                   {GetText("Success!", 80, Color::Green,
-                            Vector2f(1240 - pl * 850, 750), Text::Bold)},
-                   false);
+        std::make_unique<Button>(nullptr,
+                   TextObject("Success!", 80, Color::Green,
+                            Vector2f(1240 - pl * 850, 750), font_, Text::Bold, false));
 
     buttons_["select_" + std::to_string(pl)]["errcell"] =
-        new Button(nullptr,
-                   {GetText("Cannot select\n    this cell!", 80, Color::Red,
-                            Vector2f(1120 - pl * 850, 750), Text::Bold)},
-                   false);
+        std::make_unique<Button>(nullptr,
+                   TextObject("Cannot select\n    this cell!", 80, Color::Red,
+                            Vector2f(1120 - pl * 850, 750), font_, Text::Bold, false));
 
     buttons_["select_" + std::to_string(pl)]["errship"] =
-        new Button(nullptr,
-                   {GetText("Wrong shaped ship!", 80, Color::Red,
-                            Vector2f(1030 - pl * 850, 750), Text::Bold)},
-                   false);
+        std::make_unique<Button>(nullptr,
+                   TextObject("Wrong shaped ship!", 80, Color::Red,
+                            Vector2f(1030 - pl * 850, 750), font_, Text::Bold, false));
 
-    buttons_["play_" + std::to_string(pl)]["turn"] = new Button(
-        nullptr, {GetText("Player " + std::to_string(pl + 1) + " turn ",
-  100, Color::Red, {675, 930}, sf::Text::Bold)});
+    buttons_["play_" + std::to_string(pl)]["turn"] = std::make_unique<Button>(
+        nullptr, TextObject("Player " + std::to_string(pl + 1) + " turn ",
+  100, Color::Red, {675, 930}, font_, sf::Text::Bold));
 
-    buttons_["play_" + std::to_string(pl)]["field_my"] = new Button(
+    buttons_["play_" + std::to_string(pl)]["field_my"] = std::make_unique<Button>(
         nullptr,
-        {GetText("My field", 80, Color::Red, Vector2f(133 + pl * 1200,
-  950))});
+        TextObject("My field", 80, Color::Red, Vector2f(133 + pl * 1200,
+  950), font_));
 
     buttons_["play_" + std::to_string(pl)]["field_rival"] =
-        new Button(nullptr, {GetText("Rival field", 80, Color::Red,
-                                     Vector2f(1410 - pl * 1200, 950))});
+        std::make_unique<Button>(nullptr, TextObject("Rival field", 80, Color::Red,
+                                     Vector2f(1410 - pl * 1200, 950), font_));
 
-    buttons_["play_" + std::to_string(pl)]["return"] = new MouseButton(
-        Mouse::Left, new SetButtonsCommand("menu"),
-        {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-         GetText("<-", 60, Color::Red, {85, 72})});
+    buttons_["play_" + std::to_string(pl)]["return"] = std::make_unique<MouseButton>(
+        Mouse::Left, std::make_unique<SetCommand>("menu"),
+        RectObject(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
+         TextObject("<-", 60, Color::Red, {85, 72}, font_));
 
-    buttons_["turn_" + std::to_string(pl)]["text"] = new Button(
+    buttons_["turn_" + std::to_string(pl)]["text"] = std::make_unique<Button>(
         nullptr,
-        {GetText("Player " + std::to_string(pl + 1) + ", FIGHT!\n", 120,
-                 Color::Red, {530, 450}, Text::Bold | Text::Underlined)});
+        TextObject("Player " + std::to_string(pl + 1) + ", FIGHT!\n", 120,
+                 Color::Red, {530, 450}, font_, Text::Bold | Text::Underlined));
 
-    buttons_["won_" + std::to_string(pl)]["text"] = new Button(
-        nullptr, {GetText("Player " + std::to_string(pl + 1) + " won!\n",
-  120, Color::Red, {600, 350}, Text::Bold), GetText("        Do you feel
-  proud of yourself after\n" "you killed all innocent other player's
-  ships?..", 60, Color::Red, {360, 750}, Text::Bold)});
+    buttons_["won_" + std::to_string(pl)]["text"] = std::make_unique<Button>(
+        nullptr, TextObject("Player " + std::to_string(pl + 1) + " won!\n",
+  120, Color::Red, {600, 350}, font_, Text::Bold), TextObject("        Do you feel proud of yourself after\n" "you killed all innocent other player's ships?..",
+                                                    60, Color::Red, {360, 750}, font_, Text::Bold));
 
-    buttons_["won_" + std::to_string(pl)]["return"] = new MouseButton(
-        Mouse::Button::Left, new SetButtonsCommand("menu"),
-        {GetShape(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
-         GetText("<-", 60, Color::Red, {85, 70})});
+    buttons_["won_" + std::to_string(pl)]["return"] = std::make_unique<MouseButton>(
+        Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
+        RectObject(Vector2f(100, 100), Color(0, 255, 95), Vector2f(70, 65)),
+         TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
     for (size_t i = 0; i < size.x; ++i) {
       for (size_t j = 0; j < size.y; ++j) {
@@ -305,22 +304,22 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
         auto* cell_rv = players[pl].GetRField()->GetCell(Vector2f(i, j));
 
         cell_my->SetShape(
-            GetShape(Vector2f(65, 65), Color(255, 120, 255), pos_my));
+           sf::RectangleShape(Vector2f(65, 65), Color(255, 120, 255), pos_my));
 
         cell_rv->SetShape(
             GetShape(Vector2f(65, 65), Color(255, 255, 255), pos_rv));
 
         buttons_["select_" + std::to_string(pl)]["cell" + ind] =
-            new MouseButton(Mouse::Button::Left,
-                            new AddCellCommand(players.data() + pl,
+            std::make_unique<MouseButton>(Mouse::Button::Left,
+                            std::make_unique<AddCellCommand>(players.data() + pl,
   cell_my), {cell_my->GetShape()});
 
         buttons_["play_" + std::to_string(pl)]["cell_my" + ind] =
-            new Button(nullptr, {cell_my->GetShape()});
+            std::make_unique<Button>(nullptr, {cell_my->GetShape()});
 
         buttons_["play_" + std::to_string(pl)]["cell_rival" + ind] =
-            new MouseButton(Mouse::Button::Left,
-                            new ShootCommand(players.data() + pl, cell_rv),
+            std::make_unique<MouseButton>(Mouse::Button::Left,
+                            std::make_unique<ShootCommand>(players.data() + pl, cell_rv),
                             {cell_rv->GetShape()});
       }
     }
@@ -328,16 +327,17 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
 
 
   buttons_["shift_select"]["text"] =
-      new Button(nullptr, {GetText("Player 2, be ready to select\n"
+      std::make_unique<Button>(nullptr, {GetText("Player 2, be ready to select\n"
                                    "        ships in 2 seconds!\n"
                                    " Player 1, DO NOT LOOK!",
                                    120, Color::Cyan, {250, 350},
   Text::Bold)});
 
-  buttons_["starts"]["text"] = new Button(
+  buttons_["starts"]["text"] = std::make_unique<Button>(
       nullptr,
       {GetText("Game starts in 2 seconds!", 120, Color::Red, {300, 450})});
 
-  buttons_["won"]["first"] = new Button(
+  buttons_["won"]["first"] = std::make_unique<Button>(
       nullptr,
-      {GetText("Player 1 won", 120, Color::Red, {420, 350}, Text::Bold)});*/
+      {GetText("Player 1 won", 120, Color::Red, {420, 350}, Text::Bold)});
+}

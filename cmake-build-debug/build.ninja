@@ -51,55 +51,61 @@ build cmake_object_order_depends_target_battlesh1p: phony || CMakeFiles/battlesh
 
 build CMakeFiles/battlesh1p.dir/src/button.cpp.o: CXX_COMPILER__battlesh1p_Debug /home/ortbor/TP/battleship/src/button.cpp || cmake_object_order_depends_target_battlesh1p
   DEP_FILE = CMakeFiles/battlesh1p.dir/src/button.cpp.o.d
-  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -fdiagnostics-color=always -std=gnu++20
+  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8 -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles/battlesh1p.dir
   OBJECT_FILE_DIR = CMakeFiles/battlesh1p.dir/src
 
 build CMakeFiles/battlesh1p.dir/src/cell.cpp.o: CXX_COMPILER__battlesh1p_Debug /home/ortbor/TP/battleship/src/cell.cpp || cmake_object_order_depends_target_battlesh1p
   DEP_FILE = CMakeFiles/battlesh1p.dir/src/cell.cpp.o.d
-  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -fdiagnostics-color=always -std=gnu++20
+  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8 -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles/battlesh1p.dir
   OBJECT_FILE_DIR = CMakeFiles/battlesh1p.dir/src
 
 build CMakeFiles/battlesh1p.dir/src/field.cpp.o: CXX_COMPILER__battlesh1p_Debug /home/ortbor/TP/battleship/src/field.cpp || cmake_object_order_depends_target_battlesh1p
   DEP_FILE = CMakeFiles/battlesh1p.dir/src/field.cpp.o.d
-  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -fdiagnostics-color=always -std=gnu++20
+  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8 -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles/battlesh1p.dir
   OBJECT_FILE_DIR = CMakeFiles/battlesh1p.dir/src
 
 build CMakeFiles/battlesh1p.dir/src/game.cpp.o: CXX_COMPILER__battlesh1p_Debug /home/ortbor/TP/battleship/src/game.cpp || cmake_object_order_depends_target_battlesh1p
   DEP_FILE = CMakeFiles/battlesh1p.dir/src/game.cpp.o.d
-  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -fdiagnostics-color=always -std=gnu++20
+  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8 -fdiagnostics-color=always -std=gnu++20
+  OBJECT_DIR = CMakeFiles/battlesh1p.dir
+  OBJECT_FILE_DIR = CMakeFiles/battlesh1p.dir/src
+
+build CMakeFiles/battlesh1p.dir/src/object.cpp.o: CXX_COMPILER__battlesh1p_Debug /home/ortbor/TP/battleship/src/object.cpp || cmake_object_order_depends_target_battlesh1p
+  DEP_FILE = CMakeFiles/battlesh1p.dir/src/object.cpp.o.d
+  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8 -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles/battlesh1p.dir
   OBJECT_FILE_DIR = CMakeFiles/battlesh1p.dir/src
 
 build CMakeFiles/battlesh1p.dir/src/player.cpp.o: CXX_COMPILER__battlesh1p_Debug /home/ortbor/TP/battleship/src/player.cpp || cmake_object_order_depends_target_battlesh1p
   DEP_FILE = CMakeFiles/battlesh1p.dir/src/player.cpp.o.d
-  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -fdiagnostics-color=always -std=gnu++20
+  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8 -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles/battlesh1p.dir
   OBJECT_FILE_DIR = CMakeFiles/battlesh1p.dir/src
 
 build CMakeFiles/battlesh1p.dir/src/ship.cpp.o: CXX_COMPILER__battlesh1p_Debug /home/ortbor/TP/battleship/src/ship.cpp || cmake_object_order_depends_target_battlesh1p
   DEP_FILE = CMakeFiles/battlesh1p.dir/src/ship.cpp.o.d
-  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -fdiagnostics-color=always -std=gnu++20
+  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8 -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles/battlesh1p.dir
   OBJECT_FILE_DIR = CMakeFiles/battlesh1p.dir/src
 
 build CMakeFiles/battlesh1p.dir/src/window.cpp.o: CXX_COMPILER__battlesh1p_Debug /home/ortbor/TP/battleship/src/window.cpp || cmake_object_order_depends_target_battlesh1p
   DEP_FILE = CMakeFiles/battlesh1p.dir/src/window.cpp.o.d
-  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -fdiagnostics-color=always -std=gnu++20
+  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8 -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles/battlesh1p.dir
   OBJECT_FILE_DIR = CMakeFiles/battlesh1p.dir/src
 
 build CMakeFiles/battlesh1p.dir/src/main.cpp.o: CXX_COMPILER__battlesh1p_Debug /home/ortbor/TP/battleship/src/main.cpp || cmake_object_order_depends_target_battlesh1p
   DEP_FILE = CMakeFiles/battlesh1p.dir/src/main.cpp.o.d
-  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -fdiagnostics-color=always -std=gnu++20
+  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8 -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles/battlesh1p.dir
   OBJECT_FILE_DIR = CMakeFiles/battlesh1p.dir/src
 
 build CMakeFiles/battlesh1p.dir/src/network.cpp.o: CXX_COMPILER__battlesh1p_Debug /home/ortbor/TP/battleship/src/network.cpp || cmake_object_order_depends_target_battlesh1p
   DEP_FILE = CMakeFiles/battlesh1p.dir/src/network.cpp.o.d
-  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -fdiagnostics-color=always -std=gnu++20
+  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8 -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles/battlesh1p.dir
   OBJECT_FILE_DIR = CMakeFiles/battlesh1p.dir/src
 
@@ -111,9 +117,9 @@ build CMakeFiles/battlesh1p.dir/src/network.cpp.o: CXX_COMPILER__battlesh1p_Debu
 #############################################
 # Link the executable /home/ortbor/TP/battleship/bin/battlesh1p
 
-build /home/ortbor/TP/battleship/bin/battlesh1p: CXX_EXECUTABLE_LINKER__battlesh1p_Debug CMakeFiles/battlesh1p.dir/src/button.cpp.o CMakeFiles/battlesh1p.dir/src/cell.cpp.o CMakeFiles/battlesh1p.dir/src/field.cpp.o CMakeFiles/battlesh1p.dir/src/game.cpp.o CMakeFiles/battlesh1p.dir/src/player.cpp.o CMakeFiles/battlesh1p.dir/src/ship.cpp.o CMakeFiles/battlesh1p.dir/src/window.cpp.o CMakeFiles/battlesh1p.dir/src/main.cpp.o CMakeFiles/battlesh1p.dir/src/network.cpp.o | /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1
-  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address
-  LINK_LIBRARIES = /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1  /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1  /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1
+build /home/ortbor/TP/battleship/bin/battlesh1p: CXX_EXECUTABLE_LINKER__battlesh1p_Debug CMakeFiles/battlesh1p.dir/src/button.cpp.o CMakeFiles/battlesh1p.dir/src/cell.cpp.o CMakeFiles/battlesh1p.dir/src/field.cpp.o CMakeFiles/battlesh1p.dir/src/game.cpp.o CMakeFiles/battlesh1p.dir/src/object.cpp.o CMakeFiles/battlesh1p.dir/src/player.cpp.o CMakeFiles/battlesh1p.dir/src/ship.cpp.o CMakeFiles/battlesh1p.dir/src/window.cpp.o CMakeFiles/battlesh1p.dir/src/main.cpp.o CMakeFiles/battlesh1p.dir/src/network.cpp.o | /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-audio.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-network.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1
+  FLAGS = -std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8
+  LINK_LIBRARIES = /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1  /usr/lib/x86_64-linux-gnu/libsfml-audio.so.2.5.1  /usr/lib/x86_64-linux-gnu/libsfml-network.so.2.5.1  /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1  /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1
   OBJECT_DIR = CMakeFiles/battlesh1p.dir
   POST_BUILD = :
   PRE_LINK = :
