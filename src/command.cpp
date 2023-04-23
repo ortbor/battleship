@@ -24,6 +24,13 @@ bool SetButtonsCommand::Execute() {
   return true;
 }
 
+AddSymbolCommand::AddSymbolCommand(char symbol) : symbol_(symbol) {}
+
+bool AddSymbolCommand::Execute() {
+  loop_->AddToIP(symbol_);
+  return true;
+}
+
 template <typename Type>
 ExecCommand<Type>::ExecCommand(Type* obj, const Event::EventType& type,
                                void (*func)(Type* obj))

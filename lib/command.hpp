@@ -18,6 +18,17 @@ class Command {
   Event::EventType type_;
 };
 
+class AddSymbolCommand final : public Command {
+ public:
+    AddSymbolCommand(char symbol);
+    ~AddSymbolCommand() final = default;
+
+    bool Execute();
+
+ private:
+    char symbol_;
+};
+
 class SetButtonsCommand final : public Command {
  public:
   SetButtonsCommand(const string& str);

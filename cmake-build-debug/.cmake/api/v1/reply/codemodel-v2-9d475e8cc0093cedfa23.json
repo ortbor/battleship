@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Debug-58d2b4386afbd8f61294.json",
+					"jsonFile" : "directory-.-Debug-1df34233e36b48e6eb22.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.23"
@@ -40,7 +40,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "battlesh1p::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-battlesh1p-Debug-b03172da6df859ef6ef7.json",
+					"jsonFile" : "target-battlesh1p-Debug-4c9e95fb8d1d534c955f.json",
 					"name" : "battlesh1p",
 					"projectIndex" : 0
 				}

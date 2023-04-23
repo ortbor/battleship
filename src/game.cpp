@@ -2,6 +2,7 @@
 
 #include "../lib/command.hpp"
 #include "../lib/window.hpp"
+#include "../lib/network.hpp"
 
 GameLoop::GameLoop(const Vector2f& size, size_t ships)
     : kShips(ships),
@@ -27,7 +28,7 @@ GameWindow* GameLoop::GetWindow() { return &window_; }
 
 Network* GameLoop::GetNetwork() { return &network_; }
 
-int GameLoop::GetLocalPlayer() const { return local_player; }
+int GameLoop::GetLocalPlayer() const { return local_player_; }
 
 Vector2f GameLoop::GetSize() const { return size_; }
 
@@ -36,6 +37,12 @@ void GameLoop::Block() { is_blocked_ = true; }
 void GameLoop::Unblock() { is_blocked_ = false; }
 
 void GameLoop::SwitchBlock() { is_blocked_ = !is_blocked_; }
+
+std::string GameLoop::GetIP() const { return ip_; }
+
+void GameLoop::AddToIP(char ch) { ip_ += ch; }
+
+void GameLoop::CleanIP() {  ip_ = ""; }
 
 void GameLoop::Clear() {
   for (int pl = 0; pl < 2; ++pl) {

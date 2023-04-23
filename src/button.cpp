@@ -44,12 +44,10 @@ bool MouseButton::Inside(const Vector2f& mouse) const {
          mouse.y <= right.y;
 }
 
-KeyboardButton::KeyboardButton(const Keyboard::Key& button, Command* command,
-                               const deque<sf::Drawable*>& drawn)
+KeyboardButton::KeyboardButton(const Keyboard::Key& button, Command* command, const deque<sf::Drawable*>& drawn)
     : Button(command, drawn), button_(button) {}
 
 bool KeyboardButton::IsPressed(const Event& event,
                                const sf::RenderWindow& window) const {
-  return command_ != nullptr && event.type == Event::KeyPressed &&
-         Keyboard::isKeyPressed(button_);
+  return command_ != nullptr && event.type == Event::KeyPressed && Keyboard::isKeyPressed(button_);
 }

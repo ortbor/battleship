@@ -40,6 +40,7 @@ class Command;
 class SetButtonsCommand;
 template <typename Type>
 class ExecCommand;
+class AddSymbolCommand;
 class CellCommand;
 class AddCellCommand;
 class AddShipCommand;

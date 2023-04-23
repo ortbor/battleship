@@ -5,6 +5,7 @@
 #include "player.hpp"
 #include "window.hpp"
 #include "network.hpp"
+//#include "../src/network.cpp"
 
 class GameLoop {
  public:
@@ -20,6 +21,9 @@ class GameLoop {
   void Block();
   void Unblock();
   void SwitchBlock();
+  std::string GetIP() const;
+  void AddToIP(char ch);
+  void CleanIP();
 
   const size_t kShips = 10;
 
@@ -30,5 +34,6 @@ class GameLoop {
   GameWindow window_;
   Network network_;
   bool is_blocked_ = false;
-  int local_player;
+  int local_player_;
+  std::string ip_ = "";
 };

@@ -43,6 +43,6 @@ class KeyboardButton final : public Button {
   bool IsPressed(const Event& event,
                  const sf::RenderWindow& window) const final;
 
- protected:
-  Keyboard::Key button_;
+protected:
+    Keyboard::Key button_;
 };
