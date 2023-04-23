@@ -43,7 +43,7 @@ class MyField;
 class RivalField;
 class Player;
 class Command;
-class SetButtonsCommand;
+class SetCommand;
 class ExecCommand;
 class AddSymbolCommand;
 class CellCommand;

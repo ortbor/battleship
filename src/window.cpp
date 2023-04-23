@@ -24,11 +24,11 @@ GameWindow::GameWindow(array<Player, 2>& players, const Vector2f& size,
   if (!background_.loadFromFile(kPath + kRes + "background.jpg")) {
     throw std::runtime_error("Cannot load background");
   }
-  if (!game_theme_.openFromFile(kPath + kRes + "ficha1.what")) {
+  if (!game_theme_.openFromFile(kPath + kRes + "ficha3.whaaaat")) {
     throw std::runtime_error("Cannot load ficha");
   }
   if (!main_theme_.openFromFile(kPath + kRes + "ficha2.what")) {
-    throw std::runtime_error("Cannot load ficha");
+    throw std::runtime_error("Cannot load fichaaaa");
   }
 
   main_theme_.setLoop(true);
@@ -91,6 +91,10 @@ void GameWindow::SetVolume(Volume value) {
     case Volume::Less:
       main_theme_.setVolume(std::max(0.F, main_theme_.getVolume() - 10));
       game_theme_.setVolume(std::max(0.F, main_theme_.getVolume() - 10));
+      if (main_theme_.getVolume() == 0) {
+        main_theme_.pause();
+        game_theme_.pause();
+      }
       break;
 
     case Volume::More:
@@ -136,15 +140,15 @@ std::filesystem::path GameWindow::Path() {
 }
 
 void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
+  buttons_["menu"]["play"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("play"),
+      RectObject({340, 150}, {0, 255, 95}, {790, 300}),
+      TextObject("Play", 140, Color::Red, {820, 270}, font_));
+
   buttons_["menu"]["settings"] = std::make_unique<MouseButton>(
       Mouse::Button::Left, std::make_unique<SetCommand>("settings"),
       RectObject({530, 150}, {0, 255, 95}, {700, 820}),
       TextObject("Settings", 140, Color::Red, {720, 790}, font_));
-
-  buttons_["menu"]["play"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("ip"),
-      RectObject({340, 150}, {0, 255, 95}, {790, 300}),
-      TextObject("Play", 140, Color::Red, {820, 270}, font_));
 
   buttons_["menu"]["return"] = std::make_unique<MouseButton>(
       Mouse::Button::Left,
@@ -152,11 +156,6 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
                                     [](GameWindow& window) { window.close(); }),
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("X", 60, Color::Red, {97, 75}, font_));
-
-  buttons_["ip"]["return"] = std::make_unique<MouseButton>(
-      Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
-      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-      TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
   buttons_["settings"]["return"] = std::make_unique<MouseButton>(
       Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
@@ -199,17 +198,43 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       RectObject({100, 100}, {0, 255, 95}, {1350, 530}),
       TextObject("<))", 60, Color::Red, {1355, 535}, font_));
 
-  buttons_["ip"]["number"] = std::make_unique<KeyboardButton>(
-      Keyboard::Key::Num0, std::make_unique<AddSymbolCommand>());
-
   buttons_["ip"]["save"] = std::make_unique<MouseButton>(
           Mouse::Button::Left, std::make_unique<SetCommand>("select_0"),
           RectObject({340, 150}, {0, 255, 95}, {790, 300}),
           TextObject("Save", 140, Color::Red, {820, 270}, font_));
 
-/*
-  buttons_["ip"]["enter"] = new KeyboardButton(
-      Keyboard::Key::Enter, new SetButtonsCommand("select_0"), {});*/
+  buttons_["play"]["return"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("menu"),
+      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+      TextObject("<-", 60, Color::Red, {85, 70}, font_));
+
+  buttons_["play"]["connect"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("ip"),
+      RectObject({665, 150}, {0, 255, 95}, {630, 300}),
+      TextObject("Throw a glove", 100, Color::Red, {640, 300}, font_));
+
+  buttons_["play"]["wait"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("connect"),
+      RectObject({1210, 150}, {0, 255, 95}, {360, 820}),
+      TextObject("Wait for a dick to your ass", 100, Color::Red, {370, 820},
+                 font_));
+
+  buttons_["ip"]["return"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("play"),
+      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+      TextObject("<-", 60, Color::Red, {85, 70}, font_));
+
+  buttons_["ip"]["number"] =
+      std::make_unique<KeyboardButton>(std::make_unique<AddSymbolCommand>());
+
+  buttons_["connect"]["return"] = std::make_unique<MouseButton>(
+      Mouse::Button::Left, std::make_unique<SetCommand>("play"),
+      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+      TextObject("<-", 60, Color::Red, {85, 70}, font_));
+
+  /*
+    buttons_["ip"]["enter"] = new KeyboardButton(
+        Keyboard::Key::Enter, new SetButtonsCommand("select_0"), {});*/
 
   for (auto& item : buttons_) {
     item.second["close"] =
@@ -226,7 +251,6 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
         TextObject(kName, 140, Color::Red, {475, 0}, font_,
                    Text::Bold | Text::Underlined));
   }
-
 
   for (size_t pl = 0; pl < 2; ++pl) {
     buttons_["select_" + std::to_string(pl)]["text"] = std::make_unique<Button>(
