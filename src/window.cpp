@@ -204,7 +204,7 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
   buttons_["play"]["connect"] = std::make_shared<MouseButton>(
-      Mouse::Button::Left, std::make_shared<SetCommand>("ip"),
+      Mouse::Button::Left, std::make_shared<ExecCommand>(*this, Event::MouseButtonPressed, [](GameWindow& window) { window.SetButtons("ip"); ExecCommand::loop_; }),
       RectObject({665, 150}, {0, 255, 95}, {630, 300}),
       TextObject("Throw a glove", 100, Color::Red, {640, 300}, font_));
 
@@ -223,7 +223,7 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       std::make_shared<KeyboardButton>(std::make_shared<AddSymbolCommand>());
 
   buttons_["ip"]["save"] = std::make_shared<MouseButton>(
-      Mouse::Button::Left, std::make_shared<SetCommand>("select_0"),
+      Mouse::Button::Left, std::make_shared<SaveIPCommand>(),
       RectObject({340, 150}, {0, 255, 95}, {790, 300}),
       TextObject("Save", 140, Color::Red, {820, 270}, font_));
 

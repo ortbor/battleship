@@ -26,6 +26,14 @@ class AddSymbolCommand final : public Command {
   bool Execute();
 };
 
+class SaveIPCommand final : public Command {
+ public:
+    SaveIPCommand() = default;
+    ~SaveIPCommand() final = default;
+
+    bool Execute();
+};
+
 class SetCommand final : public Command {
  public:
   SetCommand(const string& str);

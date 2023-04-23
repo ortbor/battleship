@@ -29,6 +29,12 @@ bool AddSymbolCommand::Execute() {
   return true;
 }
 
+bool SaveIPCommand::Execute() {
+  loop_->GetNetwork()->SetOtherIP(sf::IpAddress(loop_->GetIP()));
+  loop_->GetWindow().SetButtons("select_0");
+  return true;
+}
+
 ExecCommand::ExecCommand(GameWindow& obj, const Event::EventType& type,
                          void (*func)(GameWindow& obj))
     : Command(type), obj_(obj), func_(func) {}
