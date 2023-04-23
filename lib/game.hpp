@@ -17,12 +17,13 @@ class GameLoop {
   GameWindow& GetWindow();
   Network* GetNetwork();
   int GetLocalPlayer() const;
-  Vector2f GetSize() const;
+  const Vector2f& GetSize() const;
   void Block();
   void Unblock();
   void SwitchBlock();
-  std::string GetIP() const;
+  const string& GetIP() const;
   void AddToIP(char ch);
+  void RemoveLastIP();
   void CleanIP();
 
   const size_t kShips = 10;
@@ -35,5 +36,5 @@ class GameLoop {
   Network network_;
   bool is_blocked_ = false;
   int local_player_;
-  std::string ip_ = "";
+  string ip_ = "";
 };

@@ -24,15 +24,16 @@ GameWindow::GameWindow(array<Player, 2>& players, const Vector2f& size,
   if (!background_.loadFromFile(kPath + kRes + "background.jpg")) {
     throw std::runtime_error("Cannot load background");
   }
-  if (!game_theme_.openFromFile(kPath + kRes + "ficha3.whaaaat")) {
+  if (!music_["game"].openFromFile(kPath + kRes + "ficha3.whaaaat")) {
     throw std::runtime_error("Cannot load ficha");
   }
-  if (!main_theme_.openFromFile(kPath + kRes + "ficha2.what")) {
+  if (!music_["main"].openFromFile(kPath + kRes + "ficha2.what")) {
     throw std::runtime_error("Cannot load fichaaaa");
   }
 
-  main_theme_.setLoop(true);
-  main_theme_.play();
+  music_["main"].setLoop(true);
+  music_["game"].setLoop(true);
+  music_["main"].play();
 
   Configure(players, size);
   DrawObjects();
@@ -58,12 +59,22 @@ GameWindow::GetButtons() {
 
 Event& GameWindow::GetEvent() { return event_; }
 
+Music& GameWindow::GetMusic(const string& elem) { return music_[elem]; }
+
+void GameWindow::SetObject(const string& scene, const string& elem,
+                           size_t index, const string& str) {
+  dynamic_cast<Text*>(
+      buttons_[scene][elem].get()->GetDrawable()[index].sprite.get())
+      ->setString(str);
+}
+
 void GameWindow::SetButtons(const string& str) {
   button_str_ = str;
   DrawObjects();
 }
 
-void GameWindow::SetShow(const string& scene, const string& elem, size_t index, bool show) {
+void GameWindow::SetShow(const string& scene, const string& elem, size_t index,
+                         bool show) {
   buttons_[scene][elem].get()->GetDrawable()[index].show = show;
 }
 
@@ -82,42 +93,37 @@ void GameWindow::DrawObjects() {
 void GameWindow::SetVolume(Volume value) {
   switch (value) {
     case Volume::Silence:
-      main_theme_.setVolume(0);
-      game_theme_.setVolume(0);
-      main_theme_.pause();
-      game_theme_.pause();
+      for (auto& elem : music_) {
+        elem.second.setVolume(0);
+        elem.second.pause();
+      }
       break;
 
     case Volume::Less:
-      main_theme_.setVolume(std::max(0.F, main_theme_.getVolume() - 10));
-      game_theme_.setVolume(std::max(0.F, main_theme_.getVolume() - 10));
-      if (main_theme_.getVolume() == 0) {
-        main_theme_.pause();
-        game_theme_.pause();
+      for (auto& elem : music_) {
+        elem.second.setVolume(std::min(100.F, elem.second.getVolume() - 10));
+        if (elem.second.getStatus() == sf::SoundSource::Paused) {
+          elem.second.pause();
+        }
       }
       break;
 
     case Volume::More:
-      main_theme_.setVolume(std::min(100.F, main_theme_.getVolume() + 10));
-      game_theme_.setVolume(std::min(100.F, main_theme_.getVolume() + 10));
-      if (main_theme_.getStatus() == sf::SoundSource::Paused) {
-        main_theme_.play();
-      }
-      if (game_theme_.getStatus() == sf::SoundSource::Paused) {
-        game_theme_.play();
+      for (auto& elem : music_) {
+        elem.second.setVolume(std::min(100.F, elem.second.getVolume() + 10));
+        if (elem.second.getStatus() == sf::SoundSource::Paused) {
+          elem.second.play();
+        }
       }
       break;
 
     case Volume::Max:
-      main_theme_.setVolume(100);
-      game_theme_.setVolume(100);
-      if (main_theme_.getStatus() == sf::SoundSource::Paused) {
-        main_theme_.play();
+      for (auto& elem : music_) {
+        elem.second.setVolume(100);
+        if (elem.second.getStatus() == sf::SoundSource::Paused) {
+          elem.second.play();
+        }
       }
-      if (game_theme_.getStatus() == sf::SoundSource::Paused) {
-        game_theme_.play();
-      }
-      break;
 
     default:
       throw std::runtime_error("Unknown volume!");
@@ -219,13 +225,15 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
-  buttons_["ip"]["number"] =
-      std::make_shared<KeyboardButton>(std::make_shared<AddSymbolCommand>());
+  buttons_["ip"]["box"] = std::make_shared<KeyboardButton>(
+      std::make_shared<AddSymbolCommand>(),
+      RectObject({500, 70}, {200, 200, 200}, {705, 300}),
+      TextObject("", 40, Color::Black, {710, 300}, font_));
 
   buttons_["ip"]["save"] = std::make_shared<MouseButton>(
       Mouse::Button::Left, std::make_shared<SetCommand>("select_0"),
-      RectObject({340, 150}, {0, 255, 95}, {790, 300}),
-      TextObject("Save", 140, Color::Red, {820, 270}, font_));
+      RectObject({260, 150}, {0, 255, 95}, {830, 600}),
+      TextObject("Save", 100, Color::Red, {860, 600}, font_));
 
   buttons_["connect"]["return"] = std::make_shared<MouseButton>(
       Mouse::Button::Left, std::make_shared<SetCommand>("play"),

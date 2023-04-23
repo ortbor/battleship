@@ -25,7 +25,17 @@ bool SetCommand::Execute() {
 }
 
 bool AddSymbolCommand::Execute() {
-  loop_->AddToIP(static_cast<char>(loop_->GetWindow().GetEvent().text.unicode));
+  size_t code = loop_->GetWindow().GetEvent().text.unicode;
+  if (code == 13) {
+    loop_->GetWindow().SetButtons("select_0");
+  } else if (code == 8) {
+    loop_->RemoveLastIP();
+  } else if (code >= 46 && code <= 57 && code != 47 &&
+             loop_->GetIP().size() < 15) {
+    loop_->AddToIP(static_cast<char>(code));
+  }
+  loop_->GetWindow().SetObject("ip", "box", 1, loop_->GetIP());
+  loop_->GetWindow().DrawObjects();
   return true;
 }
 
@@ -92,12 +102,12 @@ bool AddShipCommand::Execute() {
       loop_->SwitchBlock();
       player_->GetField()->RemoveProhibited();
       if (player_->GetIndex() == 0) {
+        loop_->GetWindow().GetMusic("main").stop();
+        loop_->GetWindow().GetMusic("game").play();
         loop_->GetWindow().SetButtons("shift_select");
         sf::sleep(sf::milliseconds(2000));
         loop_->GetWindow().SetButtons("select_1");
       } else {
-        loop_->GetWindow().main_theme_.stop();
-        loop_->GetWindow().game_theme_.play();
         loop_->GetWindow().SetButtons("starts");
         sf::sleep(sf::milliseconds(2000));
         loop_->GetWindow().SetButtons("turn_" + std::to_string(0));
