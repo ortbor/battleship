@@ -10,6 +10,7 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <sfeMovie/Movie.hpp>
 #include <unordered_map>
 
 using sf::Color;
@@ -28,12 +29,13 @@ using sf::Vector2f;
 using sf::Vector2u;
 using sf::VideoMode;
 using sf::View;
+using sfe::Movie;
 using std::array;
 using std::deque;
 using std::map;
 using std::pair;
-using std::string;
 using std::shared_ptr;
+using std::string;
 using std::unordered_map;
 
 class Cell;

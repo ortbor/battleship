@@ -40,7 +40,7 @@ void GameLoop::SwitchBlock() { is_blocked_ = !is_blocked_; }
 
 const string& GameLoop::GetIP() const { return ip_; }
 
-void GameLoop::AddToIP(char ch) { ip_ += ch; }
+void GameLoop::AddToIP(char symbol) { ip_ += symbol; }
 
 void GameLoop::RemoveLastIP() {
   if (!ip_.empty()) {

@@ -22,7 +22,7 @@ class GameLoop {
   void Unblock();
   void SwitchBlock();
   const string& GetIP() const;
-  void AddToIP(char ch);
+  void AddToIP(char symbol);
   void RemoveLastIP();
   void CleanIP();
 

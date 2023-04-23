@@ -41,6 +41,27 @@ int main() {
     wnd.display();
   }*/
 
+  /*
+  sf::RenderWindow window(sf::VideoMode(1280, 840), "SFML works!");
+
+  sfe::Movie movie;
+  movie.openFromFile("../share/battlesh1p/bug.or.ficha");
+  movie.fit(200, 0, 450, 800);
+  movie.play();
+
+  while (window.isOpen()) {
+    sf::Event event;
+    while (window.pollEvent(event)) {
+      if (event.type == sf::Event::Closed) window.close();
+    }
+
+    movie.update();
+
+    window.clear();
+    window.draw(movie);
+    window.display();
+  }*/
+
   GameLoop game(Vector2f(kSize, kSize), kShips);
   game.Go();
 

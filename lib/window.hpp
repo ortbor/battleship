@@ -20,7 +20,7 @@ class GameWindow : public sf::RenderWindow {
   void DrawObjects();
   void SetVolume(Volume value);
   void Configure(array<Player, 2>& players, const Vector2f& size);
-
+  void Ficha();
 
  protected:
   const std::string kName = "BATTLESH!P!!";
@@ -33,6 +33,7 @@ class GameWindow : public sf::RenderWindow {
 
   Font font_;
   Texture background_;
+  Movie movie_;
   unordered_map<string, Music> music_;
 
   string button_str_ = "menu";

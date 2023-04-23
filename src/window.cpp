@@ -24,6 +24,10 @@ GameWindow::GameWindow(array<Player, 2>& players, const Vector2f& size,
   if (!background_.loadFromFile(kPath + kRes + "background.jpg")) {
     throw std::runtime_error("Cannot load background");
   }
+  if (!movie_.openFromFile(kPath + kRes + "bug.or.ficha")) {
+    throw std::runtime_error("Cannot load ficha");
+  }
+
   if (!music_["game"].openFromFile(kPath + kRes + "ficha3.whaaaat")) {
     throw std::runtime_error("Cannot load ficha");
   }
@@ -34,6 +38,7 @@ GameWindow::GameWindow(array<Player, 2>& players, const Vector2f& size,
   music_["main"].setLoop(true);
   music_["game"].setLoop(true);
   music_["main"].play();
+  movie_.fit(0, 0, sides.x, sides.y);
 
   Configure(players, size);
   DrawObjects();
@@ -90,6 +95,18 @@ void GameWindow::DrawObjects() {
   display();
 }
 
+void GameWindow::Ficha() {
+  music_["main"].stop();
+  music_["game"].stop();
+  movie_.play();
+  while (isOpen()) {
+    movie_.update();
+    clear();
+    draw(movie_);
+    display();
+  }
+}
+
 void GameWindow::SetVolume(Volume value) {
   switch (value) {
     case Volume::Silence:
@@ -138,7 +155,7 @@ std::filesystem::path GameWindow::Path() {
     throw std::runtime_error("Cannot specify program path!");
   }
 #elif defined(_WIN32)
-  GetModuleFileName(NULL, path_str.data(), PATH_MAX);
+  GetModuleFileName(NULL, path_str.data(), 0 PATH_MAX);
 #else
   throw std::runtime_error("Unsupported OS");
 #endif
@@ -155,6 +172,12 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       Mouse::Button::Left, std::make_shared<SetCommand>("settings"),
       RectObject({530, 150}, {0, 255, 95}, {700, 820}),
       TextObject("Settings", 140, Color::Red, {720, 790}, font_));
+
+  buttons_["menu"]["ficha"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left,
+      std::make_shared<ExecCommand>(*this, Event::MouseButtonPressed,
+                                    [](GameWindow& window) { window.Ficha(); }),
+      RectObject({150, 150}, {0, 255, 95}, {1770, 930}, false));
 
   buttons_["menu"]["return"] = std::make_shared<MouseButton>(
       Mouse::Button::Left,
