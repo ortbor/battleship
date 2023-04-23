@@ -14,9 +14,9 @@ Command::Command(const Event::EventType& type) : type_(type) {}
 
 const Event::EventType& Command::GetType() { return type_; }
 
-SetButtonsCommand::SetButtonsCommand(const string& str) : str_(str) {}
+SetCommand::SetCommand(const string& str) : str_(str) {}
 
-bool SetButtonsCommand::Execute() {
+bool SetCommand::Execute() {
   if(str_ == "menu") {
     loop_->Clear();
   }
@@ -31,13 +31,11 @@ bool AddSymbolCommand::Execute() {
   return true;
 }
 
-template <typename Type>
-ExecCommand<Type>::ExecCommand(Type* obj, const Event::EventType& type,
-                               void (*func)(Type* obj))
+ExecCommand::ExecCommand(GameWindow& obj, const Event::EventType& type,
+                               void (*func)(GameWindow& obj))
     : Command(type), obj_(obj), func_(func) {}
 
-template <typename Type>
-bool ExecCommand<Type>::Execute() {
+bool ExecCommand::Execute() {
   (*func_)(obj_);
   return true;
 }
@@ -118,11 +116,9 @@ bool AddShipCommand::IsValid() const {
   if (!player_->GetShipInProcess()->IsClassic()) {
     return false;
   }
-  if (player_->GetNumberOfShipsSized(player_->GetShipInProcess()->GetSize()) >=
-      5 - player_->GetShipInProcess()->GetSize()) {
-    return false;
-  }
-  return true;
+  return player_->GetNumberOfShipsSized(
+             player_->GetShipInProcess()->GetSize()) <
+         5 - player_->GetShipInProcess()->GetSize();
 }
 
 void AddShipCommand::Send() {

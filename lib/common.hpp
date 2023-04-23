@@ -1,22 +1,27 @@
 #pragma once
 
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <algorithm>
 #include <array>
+#include <deque>
 #include <filesystem>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <unordered_map>
-#include <deque>
 
 using sf::Color;
 using sf::Event;
 using sf::Font;
 using sf::Keyboard;
 using sf::Mouse;
+using sf::Music;
 using sf::RectangleShape;
+using sf::RenderWindow;
+using sf::SoundBuffer;
+using sf::Sprite;
 using sf::Text;
 using sf::Texture;
 using sf::Vector2f;
@@ -24,11 +29,12 @@ using sf::Vector2u;
 using sf::VideoMode;
 using sf::View;
 using std::array;
+using std::deque;
 using std::map;
 using std::pair;
 using std::string;
+using std::unique_ptr;
 using std::unordered_map;
-using std::deque;
 
 class Cell;
 class Ship;
@@ -38,7 +44,6 @@ class RivalField;
 class Player;
 class Command;
 class SetButtonsCommand;
-template <typename Type>
 class ExecCommand;
 class AddSymbolCommand;
 class CellCommand;
@@ -47,6 +52,9 @@ class AddShipCommand;
 class ShootCommand;
 class GameLoop;
 class GameWindow;
+struct DrawObject;
+struct TextObject;
+struct RectObject;
 class Button;
 class MouseButton;
 class KeyboardButton;
@@ -63,3 +71,5 @@ enum class State {
   Killed,
   Chosen
 };
+
+enum class Volume { Silence, Less, More, Max };
