@@ -7,7 +7,7 @@ DrawObject::DrawObject(shared_ptr<sf::Drawable> spriten, bool shown)
     : sprite(std::move(spriten)), show(shown) {}
 
 TextObject::TextObject(const string& str, size_t size, const Color& color,
-                       const Vector2f& pos, const Font& font, int style,
+                       const Vector2f& pos, const sf::Font& font, int style,
                        bool show)
     : DrawObject(std::make_shared<Text>(str, font, size), show) {
   static_cast<Text*>(sprite.get())->setFillColor(color);

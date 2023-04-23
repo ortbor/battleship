@@ -27,11 +27,13 @@ void GameLoop::ProcessNetwork() {
 
 void GameLoop::Go() {
   Command::loop_ = this;
-  XInitThreads();
-  sf::Thread window_thread(&GameLoop::ProcessWindow, this);
-  sf::Thread network_thread(&GameLoop::ProcessNetwork, this);
-  window_thread.launch();
-  network_thread.launch();
+  while (window_.isOpen()) {
+    if (is_blocked_) {
+      network_.GetCommand()->Execute();
+    } else {
+      window_.GetCommand()->Execute();
+    }
+  }
 }
 
 GameWindow& GameLoop::GetWindow() { return window_; }
@@ -40,7 +42,9 @@ Network* GameLoop::GetNetwork() { return &network_; }
 
 int GameLoop::GetLocalPlayer() const { return local_player_; }
 
-void GameLoop::SetLocalPlayer(int local_player) { local_player_ = local_player; }
+void GameLoop::SetLocalPlayer(int local_player) {
+  local_player_ = local_player;
+}
 
 const Vector2f& GameLoop::GetSize() const { return size_; }
 
