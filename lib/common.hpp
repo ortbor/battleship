@@ -49,6 +49,7 @@ class GameWindow;
 class Button;
 class MouseButton;
 class KeyboardButton;
+class Network;
 
 enum class ShotResult { Kill, Harm, Miss, Unknown };
 enum class State {

@@ -1,0 +1,11 @@
+# ninja log v5
+1	850	1682160371900531939	CMakeFiles/battlesh1p.dir/src/cell.cpp.o	d8c266051710d7f7
+2	989	1682160372040534780	CMakeFiles/battlesh1p.dir/src/main.cpp.o	f9dcfb6b78ad5deb
+2	2348	1682159054069772194	CMakeFiles/battlesh1p.dir/src/button.cpp.o	1d501b09c602e3a0
+2	1381	1682160069713601996	CMakeFiles/battlesh1p.dir/src/game.cpp.o	e9b5234d641d5470
+1	1861	1682160070193630600	CMakeFiles/battlesh1p.dir/src/field.cpp.o	e714af3aed19ccb5
+1	38	1682161175625790221	build.ninja	7d031256370d9163
+989	1073	1682160372124536481	/home/ortbor/TP/battleship/bin/battlesh1p	23d4578e26db1955
+2	3227	1682159054949747895	CMakeFiles/battlesh1p.dir/src/ship.cpp.o	619dda899a5e590e
+1	2459	1682160216316356059	CMakeFiles/battlesh1p.dir/src/window.cpp.o	5aa95a241adeb418
+2	1944	1682160070277635595	CMakeFiles/battlesh1p.dir/src/player.cpp.o	985019223b912a45

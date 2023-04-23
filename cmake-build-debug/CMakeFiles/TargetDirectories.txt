@@ -1,0 +1,7 @@
+/home/ortbor/TP/battleship/cmake-build-debug/CMakeFiles/battlesh1p.dir
+/home/ortbor/TP/battleship/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/ortbor/TP/battleship/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/ortbor/TP/battleship/cmake-build-debug/CMakeFiles/list_install_components.dir
+/home/ortbor/TP/battleship/cmake-build-debug/CMakeFiles/install.dir
+/home/ortbor/TP/battleship/cmake-build-debug/CMakeFiles/install/local.dir
+/home/ortbor/TP/battleship/cmake-build-debug/CMakeFiles/install/strip.dir

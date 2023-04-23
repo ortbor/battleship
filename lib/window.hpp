@@ -9,6 +9,7 @@ class GameWindow : public sf::RenderWindow {
   ~GameWindow();
 
   Command* GetCommand();
+  unordered_map<string, map<string, Button*>>& GetButtons();
   void SetButtons(const string& str);
   void SetShow(const string& scene, const string& elem, bool show);
   void DrawObjects();

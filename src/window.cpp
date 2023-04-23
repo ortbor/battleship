@@ -53,6 +53,10 @@ Command* GameWindow::GetCommand() {
   }
 }
 
+unordered_map<string, map<string, Button*>>& GameWindow::GetButtons() {
+  return buttons_;
+}
+
 void GameWindow::SetButtons(const string& str) {
   button_str_ = str;
   DrawObjects();

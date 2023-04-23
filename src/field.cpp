@@ -69,6 +69,16 @@ void MyField::SetShip(Ship* ship) {
   }
 }
 
+void MyField::RemoveProhibited() {
+  for (size_t i = 0; i < size_.x; ++i) {
+    for (size_t j = 0; j < size_.y; ++j) {
+      if (cells_[i][j].GetState() == State::Prohibited) {
+        cells_[i][j].SetState(State::Clear);
+      }
+    }
+  }
+}
+
 RivalField::RivalField(const Vector2f& sizen) : Field(sizen) {}
 
 void RivalField::UpdateShot(Cell* cell, ShotResult& shot_result) {

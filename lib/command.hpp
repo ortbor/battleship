@@ -54,6 +54,7 @@ class CellCommand : public Command {
   Cell* cell_;
 
   virtual bool IsValid() const = 0;
+  virtual void Send() = 0;
 };
 
 class AddCellCommand final : public CellCommand {
@@ -66,6 +67,7 @@ class AddCellCommand final : public CellCommand {
 
  protected:
   bool IsValid() const final;
+  void Send() final;
 };
 
 class ShootCommand final : public CellCommand {
@@ -76,6 +78,7 @@ class ShootCommand final : public CellCommand {
 
  protected:
   bool IsValid() const final;
+  void Send() final;
 };
 
 class AddShipCommand : public Command {
@@ -88,4 +91,5 @@ class AddShipCommand : public Command {
   Player* player_;
 
   bool IsValid() const;
+  void Send();
 };
