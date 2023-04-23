@@ -18,10 +18,10 @@ class Command {
   Event::EventType type_;
 };
 
-class SetButtonsCommand final : public Command {
+class SetCommand final : public Command {
  public:
-  SetButtonsCommand(const string& str);
-  ~SetButtonsCommand() final = default;
+  SetCommand(const string& str);
+  ~SetCommand() final = default;
 
   bool Execute() final;
 
@@ -29,18 +29,17 @@ class SetButtonsCommand final : public Command {
   string str_;
 };
 
-template <typename Type>
 class ExecCommand final : public Command {
  public:
-  ExecCommand(Type* obj, const Event::EventType& type_,
-              void (*func)(Type* obj));
+  ExecCommand(GameWindow& obj, const Event::EventType& type,
+              void (*func)(GameWindow& obj));
   ~ExecCommand() final = default;
 
   bool Execute() final;
 
  protected:
-  Type* obj_;
-  void (*func_)(Type* obj);
+  GameWindow& obj_;
+  void (*func_)(GameWindow& obj);
 };
 
 class CellCommand : public Command {
