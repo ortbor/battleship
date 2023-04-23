@@ -31,7 +31,7 @@ class GameWindow : public sf::RenderWindow {
   View view_;
   Event event_;
 
-  Font font_;
+  sf::Font font_;
   Texture background_;
   Movie movie_;
   unordered_map<string, Music> music_;
