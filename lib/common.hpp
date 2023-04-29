@@ -13,7 +13,6 @@
 #include <map>
 #include <memory>
 #include <sfeMovie/Movie.hpp>
-#include <thread>
 #include <unordered_map>
 
 using sf::Color;
