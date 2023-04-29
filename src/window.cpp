@@ -66,6 +66,8 @@ Event& GameWindow::GetEvent() { return event_; }
 
 Music& GameWindow::GetMusic(const string& elem) { return music_[elem]; }
 
+string& GameWindow::GetBox() { return text_box_; }
+
 void GameWindow::SetObject(const string& scene, const string& elem,
                            size_t index, const string& str) {
   dynamic_cast<Text*>(
@@ -93,18 +95,6 @@ void GameWindow::DrawObjects() {
     }
   }
   display();
-}
-
-void GameWindow::Ficha() {
-  music_["main"].stop();
-  music_["game"].stop();
-  movie_.play();
-  while (isOpen()) {
-    movie_.update();
-    clear();
-    draw(movie_);
-    display();
-  }
 }
 
 void GameWindow::SetVolume(Volume value) {
@@ -145,6 +135,18 @@ void GameWindow::SetVolume(Volume value) {
     default:
       throw std::runtime_error("Unknown volume!");
       break;
+  }
+}
+
+void GameWindow::Ficha() {
+  music_["main"].stop();
+  music_["game"].stop();
+  movie_.play();
+  while (isOpen()) {
+    movie_.update();
+    clear();
+    draw(movie_);
+    display();
   }
 }
 
@@ -239,10 +241,11 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
 
   buttons_["play"]["wait"] = std::make_shared<MouseButton>(
       Mouse::Button::Left,
-      std::make_shared<ExecCommand>(*this, Event::MouseButtonPressed, [](GameWindow& window) {
-          window.SetButtons("ip");
-          ExecCommand::loop_->SetLocalPlayer(1);
-      }),
+      std::make_shared<ExecCommand>(*this, Event::MouseButtonPressed,
+                                    [](GameWindow& window) {
+                                      window.SetButtons("ip");
+                                      ExecCommand::loop_->SetLocalPlayer(1);
+                                    }),
       RectObject({1210, 150}, {0, 255, 95}, {360, 820}),
       TextObject("Wait for a dick to your ass", 100, Color::Red, {370, 820},
                  font_));
@@ -254,13 +257,17 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
 
   buttons_["ip"]["box"] = std::make_shared<KeyboardButton>(
       std::make_shared<AddSymbolCommand>(),
-      RectObject({500, 70}, {200, 200, 200}, {705, 300}),
+      RectObject({500, 70}, {200, 200, 200}, {703, 295}),
       TextObject("", 40, Color::Black, {710, 300}, font_));
 
   buttons_["ip"]["save"] = std::make_shared<MouseButton>(
       Mouse::Button::Left, std::make_shared<SaveIPCommand>(),
       RectObject({260, 150}, {0, 255, 95}, {830, 600}),
       TextObject("Save", 100, Color::Red, {860, 600}, font_));
+
+  buttons_["ip"]["error"] = std::make_shared<Button>(
+      nullptr, TextObject("Invalid IP!", 80, Color::Red, {765, 800}, font_,
+                        Text::Bold, false));
 
   buttons_["connect"]["return"] = std::make_shared<MouseButton>(
       Mouse::Button::Left, std::make_shared<SetCommand>("play"),
@@ -290,19 +297,19 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       TextObject("Wrong shaped ship!", 80, Color::Red, {1030, 750}, font_,
                  Text::Bold, false));
 
-  buttons_["play_0"]["return"] = std::make_shared<MouseButton>(
+  buttons_["player_0"]["return"] = std::make_shared<MouseButton>(
       Mouse::Left, std::make_shared<SetCommand>("play"),
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("<-", 60, Color::Red, {85, 72}, font_));
 
-  buttons_["play_0"]["turn"] = std::make_shared<Button>(
+  buttons_["player_0"]["turn"] = std::make_shared<Button>(
       nullptr, TextObject("Your turn ", 100, Color::Red, {675, 930}, font_,
                           sf::Text::Bold));
 
-  buttons_["play_0"]["field_your"] = std::make_shared<Button>(
+  buttons_["player_0"]["field_your"] = std::make_shared<Button>(
       nullptr, TextObject("Your field", 80, Color::Red, {133, 950}, font_));
 
-  buttons_["play_0"]["field_rival"] = std::make_shared<Button>(
+  buttons_["player_0"]["field_rival"] = std::make_shared<Button>(
       nullptr, TextObject("Rival field", 80, Color::Red, {1410, 950}, font_));
 
   buttons_["won_0"]["text"] = std::make_shared<Button>(

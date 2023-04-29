@@ -12,6 +12,7 @@ class GameWindow : public sf::RenderWindow {
   unordered_map<string, map<string, std::shared_ptr<Button>>>& GetButtons();
   Event& GetEvent();
   Music& GetMusic(const string& elem);
+  string& GetBox();
   void SetButtons(const string& str);
   void SetObject(const string& scene, const string& elem, size_t index,
                  const string& str);
@@ -19,8 +20,8 @@ class GameWindow : public sf::RenderWindow {
                bool show);
   void DrawObjects();
   void SetVolume(Volume value);
-  void Configure(array<Player, 2>& players, const Vector2f& size);
   void Ficha();
+  void Configure(array<Player, 2>& players, const Vector2f& size);
 
  protected:
   const std::string kName = "BATTLESH!P!!";
@@ -36,6 +37,7 @@ class GameWindow : public sf::RenderWindow {
   Movie movie_;
   unordered_map<string, Music> music_;
 
+  string text_box_ = "";
   string button_str_ = "menu";
   unordered_map<string, map<string, std::shared_ptr<Button>>> buttons_;
 
