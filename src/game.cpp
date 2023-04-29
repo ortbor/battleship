@@ -27,13 +27,18 @@ void GameLoop::ProcessNetwork() {
 
 void GameLoop::Go() {
   Command::loop_ = this;
-  while (window_.isOpen()) {
+ // std::thread window_thread(&GameLoop::ProcessWindow, this);
+  std::thread network_thread(&GameLoop::ProcessNetwork, this);
+  //window_thread.join();
+ // network_thread;
+  ProcessWindow();
+  /*while (window_.isOpen()) {
     if (is_blocked_) {
       network_.GetCommand()->Execute();
     } else {
       window_.GetCommand()->Execute();
     }
-  }
+  }*/
 }
 
 GameWindow& GameLoop::GetWindow() { return window_; }
