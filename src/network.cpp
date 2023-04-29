@@ -9,11 +9,11 @@
 
 Network::Network(GameLoop* loop) : loop_(loop) {  }
 
-void Network::SetOtherIP(IpAddress other_ip, size_t ip_port) {
+Socket::Status Network::SetOtherIP(IpAddress other_ip, size_t ip_port) {
   other_ip_ = other_ip;
   port_ = ip_port;
   listener_.listen(ip_port);
-  socket_.connect(other_ip, ip_port);
+  return socket_.connect(other_ip, ip_port, sf::milliseconds(1500));
 }
 
 void Network::Send(string command_type, string coords) {

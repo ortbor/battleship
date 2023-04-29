@@ -25,6 +25,7 @@ using sf::Music;
 using sf::Packet;
 using sf::RectangleShape;
 using sf::RenderWindow;
+using sf::Socket;
 using sf::SoundBuffer;
 using sf::Sprite;
 using sf::TcpListener;

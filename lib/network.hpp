@@ -6,7 +6,7 @@
 class Network {
  public:
   explicit Network(GameLoop* loop);
-  void SetOtherIP(IpAddress other_ip, size_t ip_port);
+  Socket::Status SetOtherIP(IpAddress other_ip, size_t ip_port);
   void Send(std::string command_type, std::string coords = "");
   Command* GetCommand();
 

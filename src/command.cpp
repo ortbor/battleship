@@ -25,7 +25,9 @@ bool SetCommand::Execute() {
 }
 
 bool AddSymbolCommand::Execute() {
-  loop_->GetWindow().SetShow("ip", "error", 0, false);
+  loop_->GetWindow().SetShow("ip", "status", 1, false);
+  loop_->GetWindow().SetShow("ip", "status", 2, false);
+
   size_t code = loop_->GetWindow().GetEvent().text.unicode;
 
   if (code == 8 && !loop_->GetWindow().GetBox().empty()) {
@@ -37,7 +39,6 @@ bool AddSymbolCommand::Execute() {
     loop_->GetWindow().GetBox().push_back(static_cast<char>(code));
   }
   loop_->GetWindow().SetObject("ip", "box", 1, loop_->GetWindow().GetBox());
-  loop_->GetWindow().DrawObjects();
   return true;
 }
 
@@ -50,10 +51,9 @@ std::string SaveIPCommand::ip_str_r =
 std::regex SaveIPCommand::ip_regex(SaveIPCommand::ip_str_r);
 
 bool SaveIPCommand::Execute() {
-  string& text = loop_->GetWindow().GetBox();
+  string text = loop_->GetWindow().GetBox();
   if (!std::regex_match(text, ip_regex)) {
-    loop_->GetWindow().SetShow("ip", "error", 0, true);
-    loop_->GetWindow().DrawObjects();
+    loop_->GetWindow().SetShow("ip", "status", 1, true);
     return false;
   }
 
@@ -63,8 +63,15 @@ bool SaveIPCommand::Execute() {
     text.erase(text.begin());
   }
   text.erase(text.begin());
-  loop_->GetNetwork()->SetOtherIP(IpAddress(ip_address), std::stoi(text));
-  text.clear();
+  if (loop_->GetNetwork()->SetOtherIP(IpAddress(ip_address), std::stoi(text)) !=
+      Socket::Status::Done) {
+    loop_->GetWindow().SetShow("ip", "status", 2, true);
+    return false;
+  }
+  loop_->GetWindow().GetBox().clear();
+  loop_->GetWindow().SetShow("ip", "status", 0, true);
+  sf::sleep(sf::milliseconds(1000));
+
   if (loop_->GetLocalPlayer() == 1) {
     loop_->Block();
   }
@@ -103,7 +110,6 @@ bool AddCellCommand::Execute() {
   } else {
     loop_->GetWindow().SetShow(scene, "status", 1, true);
   }
-  loop_->GetWindow().DrawObjects();
   return valid;
 }
 
@@ -133,15 +139,15 @@ bool AddShipCommand::Execute() {
     loop_->GetWindow().SetShow(scene, "status", 0, true);
     loop_->GetWindow().SetShow(scene, "status", 2, false);
     loop_->GetWindow().DrawObjects();
-    sf::sleep(sf::milliseconds(500));
+    sf::sleep(sf::milliseconds(1000));
     if (player_->GetShipCount() == loop_->kShips) {
       loop_->SwitchBlock();
       player_->GetField()->RemoveProhibited();
       if (player_->GetIndex() == 0) {
-        loop_->GetWindow().GetMusic("main").stop();
-        loop_->GetWindow().GetMusic("game").play();
         loop_->GetWindow().SetButtons("select_1");
       } else {
+        loop_->GetWindow().GetMusic("main").stop();
+        loop_->GetWindow().GetMusic("game").play();
         loop_->GetWindow().SetButtons("play_0");
       }
     }
@@ -149,7 +155,6 @@ bool AddShipCommand::Execute() {
     loop_->GetWindow().SetShow(scene, "status", 0, false);
     loop_->GetWindow().SetShow(scene, "status", 2, true);
   }
-  loop_->GetWindow().DrawObjects();
   return valid;
 }
 
@@ -187,7 +192,6 @@ bool ShootCommand::Execute() {
       loop_->SwitchBlock();
     }
   }
-  loop_->GetWindow().DrawObjects();
   return valid;
 }
 

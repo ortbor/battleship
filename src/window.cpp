@@ -73,6 +73,7 @@ void GameWindow::SetObject(const string& scene, const string& elem,
   dynamic_cast<Text*>(
       buttons_[scene][elem].get()->GetDrawable()[index].sprite.get())
       ->setString(str);
+  DrawObjects();
 }
 
 void GameWindow::SetButtons(const string& str) {
@@ -83,6 +84,7 @@ void GameWindow::SetButtons(const string& str) {
 void GameWindow::SetShow(const string& scene, const string& elem, size_t index,
                          bool show) {
   buttons_[scene][elem].get()->GetDrawable()[index].show = show;
+  DrawObjects();
 }
 
 void GameWindow::DrawObjects() {
@@ -257,17 +259,22 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
 
   buttons_["ip"]["box"] = std::make_shared<KeyboardButton>(
       std::make_shared<AddSymbolCommand>(),
-      RectObject({500, 70}, {200, 200, 200}, {703, 295}),
-      TextObject("", 40, Color::Black, {710, 300}, font_));
+      RectObject({500, 70}, {200, 200, 200}, {708, 445}),
+      TextObject("", 40, Color::Black, {715, 450}, font_));
 
   buttons_["ip"]["save"] = std::make_shared<MouseButton>(
       Mouse::Button::Left, std::make_shared<SaveIPCommand>(),
-      RectObject({260, 150}, {0, 255, 95}, {830, 600}),
-      TextObject("Save", 100, Color::Red, {860, 600}, font_));
+      RectObject({260, 150}, {0, 255, 95}, {827, 600}),
+      TextObject("Save", 100, Color::Red, {857, 600}, font_));
 
-  buttons_["ip"]["error"] = std::make_shared<Button>(
-      nullptr, TextObject("Invalid IP!", 80, Color::Red, {765, 800}, font_,
-                        Text::Bold, false));
+  buttons_["ip"]["status"] = std::make_shared<Button>(
+      nullptr,
+      TextObject("Success", 80, Color::Green, {823, 800}, font_, Text::Bold,
+                 false),
+      TextObject("Invalid IP", 80, Color::Red, {775, 800}, font_, Text::Bold,
+                 false),
+      TextObject("Connection timeout!", 80, Color::Red, {590, 800}, font_,
+                 Text::Bold, false));
 
   buttons_["connect"]["return"] = std::make_shared<MouseButton>(
       Mouse::Button::Left, std::make_shared<SetCommand>("play"),
