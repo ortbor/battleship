@@ -40,6 +40,5 @@ class GameLoop {
   int local_player_ = 0;
   string ip_ = "";
 
-  void ProcessWindow();
   void ProcessNetwork();
 };
