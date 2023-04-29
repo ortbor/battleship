@@ -21,14 +21,14 @@ void GameLoop::ProcessWindow() {
 
 void GameLoop::ProcessNetwork() {
   while (window_.isOpen()) {
-    window_.GetCommand()->Execute();
+    network_.GetCommand()->Execute();
   }
 }
 
 void GameLoop::Go() {
   Command::loop_ = this;
  // std::thread window_thread(&GameLoop::ProcessWindow, this);
-  std::thread network_thread(&GameLoop::ProcessNetwork, this);
+  sf::Thread network_thread(&GameLoop::ProcessNetwork, this);
   //window_thread.join();
  // network_thread;
   ProcessWindow();
