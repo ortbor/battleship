@@ -25,38 +25,53 @@ bool SetCommand::Execute() {
 }
 
 bool AddSymbolCommand::Execute() {
+  loop_->GetWindow().SetShow("ip", "status", 1, false);
+  loop_->GetWindow().SetShow("ip", "status", 2, false);
+
   size_t code = loop_->GetWindow().GetEvent().text.unicode;
-  std::cout << code << '\n';
-  std::cout.flush();
-  if (code == 8) {
-    loop_->RemoveLastIP();
+
+  if (code == 8 && !loop_->GetWindow().GetBox().empty()) {
+    loop_->GetWindow().GetBox().pop_back();
   } else if (code == 13) {
     SaveIPCommand().Execute();
   } else if (code >= 46 && code <= 58 && code != 47 &&
-             loop_->GetIP().size() < 21) {
-    loop_->AddToIP(static_cast<char>(code));
+             loop_->GetWindow().GetBox().size() < 21) {
+    loop_->GetWindow().GetBox().push_back(static_cast<char>(code));
   }
-  loop_->GetWindow().SetObject("ip", "box", 1, loop_->GetIP());
-  loop_->GetWindow().DrawObjects();
+  loop_->GetWindow().SetObject("ip", "box", 1, loop_->GetWindow().GetBox());
   return true;
 }
 
-bool SaveIPCommand::Execute() {
-  string ip_address;
-  size_t ip_port = 65536;
-  for (size_t i = 0; i < loop_->GetIP().size(); ++i) {
-    if (loop_->GetIP()[i] == ':') {
-      ip_port = 0;
-      ++i;
-    }
+std::string SaveIPCommand::ip_num_r =
+    R"(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))";
+std::string SaveIPCommand::ip_port_r =
+    R"(([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))";
+std::string SaveIPCommand::ip_str_r =
+    R"(^()" + ip_num_r + R"(\.){3})" + ip_num_r + R"(:)" + ip_port_r;
+std::regex SaveIPCommand::ip_regex(SaveIPCommand::ip_str_r);
 
-    if (ip_port == 65536) {
-      ip_address.push_back(loop_->GetIP()[i]);
-    } else {
-      ip_port = ip_port * 10 + loop_->GetIP()[i] - '0';
-    }
+bool SaveIPCommand::Execute() {
+  string text = loop_->GetWindow().GetBox();
+  if (!std::regex_match(text, ip_regex)) {
+    loop_->GetWindow().SetShow("ip", "status", 1, true);
+    return false;
   }
-  loop_->GetNetwork()->SetOtherIP(sf::IpAddress(ip_address), ip_port);
+
+  string ip_address;
+  while (text[0] != ':') {
+    ip_address.push_back(text[0]);
+    text.erase(text.begin());
+  }
+  text.erase(text.begin());
+  if (loop_->GetNetwork()->SetOtherIP(IpAddress(ip_address), std::stoi(text)) !=
+      Socket::Status::Done) {
+    loop_->GetWindow().SetShow("ip", "status", 2, true);
+    return false;
+  }
+  loop_->GetWindow().GetBox().clear();
+  loop_->GetWindow().SetShow("ip", "status", 0, true);
+  sf::sleep(sf::milliseconds(1000));
+
   if (loop_->GetLocalPlayer() == 1) {
     loop_->Block();
   }
@@ -95,7 +110,6 @@ bool AddCellCommand::Execute() {
   } else {
     loop_->GetWindow().SetShow(scene, "status", 1, true);
   }
-  loop_->GetWindow().DrawObjects();
   return valid;
 }
 
@@ -125,15 +139,15 @@ bool AddShipCommand::Execute() {
     loop_->GetWindow().SetShow(scene, "status", 0, true);
     loop_->GetWindow().SetShow(scene, "status", 2, false);
     loop_->GetWindow().DrawObjects();
-    sf::sleep(sf::milliseconds(500));
+    sf::sleep(sf::milliseconds(1000));
     if (player_->GetShipCount() == loop_->kShips) {
       loop_->SwitchBlock();
       player_->GetField()->RemoveProhibited();
       if (player_->GetIndex() == 0) {
-        loop_->GetWindow().GetMusic("main").stop();
-        loop_->GetWindow().GetMusic("game").play();
         loop_->GetWindow().SetButtons("select_1");
       } else {
+        loop_->GetWindow().GetMusic("main").stop();
+        loop_->GetWindow().GetMusic("game").play();
         loop_->GetWindow().SetButtons("play_0");
       }
     }
@@ -141,7 +155,6 @@ bool AddShipCommand::Execute() {
     loop_->GetWindow().SetShow(scene, "status", 0, false);
     loop_->GetWindow().SetShow(scene, "status", 2, true);
   }
-  loop_->GetWindow().DrawObjects();
   return valid;
 }
 
@@ -179,7 +192,6 @@ bool ShootCommand::Execute() {
       loop_->SwitchBlock();
     }
   }
-  loop_->GetWindow().DrawObjects();
   return valid;
 }
 

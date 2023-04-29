@@ -1,8 +1,8 @@
 #pragma once
 
-
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <algorithm>
@@ -12,18 +12,24 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <regex>
 #include <sfeMovie/Movie.hpp>
 #include <unordered_map>
 
 using sf::Color;
 using sf::Event;
+using sf::IpAddress;
 using sf::Keyboard;
 using sf::Mouse;
 using sf::Music;
+using sf::Packet;
 using sf::RectangleShape;
 using sf::RenderWindow;
+using sf::Socket;
 using sf::SoundBuffer;
 using sf::Sprite;
+using sf::TcpListener;
+using sf::TcpSocket;
 using sf::Text;
 using sf::Texture;
 using sf::Vector2f;

@@ -7,15 +7,16 @@
 #include "../lib/object.hpp"
 #include "../lib/player.hpp"
 
-Network::Network(GameLoop* loop) : loop_(loop) { listener_.listen(2000); }
+Network::Network(GameLoop* loop) : loop_(loop) {  }
 
-void Network::SetOtherIP(sf::IpAddress other_ip, size_t ip_port) {
+Socket::Status Network::SetOtherIP(IpAddress other_ip, size_t ip_port) {
   other_ip_ = other_ip;
   port_ = ip_port;
-  socket_.connect(other_ip, ip_port);
+  listener_.listen(ip_port);
+  return socket_.connect(other_ip, ip_port, sf::milliseconds(1500));
 }
 
-void Network::Send(std::string command_type, std::string coords) {
+void Network::Send(string command_type, string coords) {
   packet_ << command_type << coords;
   socket_.send(packet_);
   packet_.clear();
@@ -23,7 +24,7 @@ void Network::Send(std::string command_type, std::string coords) {
 
 Command* Network::GetCommand() {
   socket_.receive(packet_);
-  std::string command_type;
+  string command_type;
   packet_ >> command_type;
   if (command_type == "add_ship") {
     return loop_->GetWindow()
@@ -32,7 +33,7 @@ Command* Network::GetCommand() {
         ->GetCommand()
         .get();
   }
-  std::string coords;
+  string coords;
   packet_ >> coords;
   if (command_type == "add_cell") {
     return loop_->GetWindow()

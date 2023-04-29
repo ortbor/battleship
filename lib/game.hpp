@@ -23,10 +23,7 @@ class GameLoop {
   void Unblock();
   void SwitchBlock();
   bool IsBlocked() const;
-  const string& GetIP() const;
-  void AddToIP(char symbol);
-  void RemoveLastIP();
-  void CleanIP();
+  const string& GetBox() const;
 
   const size_t kShips = 10;
 
@@ -38,7 +35,6 @@ class GameLoop {
   Network network_;
   bool is_blocked_ = false;
   int local_player_ = 0;
-  string ip_ = "";
 
   void ProcessNetwork();
 };

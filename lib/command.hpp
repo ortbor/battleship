@@ -32,6 +32,12 @@ class SaveIPCommand final : public Command {
     ~SaveIPCommand() final = default;
 
     bool Execute();
+
+private:
+    static std::string ip_num_r;
+    static std::string ip_port_r;
+    static std::string ip_str_r;
+    static std::regex ip_regex;
 };
 
 class SetCommand final : public Command {
