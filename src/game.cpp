@@ -15,7 +15,7 @@ GameLoop::GameLoop(const Vector2f& size, size_t ships)
 
 void GameLoop::ProcessNetwork() {
   while (window_.isOpen()) {
-   network_.GetCommand()->Execute();
+    network_.GetCommand()->Execute();
   }
 }
 
