@@ -26,10 +26,14 @@ bool SetCommand::Execute() {
 
 bool AddSymbolCommand::Execute() {
   size_t code = loop_->GetWindow().GetEvent().text.unicode;
+  std::cout << code << '\n';
+  std::cout.flush();
   if (code == 8) {
     loop_->RemoveLastIP();
-  } else if (code >= 46 && code <= 57 && code != 47 &&
-             loop_->GetIP().size() < 15) {
+  } else if (code == 13) {
+    SaveIPCommand().Execute();
+  } else if (code >= 46 && code <= 58 && code != 47 &&
+             loop_->GetIP().size() < 21) {
     loop_->AddToIP(static_cast<char>(code));
   }
   loop_->GetWindow().SetObject("ip", "box", 1, loop_->GetIP());
@@ -38,7 +42,21 @@ bool AddSymbolCommand::Execute() {
 }
 
 bool SaveIPCommand::Execute() {
-  loop_->GetNetwork()->SetOtherIP(sf::IpAddress(loop_->GetIP()));
+  string ip_address;
+  size_t ip_port = 65536;
+  for (size_t i = 0; i < loop_->GetIP().size(); ++i) {
+    if (loop_->GetIP()[i] == ':') {
+      ip_port = 0;
+      ++i;
+    }
+
+    if (ip_port == 65536) {
+      ip_address.push_back(loop_->GetIP()[i]);
+    } else {
+      ip_port = ip_port * 10 + loop_->GetIP()[i] - '0';
+    }
+  }
+  loop_->GetNetwork()->SetOtherIP(sf::IpAddress(ip_address), ip_port);
   if (loop_->GetLocalPlayer() == 1) {
     loop_->Block();
   }

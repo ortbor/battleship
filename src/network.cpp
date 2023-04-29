@@ -7,14 +7,12 @@
 #include "../lib/object.hpp"
 #include "../lib/player.hpp"
 
-Network::Network(GameLoop* loop)
-    : ip_(sf::IpAddress::getLocalAddress()), loop_(loop) {
-  listener_.listen(2000);
-}
+Network::Network(GameLoop* loop) : loop_(loop) { listener_.listen(2000); }
 
-void Network::SetOtherIP(sf::IpAddress other_ip) {
+void Network::SetOtherIP(sf::IpAddress other_ip, size_t ip_port) {
   other_ip_ = other_ip;
-  socket_.connect(other_ip, 2000);
+  port_ = ip_port;
+  socket_.connect(other_ip, ip_port);
 }
 
 void Network::Send(std::string command_type, std::string coords) {
