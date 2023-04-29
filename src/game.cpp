@@ -13,32 +13,18 @@ GameLoop::GameLoop(const Vector2f& size, size_t ships)
   players_[0].LinkWithRival(&players_[1]);
 }
 
-void GameLoop::ProcessWindow() {
-  while (window_.isOpen()) {
-    window_.GetCommand()->Execute();
-  }
-}
-
 void GameLoop::ProcessNetwork() {
   while (window_.isOpen()) {
-    window_.GetCommand()->Execute();
+   network_.GetCommand()->Execute();
   }
 }
 
 void GameLoop::Go() {
   Command::loop_ = this;
- // std::thread window_thread(&GameLoop::ProcessWindow, this);
   std::thread network_thread(&GameLoop::ProcessNetwork, this);
-  //window_thread.join();
- // network_thread;
-  ProcessWindow();
-  /*while (window_.isOpen()) {
-    if (is_blocked_) {
-      network_.GetCommand()->Execute();
-    } else {
-      window_.GetCommand()->Execute();
-    }
-  }*/
+  while (window_.isOpen()) {
+    window_.GetCommand()->Execute();
+  }
 }
 
 GameWindow& GameLoop::GetWindow() { return window_; }
