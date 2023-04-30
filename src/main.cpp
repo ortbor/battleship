@@ -40,6 +40,8 @@ int main() {
     mode = 'r';
   }
   socket.send(text.c_str(), text.length() + 1);
+  std::cout << "NOT received\n";
+  std::cout.flush();
   socket.receive(buffer, sizeof(buffer), received);
   cout << buffer << endl;
 

@@ -4,11 +4,9 @@
 
 class Network {
  public:
-  enum class IpType { LOCAL, ROUTER, GLOBAL };
-
   explicit Network(GameLoop* loop);
-  void SetMyIP(IpType type, size_t port);
-  Socket::Status ServerConnect(IpAddress m_ip, size_t port);
+  void UpdatePort(size_t port);
+  Socket::Status ServerConnect();
   Socket::Status ClientConnect(IpAddress m_ip, size_t port);
   void Send(std::string command_type, std::string coords = "");
   Command* GetCommand();

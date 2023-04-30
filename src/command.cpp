@@ -24,7 +24,7 @@ bool SetCommand::Execute() {
   return true;
 }
 
-bool AddSymbolCommand::Execute() {
+bool IPBoxCommand::Execute() {
   loop_->GetWindow().SetShow("ip", "status", 1, false);
   loop_->GetWindow().SetShow("ip", "status", 2, false);
 
@@ -33,7 +33,7 @@ bool AddSymbolCommand::Execute() {
   if (code == 8 && !loop_->GetWindow().GetBox().empty()) {
     loop_->GetWindow().GetBox().pop_back();
   } else if (code == 13) {
-    SaveIPCommand().Execute();
+    ClientCommand().Execute();
   } else if (code >= 46 && code <= 58 && code != 47 &&
              loop_->GetWindow().GetBox().size() < 21) {
     loop_->GetWindow().GetBox().push_back(static_cast<char>(code));
@@ -50,7 +50,11 @@ std::string SaveIPCommand::ip_str_r =
     R"(^()" + ip_num_r + R"(\.){3})" + ip_num_r + R"(:)" + ip_port_r;
 std::regex SaveIPCommand::ip_regex(SaveIPCommand::ip_str_r);
 
-bool SaveIPCommand::Execute() {
+bool ServerCommand::Execute() {
+  return loop_->GetNetwork()->ServerConnect() == Socket::Status::Done;
+}
+
+bool ClientCommand::Execute() {
   string text = loop_->GetWindow().GetBox();
   if (!std::regex_match(text, ip_regex)) {
     loop_->GetWindow().SetShow("ip", "status", 1, true);

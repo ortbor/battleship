@@ -18,10 +18,10 @@ class Command {
   Event::EventType type_;
 };
 
-class AddSymbolCommand final : public Command {
+class IPBoxCommand final : public Command {
  public:
-  AddSymbolCommand() = default;
-  ~AddSymbolCommand() final = default;
+  IPBoxCommand() = default;
+  ~IPBoxCommand() final = default;
 
   bool Execute();
 };
@@ -33,7 +33,7 @@ class SaveIPCommand : public Command {
 
   virtual bool Execute() override = 0;
 
- private:
+ protected:
   static std::string ip_num_r;
   static std::string ip_port_r;
   static std::string ip_str_r;
