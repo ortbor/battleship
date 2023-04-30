@@ -17,7 +17,7 @@ Socket::Status Network::ServerConnect() {
 }
 
 Socket::Status Network::ClientConnect(IpAddress m_ip, size_t port) {
-  return socket_.connect(m_ip, port, sf::microseconds(2000));
+  return socket_.connect(m_ip, port, sf::milliseconds(2000));
 }
 
 void Network::Send(std::string command_type, std::string coords) {
