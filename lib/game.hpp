@@ -14,10 +14,8 @@ class GameLoop {
   void Go();
   void Clear();
 
-  GameWindow& GetWindow();
+  GameWindow& GetWnd();
   Network* GetNetwork();
-  int GetLocalPlayer() const;
-  void SetLocalPlayer(int local_player);
   const Vector2f& GetSize() const;
   void Block();
   void Unblock();
@@ -34,7 +32,6 @@ class GameLoop {
   GameWindow window_;
   Network network_;
   bool is_blocked_ = false;
-  int local_player_ = 0;
 
   void ProcessNetwork();
 };

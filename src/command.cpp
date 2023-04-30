@@ -16,31 +16,29 @@ const Event::EventType& Command::GetType() { return type_; }
 
 SetCommand::SetCommand(const string& str) : str_(str) {}
 
-bool SetCommand::Execute() {
+void SetCommand::Execute() {
   if (str_ == "menu") {
     loop_->Clear();
   }
-  loop_->GetWindow().SetButtons(str_);
-  return true;
+  loop_->GetWnd().SetButtons(str_);
 }
 
-bool IPBoxCommand::Execute() {
-  loop_->GetWindow().SetShow("ip", "status", 1, false);
-  loop_->GetWindow().SetShow("ip", "status", 2, false);
-  loop_->GetWindow().SetShow("ip", "status", 3, false);
+void IPBoxCommand::Execute() {
+  loop_->GetWnd().SetShow("ip", "status", 1, false);
+  loop_->GetWnd().SetShow("ip", "status", 2, false);
+  loop_->GetWnd().SetShow("ip", "status", 3, false);
 
-  size_t code = loop_->GetWindow().GetEvent().text.unicode;
+  size_t code = loop_->GetWnd().GetEvent().text.unicode;
 
-  if (code == 8 && !loop_->GetWindow().GetBox().empty()) {
-    loop_->GetWindow().GetBox().pop_back();
+  if (code == 8 && !loop_->GetWnd().GetBox().empty()) {
+    loop_->GetWnd().GetBox().pop_back();
   } else if (code == 13) {
     ClientCommand().Execute();
   } else if (code >= 46 && code <= 58 && code != 47 &&
-             loop_->GetWindow().GetBox().size() < 21) {
-    loop_->GetWindow().GetBox().push_back(static_cast<char>(code));
+             loop_->GetWnd().GetBox().size() < 21) {
+    loop_->GetWnd().GetBox().push_back(static_cast<char>(code));
   }
-  loop_->GetWindow().SetObject("ip", "box", 1, loop_->GetWindow().GetBox());
-  return true;
+  loop_->GetWnd().SetObject("ip", "box", 1, loop_->GetWnd().GetBox());
 }
 
 std::string SaveIPCommand::ip_num_r =
@@ -51,18 +49,22 @@ std::string SaveIPCommand::ip_str_r =
     R"(^()" + ip_num_r + R"(\.){3})" + ip_num_r + R"(:)" + ip_port_r;
 std::regex SaveIPCommand::ip_regex(SaveIPCommand::ip_str_r);
 
-bool ServerCommand::Execute() {
-  return loop_->GetNetwork()->ServerConnect() == Socket::Status::Done;
+void ServerCommand::Execute() {
+  loop_->GetWnd().SetButtons("waiting");
+  if (loop_->GetNetwork()->ServerConnect() == Socket::Status::Done) {
+    loop_->GetWnd().SetButtons("select_0");
+  }
+  loop_->Block();
 }
 
-bool ClientCommand::Execute() {
-  loop_->GetWindow().SetShow("ip", "status", 2, false);
-  loop_->GetWindow().SetShow("ip", "status", 3, false);
+void ClientCommand::Execute() {
+  loop_->GetWnd().SetShow("ip", "status", 2, false);
+  loop_->GetWnd().SetShow("ip", "status", 3, false);
 
-  string text = loop_->GetWindow().GetBox();
+  string text = loop_->GetWnd().GetBox();
   if (!std::regex_match(text, ip_regex)) {
-    loop_->GetWindow().SetShow("ip", "status", 1, true);
-    return false;
+    loop_->GetWnd().SetShow("ip", "status", 1, true);
+    return;
   }
 
   string ip_address;
@@ -74,33 +76,25 @@ bool ClientCommand::Execute() {
 
   switch (loop_->GetNetwork()->ClientConnect(ip_address, std::stoi(text))) {
     case Socket::Status::Done:
-      loop_->GetWindow().SetShow("ip", "status", 0, true);
+      loop_->GetWnd().SetShow("ip", "status", 0, true);
       sf::sleep(sf::milliseconds(1000));
       break;
     case Socket::Status::Disconnected:
-      loop_->GetWindow().SetShow("ip", "status", 2, true);
-      return false;
+      loop_->GetWnd().SetShow("ip", "status", 2, true);
+      return;
     default:
-      loop_->GetWindow().SetShow("ip", "status", 3, true);
-      return false;
+      loop_->GetWnd().SetShow("ip", "status", 3, true);
+      return;
   }
-  loop_->GetWindow().GetBox().clear();
-
-  if (loop_->GetLocalPlayer() == 1) {
-    loop_->Block();
-  }
-  loop_->GetWindow().SetButtons("select_0");
-  return true;
+  loop_->GetWnd().GetBox().clear();
+  loop_->GetWnd().SetButtons("select_0");
 }
 
 ExecCommand::ExecCommand(GameWindow& obj, const Event::EventType& type,
                          void (*func)(GameWindow& obj))
     : Command(type), obj_(obj), func_(func) {}
 
-bool ExecCommand::Execute() {
-  (*func_)(obj_);
-  return true;
-}
+void ExecCommand::Execute() { (*func_)(obj_); }
 
 CellCommand::CellCommand(Player* player, Cell* cell)
     : player_(player), cell_(cell) {}
@@ -108,23 +102,22 @@ CellCommand::CellCommand(Player* player, Cell* cell)
 AddCellCommand::AddCellCommand(Player* player, Cell* cell)
     : CellCommand(player, cell) {}
 
-bool AddCellCommand::Execute() {
+void AddCellCommand::Execute() {
   Send();
-  bool valid = IsValid();
   string scene = "select_" + std::to_string(player_->GetIndex());
-  loop_->GetWindow().SetShow(scene, "status", 0, false);
-  loop_->GetWindow().SetShow(scene, "status", 2, false);
-  if (valid) {
-    if (cell_->GetState() == State::Clear) {
-      player_->ship_in_process_.AddCell(cell_);
-    } else {
-      player_->ship_in_process_.EraseCell(cell_);
-    }
-    loop_->GetWindow().SetShow(scene, "status", 1, false);
-  } else {
-    loop_->GetWindow().SetShow(scene, "status", 1, true);
+  loop_->GetWnd().SetShow(scene, "status", 0, false);
+  loop_->GetWnd().SetShow(scene, "status", 2, false);
+
+  if (!IsValid()) {
+    loop_->GetWnd().SetShow(scene, "status", 1, true);
+    return;
   }
-  return valid;
+  if (cell_->GetState() == State::Clear) {
+    player_->ship_in_process_.AddCell(cell_);
+  } else {
+    player_->ship_in_process_.EraseCell(cell_);
+  }
+  loop_->GetWnd().SetShow(scene, "status", 1, false);
 }
 
 bool AddCellCommand::IsValid() const {
@@ -136,40 +129,38 @@ bool AddCellCommand::IsValid() const {
 }
 
 void AddCellCommand::Send() {
-  loop_->GetNetwork()->Send(
-      "add_cell", std::to_string(cell_->GetCoord().x * loop_->GetSize().y +
-                                 cell_->GetCoord().y));
+  size_t index = cell_->GetCoord().x * loop_->GetSize().y + cell_->GetCoord().y;
+  loop_->GetNetwork()->Send("add_cell", std::to_string(index));
 }
 
 AddShipCommand::AddShipCommand(Player* player) : player_(player) {}
 
-bool AddShipCommand::Execute() {
+void AddShipCommand::Execute() {
   Send();
-  bool valid = IsValid();
   string scene = "select_" + std::to_string(player_->GetIndex());
-  loop_->GetWindow().SetShow(scene, "status", 1, false);
-  if (valid) {
-    player_->AddShip();
-    loop_->GetWindow().SetShow(scene, "status", 0, true);
-    loop_->GetWindow().SetShow(scene, "status", 2, false);
-    loop_->GetWindow().DrawObjects();
-    sf::sleep(sf::milliseconds(1000));
-    if (player_->GetShipCount() == loop_->kShips) {
-      loop_->SwitchBlock();
-      player_->GetField()->RemoveProhibited();
-      if (player_->GetIndex() == 0) {
-        loop_->GetWindow().SetButtons("select_1");
-      } else {
-        loop_->GetWindow().GetMusic("main").stop();
-        loop_->GetWindow().GetMusic("game").play();
-        loop_->GetWindow().SetButtons("play_0");
-      }
-    }
-  } else {
-    loop_->GetWindow().SetShow(scene, "status", 0, false);
-    loop_->GetWindow().SetShow(scene, "status", 2, true);
+  loop_->GetWnd().SetShow(scene, "status", 1, false);
+
+  if (!IsValid()) {
+    loop_->GetWnd().SetShow(scene, "status", 0, false);
+    loop_->GetWnd().SetShow(scene, "status", 2, true);
+    return;
   }
-  return valid;
+  player_->AddShip();
+  loop_->GetWnd().SetShow(scene, "status", 0, true);
+  loop_->GetWnd().SetShow(scene, "status", 2, false);
+  loop_->GetWnd().DrawObjects();
+  sf::sleep(sf::milliseconds(1000));
+  if (player_->GetShipCount() == loop_->kShips) {
+    loop_->SwitchBlock();
+    player_->GetField()->RemoveProhibited();
+    if (player_->GetIndex() == 0) {
+      loop_->GetWnd().SetButtons("select_1");
+    } else {
+      loop_->GetWnd().GetMusic("main").stop();
+      loop_->GetWnd().GetMusic("game").play();
+      loop_->GetWnd().SetButtons("play_0");
+    }
+  }
 }
 
 bool AddShipCommand::IsValid() const {
@@ -186,27 +177,25 @@ void AddShipCommand::Send() { loop_->GetNetwork()->Send("add_ship"); }
 ShootCommand::ShootCommand(Player* player, Cell* cell)
     : CellCommand(player, cell) {}
 
-bool ShootCommand::Execute() {
+void ShootCommand::Execute() {
   Send();
-  bool valid = IsValid();
-  if (valid) {
-    ShotResult shot_result;
-    player_->Shoot(cell_, shot_result);
-    if (player_->GetRival()->GetShipCount() == 0) {
-      loop_->GetWindow().SetButtons("won_" +
-                                    std::to_string(player_->GetIndex()));
-      loop_->Unblock();
-    }
-    if (player_->GetLastShotResult() == ShotResult::Miss) {
-      loop_->GetWindow().SetButtons("turn_" +
-                                    std::to_string(1 - player_->GetIndex()));
-      sf::sleep(sf::milliseconds(2000));
-      loop_->GetWindow().SetButtons("play_" +
-                                    std::to_string(1 - player_->GetIndex()));
-      loop_->SwitchBlock();
-    }
+  if (!IsValid()) {
+    return;
   }
-  return valid;
+  ShotResult shot_result;
+  player_->Shoot(cell_, shot_result);
+  if (player_->GetRival()->GetShipCount() == 0) {
+    loop_->GetWnd().SetButtons("won_" + std::to_string(player_->GetIndex()));
+    loop_->Unblock();
+  }
+  if (player_->GetLastShotResult() == ShotResult::Miss) {
+    loop_->GetWnd().SetButtons("turn_" +
+                                  std::to_string(1 - player_->GetIndex()));
+    sf::sleep(sf::milliseconds(2000));
+    loop_->GetWnd().SetButtons("play_" +
+                                  std::to_string(1 - player_->GetIndex()));
+    loop_->SwitchBlock();
+  }
 }
 
 bool ShootCommand::IsValid() const { return !loop_->IsBlocked(); }
