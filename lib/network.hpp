@@ -14,7 +14,8 @@ class Network {
  protected:
   size_t port_;
   sf::IpAddress other_ip_;
-  sf::TcpSocket socket_;
+  sf::TcpSocket server_socket_;
+  sf::TcpSocket client_socket_;
   sf::TcpListener listener_;
   sf::Packet packet_;
   GameLoop* loop_;

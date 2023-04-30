@@ -130,10 +130,10 @@ bool AddShipCommand::Execute() {
       loop_->SwitchBlock();
       player_->GetField()->RemoveProhibited();
       if (player_->GetIndex() == 0) {
-        loop_->GetWindow().GetMusic("main").stop();
-        loop_->GetWindow().GetMusic("game").play();
         loop_->GetWindow().SetButtons("select_1");
       } else {
+        loop_->GetWindow().GetMusic("main").stop();
+        loop_->GetWindow().GetMusic("game").play();
         loop_->GetWindow().SetButtons("play_0");
       }
     }
