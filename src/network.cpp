@@ -9,7 +9,7 @@
 
 Network::Network(GameLoop* loop)
     : connect_thr(&Network::ServerAccept, this), loop_(loop) {
-  listener_.listen(2000);
+  listener_.listen(2001);
 }
 
 Socket::Status Network::UpdatePort(size_t port) {
@@ -28,7 +28,7 @@ void Network::ServerAccept() {
 void Network::ServerConnect() { connect_thr.launch(); }
 
 Socket::Status Network::ClientConnect(pair<IpAddress, size_t> address) {
-  if (address.first.toString().size() == 0) {
+  if (address.first.toString().empty()) {
     return Socket::Error;
   }
   return socket_.connect(address.first, address.second, sf::milliseconds(1500));
