@@ -7,8 +7,8 @@ GameWindow::GameWindow(array<Player, 2>& players, const Vector2f& size,
                        Vector2f sides)
     : kPath(Path().string()) {
   if (sides.x < 0) {
-    sides.x = screen_.x;
-    sides.y = screen_.y;
+    sides.x = 1920;
+    sides.y = 1080;
   }
   create(VideoMode(sides.x, sides.y), kName, sf::Style::Fullscreen);
   view_.setSize(sides);

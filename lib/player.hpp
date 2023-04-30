@@ -14,15 +14,13 @@ class Player {
   size_t GetIndex() const;
   ShotResult GetLastShotResult() const;
   size_t GetShipCount() const;
-  /*Field* GetField();
-  Field* GetRField();*/
   MyField* GetField();
   RivalField* GetRField();
   void DecrementShipCount();
   void AddShip();
   void Shoot(Cell* cell, ShotResult& shot_result);
   const Ship* GetShipInProcess() const;
-  size_t GetNumberOfShipsSized(size_t size) const;
+  size_t GetNumberOfShips(size_t size) const;
   void LinkWithRival(Player* rival);
   Player* GetRival();
   void Clear();

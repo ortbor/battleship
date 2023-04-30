@@ -32,6 +32,7 @@ using sf::TcpListener;
 using sf::TcpSocket;
 using sf::Text;
 using sf::Texture;
+using sf::Thread;
 using sf::Vector2f;
 using sf::Vector2u;
 using sf::VideoMode;

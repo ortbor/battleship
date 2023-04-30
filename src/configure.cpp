@@ -82,13 +82,17 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
 
   buttons_["play"]["wait"] = std::make_shared<MouseButton>(
       Mouse::Button::Left, std::make_shared<ServerCommand>(),
-      RectObject({1210, 150}, {0, 255, 95}, {360, 820}),
-      TextObject("Wait for a dick to your ass", 100, Color::Red, {370, 820},
-                 font_));
+      RectObject({690, 150}, {0, 255, 95}, {615, 820}),
+      TextObject("Wait for a shot", 100, Color::Red, {625, 823}, font_));
+
+  buttons_["waiting"]["return"] = std::make_shared<MouseButton>(
+      Mouse::Button::Left, std::make_shared<TerminateCommand>(),
+      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+      TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
   buttons_["waiting"]["text"] = std::make_shared<Button>(
       nullptr, TextObject("Waiting for the connection...", 100, Color::Red,
-                          {250, 490}, font_, Text::Bold));
+                          {330, 490}, font_, Text::Bold));
 
   buttons_["ip"]["return"] = std::make_shared<MouseButton>(
       Mouse::Button::Left, std::make_shared<SetCommand>("play"),

@@ -54,6 +54,17 @@ class ClientCommand final : public SaveIPCommand {
   ~ClientCommand() final = default;
 
   void Execute();
+
+ private:
+  pair<string, size_t> ParseIp();
+};
+
+class TerminateCommand final : public Command {
+ public:
+  TerminateCommand() = default;
+  ~TerminateCommand() final = default;
+
+  void Execute();
 };
 
 class SetCommand final : public Command {
