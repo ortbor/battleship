@@ -40,7 +40,7 @@ void Player::Shoot(Cell* cell, ShotResult& shot_result) {
 
 const Ship* Player::GetShipInProcess() const { return &ship_in_process_; }
 
-size_t Player::GetNumberOfShipsSized(size_t size) const {
+size_t Player::GetNumberOfShips(size_t size) const {
   return ships_[size].size();
 }
 
