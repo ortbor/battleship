@@ -12,7 +12,9 @@ Network::Network(GameLoop* loop)
   listener_.listen(2000);
 }
 
-void Network::UpdatePort(size_t port) { listener_.listen(port); }
+Socket::Status Network::UpdatePort(size_t port) {
+  return listener_.listen(port);
+}
 
 void Network::Terminate() { connect_thr.terminate(); }
 
@@ -27,7 +29,7 @@ void Network::ServerConnect() { connect_thr.launch(); }
 
 Socket::Status Network::ClientConnect(pair<IpAddress, size_t> address) {
   if (address.first.toString().size() == 0) {
-    return Socket::Status::Error;
+    return Socket::Error;
   }
   return socket_.connect(address.first, address.second, sf::milliseconds(1500));
 }
@@ -39,10 +41,6 @@ void Network::Send(std::string command_type, std::string coords) {
     std::cout << "sent\n";
     std::cout.flush();
   }
-}
-
-void Network::SetPort(size_t port) {
-  opened_port_ = port;
 }
 
 Command* Network::GetCommand() {

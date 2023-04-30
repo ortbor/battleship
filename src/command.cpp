@@ -50,8 +50,7 @@ void PortBoxCommand::Execute() {
     loop_->GetWnd().GetBox().pop_back();
   } else if (code == 13) {
     SavePortCommand().Execute();
-  } else if (code >= 48 && code <= 58 &&
-             loop_->GetWnd().GetBox().size() < 5) {
+  } else if (code >= 48 && code <= 58 && loop_->GetWnd().GetBox().size() < 5) {
     loop_->GetWnd().GetBox().push_back(static_cast<char>(code));
   }
   loop_->GetWnd().SetObject("settings", "box", 1, loop_->GetWnd().GetBox());
@@ -64,7 +63,8 @@ std::string SaveIPCommand::ip_port_r =
 std::string SaveIPCommand::ip_str_r =
     R"(^()" + ip_num_r + R"(\.){3})" + ip_num_r + R"(:)" + ip_port_r;
 std::regex SaveIPCommand::ip_regex(SaveIPCommand::ip_str_r);
-std::regex SavePortCommand::port_regex(R"(([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))");
+std::regex SavePortCommand::port_regex(
+    R"(([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))");
 
 void ServerCommand::Execute() {
   loop_->GetWnd().SetButtons("waiting");
@@ -76,25 +76,19 @@ void ClientCommand::Execute() {
   loop_->GetWnd().SetShow("ip", "status", 3, false);
 
   switch (loop_->GetNetwork().ClientConnect(ParseIp())) {
-    case Socket::Status::Done:
+    case Socket::Done:
       loop_->GetWnd().SetShow("ip", "status", 0, true);
       sf::sleep(sf::milliseconds(1000));
       loop_->LaunckNetwork();
       loop_->GetWnd().GetBox().clear();
       loop_->GetWnd().SetButtons("select_0");
       break;
-    case Socket::Status::Disconnected:
+    case Socket::Disconnected:
       loop_->GetWnd().SetShow("ip", "status", 2, true);
       break;
     default:
       loop_->GetWnd().SetShow("ip", "status", 3, true);
   }
-}
-
-void TerminateCommand::Execute() {
-  loop_->GetNetwork().Terminate();
-  loop_->Terminate();
-  loop_->GetWnd().SetButtons("play");
 }
 
 pair<string, size_t> ClientCommand::ParseIp() {
@@ -114,18 +108,30 @@ pair<string, size_t> ClientCommand::ParseIp() {
 }
 
 void SavePortCommand::Execute() {
-  loop_->GetWnd().SetShow("settings", "status", 0, false);
   loop_->GetWnd().SetShow("settings", "status", 1, false);
-
+  loop_->GetWnd().SetShow("settings", "status", 2, false);
+  
   string text = loop_->GetWnd().GetBox();
   if (!std::regex_match(text, port_regex)) {
     loop_->GetWnd().SetShow("settings", "status", 1, true);
     return;
   }
-  loop_->GetNetwork()->SetPort(std::stoi(text));
-  loop_->GetWnd().SetShow("settings", "status", 0, true);
-  sf::sleep(sf::milliseconds(1000));
-  loop_->GetWnd().SetShow("settings", "status", 0, false);
+
+  switch (loop_->GetNetwork().UpdatePort(std::stoi(text))) {
+    case Socket::Done:
+      loop_->GetWnd().SetShow("settings", "status", 0, true);
+      sf::sleep(sf::milliseconds(1000));
+      loop_->GetWnd().SetShow("settings", "status", 0, false);
+      break;
+    default:
+      loop_->GetWnd().SetShow("settings", "status", 2, true);
+  }
+}
+
+void TerminateCommand::Execute() {
+  loop_->GetNetwork().Terminate();
+  loop_->Terminate();
+  loop_->GetWnd().SetButtons("play");
 }
 
 ExecCommand::ExecCommand(GameWindow& obj, const Event::EventType& type,

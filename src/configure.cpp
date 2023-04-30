@@ -76,20 +76,22 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
 
   buttons_["settings"]["box"] = std::make_shared<KeyboardButton>(
           std::make_shared<PortBoxCommand>(),
-          RectObject({500, 70}, {200, 200, 200}, {708, 445}),
-          TextObject("", 40, Color::Black, {715, 450}, font_));
+          RectObject({500, 70}, {200, 200, 200}, {708, 430}),
+          TextObject("", 40, Color::Black, {715, 435}, font_));
 
   buttons_["settings"]["save"] = std::make_shared<MouseButton>(
           Mouse::Button::Left, std::make_shared<SavePortCommand>(),
-          RectObject({260, 150}, {0, 255, 95}, {827, 600}),
-          TextObject("Save", 100, Color::Red, {857, 600}, font_));
+          RectObject({260, 150}, {0, 255, 95}, {827, 570}),
+          TextObject("Save", 100, Color::Red, {857, 570}, font_));
 
   buttons_["settings"]["status"] = std::make_shared<Button>(
-          nullptr,
-          TextObject("Success", 80, Color::Green, {823, 800}, font_, Text::Bold,
-                     false),
-          TextObject("Invalid Port", 80, Color::Red, {775, 800}, font_, Text::Bold,
-                     false));
+      nullptr,
+      TextObject("Success", 80, Color::Green, {823, 745}, font_, Text::Bold,
+                 false),
+      TextObject("Invalid Port", 80, Color::Red, {735, 745}, font_, Text::Bold,
+                 false),
+      TextObject("Failed to set", 80, Color::Red, {733, 745}, font_, Text::Bold,
+                 false));
 
   buttons_["play"]["return"] = std::make_shared<MouseButton>(
       Mouse::Button::Left, std::make_shared<SetCommand>("menu"),
