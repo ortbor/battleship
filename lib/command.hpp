@@ -10,7 +10,7 @@ class Command {
   Command(const Event::EventType& type);
   virtual ~Command() = default;
 
-  virtual bool Execute() = 0;
+  virtual void Execute() = 0;
   const Event::EventType& GetType();
   static GameLoop* loop_;
 
@@ -18,42 +18,110 @@ class Command {
   Event::EventType type_;
 };
 
-class SetButtonsCommand final : public Command {
+class IPBoxCommand final : public Command {
  public:
-  SetButtonsCommand(const string& str);
-  ~SetButtonsCommand() final = default;
+  IPBoxCommand() = default;
+  ~IPBoxCommand() final = default;
 
-  bool Execute() final;
+  void Execute();
+};
+
+class PortBoxCommand final : public Command {
+public:
+    PortBoxCommand() = default;
+    ~PortBoxCommand() final = default;
+
+    void Execute();
+};
+
+class SaveIPCommand : public Command {
+ public:
+  SaveIPCommand() = default;
+  ~SaveIPCommand() override = default;
+
+  virtual void Execute() override = 0;
+
+ protected:
+  static std::string ip_num_r;
+  static std::string ip_port_r;
+  static std::string ip_str_r;
+  static std::regex ip_regex;
+};
+
+class ServerCommand final : public SaveIPCommand {
+ public:
+  ServerCommand() = default;
+  ~ServerCommand() final = default;
+
+  void Execute();
+};
+
+class ClientCommand final : public SaveIPCommand {
+ public:
+  ClientCommand() = default;
+  ~ClientCommand() final = default;
+
+  void Execute();
+
+ private:
+  pair<string, size_t> ParseIp();
+};
+
+class SavePortCommand final : public Command {
+public:
+    SavePortCommand() = default;
+    ~SavePortCommand() final = default;
+
+    void Execute();
+
+protected:
+    static std::regex port_regex;
+};
+
+class TerminateCommand final : public Command {
+   public:
+    TerminateCommand() = default;
+    ~TerminateCommand() final = default;
+
+    void Execute();
+};
+
+class SetCommand final : public Command {
+ public:
+  SetCommand(const string& str);
+  ~SetCommand() final = default;
+
+  void Execute() final;
 
  private:
   string str_;
 };
 
-template <typename Type>
 class ExecCommand final : public Command {
  public:
-  ExecCommand(Type* obj, const Event::EventType& type_,
-              void (*func)(Type* obj));
+  ExecCommand(GameWindow& obj, const Event::EventType& type,
+              void (*func)(GameWindow& obj));
   ~ExecCommand() final = default;
 
-  bool Execute() final;
+  void Execute() final;
 
  protected:
-  Type* obj_;
-  void (*func_)(Type* obj);
+  GameWindow& obj_;
+  void (*func_)(GameWindow& obj);
 };
 
 class CellCommand : public Command {
  public:
   CellCommand(Player* player, Cell* cell);
   ~CellCommand() override = default;
-  virtual bool Execute() override = 0;
+  virtual void Execute() override = 0;
 
  protected:
   Player* player_;
   Cell* cell_;
 
   virtual bool IsValid() const = 0;
+  virtual void Send() = 0;
 };
 
 class AddCellCommand final : public CellCommand {
@@ -62,30 +130,33 @@ class AddCellCommand final : public CellCommand {
  public:
   AddCellCommand(Player* player, Cell* cell);
   ~AddCellCommand() final = default;
-  bool Execute() final;
+  void Execute() final;
 
  protected:
   bool IsValid() const final;
+  void Send() final;
 };
 
 class ShootCommand final : public CellCommand {
  public:
   ShootCommand(Player* player, Cell* cell);
   ~ShootCommand() final = default;
-  bool Execute() final;
+  void Execute() final;
 
  protected:
   bool IsValid() const final;
+  void Send() final;
 };
 
 class AddShipCommand : public Command {
  public:
   AddShipCommand(Player* player);
   ~AddShipCommand() = default;
-  bool Execute() final;
+  void Execute() final;
 
  protected:
   Player* player_;
 
   bool IsValid() const;
+  static void Send();
 };

@@ -43,7 +43,7 @@ void Cell::SetShape(sf::RectangleShape* shape) { shape_ = shape; }
 void Cell::UpdateColor() {
   switch (state_) {
     case State::Alive:
-      shape_->setFillColor(Color(0, 135, 255));
+      shape_->setFillColor(Color(0, 255, 255));
       break;
     case State::Chosen:
       shape_->setFillColor(Color(0, 255 - 120, 0));
