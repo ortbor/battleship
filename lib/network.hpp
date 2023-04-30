@@ -11,6 +11,7 @@ class Network {
   void ServerConnect();
   Socket::Status ClientConnect(pair<IpAddress, size_t> address);
   void Send(std::string command_type, std::string coords = "");
+  void SetPort(size_t port);
   Command* GetCommand();
 
  protected:

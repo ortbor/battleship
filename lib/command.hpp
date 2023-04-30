@@ -26,6 +26,14 @@ class IPBoxCommand final : public Command {
   void Execute();
 };
 
+class PortBoxCommand final : public Command {
+public:
+    PortBoxCommand() = default;
+    ~PortBoxCommand() final = default;
+
+    void Execute();
+};
+
 class SaveIPCommand : public Command {
  public:
   SaveIPCommand() = default;
@@ -65,6 +73,17 @@ class TerminateCommand final : public Command {
   ~TerminateCommand() final = default;
 
   void Execute();
+};
+
+class SavePortCommand final : public Command {
+public:
+    SavePortCommand() = default;
+    ~SavePortCommand() final = default;
+
+    void Execute();
+
+protected:
+    static std::regex port_regex;
 };
 
 class SetCommand final : public Command {
