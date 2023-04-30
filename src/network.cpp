@@ -14,6 +14,10 @@ void Network::UpdatePort(size_t port) { opened_port_ = port; }
 Socket::Status Network::ServerConnect() {
   listener_.listen(opened_port_);
   return listener_.accept(socket_);
+  char buf[2000];
+  size_t recei;
+  socket_.receive(buf, sizeof(buf), recei);
+  std::cout << buf << "DEEEEESPACITO!";
 }
 
 Socket::Status Network::ClientConnect(IpAddress m_ip, size_t port) {
@@ -30,9 +34,9 @@ void Network::Send(std::string command_type, std::string coords) {
 }
 
 Command* Network::GetCommand() {
-  while (socket_.receive(packet_) != Socket::Status::Done) {
-    //std::cout << "NOT received\n";
-    //std::cout.flush();
+  if (socket_.receive(packet_) != Socket::Status::Done) {
+    std::cout << "DEEEEESPACITO!";
+    std::cout.flush();
   }
   std::string command_type;
   packet_ >> command_type;
