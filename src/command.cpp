@@ -63,7 +63,7 @@ bool SaveIPCommand::Execute() {
     text.erase(text.begin());
   }
   text.erase(text.begin());
-  if (loop_->GetNetwork()->SetOtherIP(IpAddress(ip_address), std::stoi(text)) !=
+  if (loop_->GetNetwork()->ClientConnect(ip_address, std::stoi(text)) !=
       Socket::Status::Done) {
     loop_->GetWindow().SetShow("ip", "status", 2, true);
     return false;
