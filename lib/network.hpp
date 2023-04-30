@@ -1,18 +1,20 @@
 #pragma once
 
-
 #include "common.hpp"
 
 class Network {
  public:
+  enum class IpType { LOCAL, ROUTER, GLOBAL };
+
   explicit Network(GameLoop* loop);
-  Socket::Status SetOtherIP(IpAddress other_ip, size_t ip_port);
+  void SetMyIP(IpType type, size_t port);
+  Socket::Status ServerConnect(IpAddress m_ip, size_t port);
+  Socket::Status ClientConnect(IpAddress m_ip, size_t port);
   void Send(std::string command_type, std::string coords = "");
   Command* GetCommand();
 
  protected:
-  size_t port_;
-  IpAddress other_ip_;
+  size_t opened_port_;
   TcpSocket socket_;
   TcpListener listener_;
   Packet packet_;
