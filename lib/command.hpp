@@ -62,6 +62,9 @@ class ClientCommand final : public SaveIPCommand {
   ~ClientCommand() final = default;
 
   void Execute();
+
+ private:
+  pair<string, size_t> ParseIp();
 };
 
 class SavePortCommand final : public Command {
@@ -73,6 +76,14 @@ public:
 
 protected:
     static std::regex port_regex;
+};
+
+class TerminateCommand final : public Command {
+   public:
+    TerminateCommand() = default;
+    ~TerminateCommand() final = default;
+
+    void Execute();
 };
 
 class SetCommand final : public Command {

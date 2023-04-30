@@ -15,12 +15,11 @@ class GameLoop {
   void Clear();
 
   GameWindow& GetWnd();
-  Network* GetNetwork();
+  Network& GetNetwork();
+  void LaunckNetwork();
+  void Terminate();
   const Vector2f& GetSize() const;
-  void Block();
-  void Unblock();
-  void SwitchBlock();
-  bool IsBlocked() const;
+  bool& Blocked();
   const string& GetBox() const;
 
   const size_t kShips = 10;
@@ -31,6 +30,7 @@ class GameLoop {
   deque<Command*> turns_;
   GameWindow window_;
   Network network_;
+  Thread network_thr_;
   bool is_blocked_ = false;
 
   void ProcessNetwork();

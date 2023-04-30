@@ -7,17 +7,31 @@
 #include "../lib/object.hpp"
 #include "../lib/player.hpp"
 
-Network::Network(GameLoop* loop) : opened_port_(2001), loop_(loop) {}
-
-void Network::UpdatePort(size_t port) { opened_port_ = port; }
-
-Socket::Status Network::ServerConnect() {
-  listener_.listen(opened_port_);
-  return listener_.accept(socket_);
+Network::Network(GameLoop* loop)
+    : connect_thr(&Network::ServerAccept, this), loop_(loop) {
+  listener_.listen(2001);
 }
 
-Socket::Status Network::ClientConnect(IpAddress m_ip, size_t port) {
-  return socket_.connect(m_ip, port, sf::milliseconds(2000));
+Socket::Status Network::UpdatePort(size_t port) {
+  return listener_.listen(port);
+}
+
+void Network::Terminate() { connect_thr.terminate(); }
+
+void Network::ServerAccept() {
+  listener_.accept(socket_);
+  loop_->LaunckNetwork();
+  loop_->Blocked() = true;
+  loop_->GetWnd().SetButtons("select_0");
+}
+
+void Network::ServerConnect() { connect_thr.launch(); }
+
+Socket::Status Network::ClientConnect(pair<IpAddress, size_t> address) {
+  if (address.first.toString().empty()) {
+    return Socket::Error;
+  }
+  return socket_.connect(address.first, address.second, sf::milliseconds(1500));
 }
 
 void Network::Send(std::string command_type, std::string coords) {
@@ -29,31 +43,20 @@ void Network::Send(std::string command_type, std::string coords) {
   }
 }
 
-void Network::SetPort(size_t port) {
-  opened_port_ = port;
-}
-
 Command* Network::GetCommand() {
-  while (socket_.getRemoteAddress() == IpAddress::None) {
-  }
-  if (socket_.receive(packet_) == Socket::Status::Done) {
-    std::cout << "DEEEEESPACITO!";
-    std::cout.flush();
-  }
+  socket_.receive(packet_);
   std::string command_type;
   packet_ >> command_type;
 
+  auto& buttons = loop_->GetWnd().GetButtons();
   if (command_type == "add_ship") {
-    return loop_->GetWnd().GetButtons()["select_1"]["ship"]->GetCommand().get();
+    return buttons["select_1"]["ship"]->GetCommand().get();
   }
+
   std::string coords;
   packet_ >> coords;
   if (command_type == "add_cell") {
-    std::cout << "adding\n";
-    std::cout.flush();
-    string cell = "cell" + coords;
-    return loop_->GetWnd().GetButtons()["select_1"][cell]->GetCommand().get();
+    return buttons["select_1"]["cell" + coords]->GetCommand().get();
   }
-  string cell = "cell_rival" + coords;
-  return loop_->GetWnd().GetButtons()["play_1"][cell]->GetCommand().get();
+  return buttons["play_1"]["cell_rival" + coords]->GetCommand().get();
 }
