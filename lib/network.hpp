@@ -12,9 +12,12 @@ class Network {
   Command* GetCommand();
 
  protected:
+  size_t port_;
+  sf::IpAddress my_ip_;
+  sf::IpAddress other_ip_;
+  sf::TcpSocket socket_;
+  sf::TcpListener listener_;
+  sf::Packet packet_;
   size_t opened_port_;
-  TcpSocket socket_;
-  TcpListener listener_;
-  Packet packet_;
   GameLoop* loop_;
 };

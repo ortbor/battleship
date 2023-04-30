@@ -22,6 +22,7 @@ void GameLoop::ProcessNetwork() {
 void GameLoop::Go() {
   Command::loop_ = this;
   sf::Thread network_thread(&GameLoop::ProcessNetwork, this);
+  network_thread.launch();
   while (window_.isOpen()) {
     window_.GetCommand()->Execute();
   }
