@@ -273,6 +273,8 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
                  false),
       TextObject("Invalid IP", 80, Color::Red, {775, 800}, font_, Text::Bold,
                  false),
+      TextObject("Server is offline", 80, Color::Red, {660, 800}, font_,
+                 Text::Bold, false),
       TextObject("Connection timeout!", 80, Color::Red, {590, 800}, font_,
                  Text::Bold, false));
 

@@ -27,6 +27,7 @@ bool SetCommand::Execute() {
 bool IPBoxCommand::Execute() {
   loop_->GetWindow().SetShow("ip", "status", 1, false);
   loop_->GetWindow().SetShow("ip", "status", 2, false);
+  loop_->GetWindow().SetShow("ip", "status", 3, false);
 
   size_t code = loop_->GetWindow().GetEvent().text.unicode;
 
@@ -55,6 +56,9 @@ bool ServerCommand::Execute() {
 }
 
 bool ClientCommand::Execute() {
+  loop_->GetWindow().SetShow("ip", "status", 2, false);
+  loop_->GetWindow().SetShow("ip", "status", 3, false);
+
   string text = loop_->GetWindow().GetBox();
   if (!std::regex_match(text, ip_regex)) {
     loop_->GetWindow().SetShow("ip", "status", 1, true);
@@ -67,14 +71,20 @@ bool ClientCommand::Execute() {
     text.erase(text.begin());
   }
   text.erase(text.begin());
-  if (loop_->GetNetwork()->ClientConnect(ip_address, std::stoi(text)) !=
-      Socket::Status::Done) {
-    loop_->GetWindow().SetShow("ip", "status", 2, true);
-    return false;
+
+  switch (loop_->GetNetwork()->ClientConnect(ip_address, std::stoi(text))) {
+    case Socket::Status::Done:
+      loop_->GetWindow().SetShow("ip", "status", 0, true);
+      sf::sleep(sf::milliseconds(1000));
+      break;
+    case Socket::Status::Disconnected:
+      loop_->GetWindow().SetShow("ip", "status", 2, true);
+      return false;
+    default:
+      loop_->GetWindow().SetShow("ip", "status", 3, true);
+      return false;
   }
   loop_->GetWindow().GetBox().clear();
-  loop_->GetWindow().SetShow("ip", "status", 0, true);
-  sf::sleep(sf::milliseconds(1000));
 
   if (loop_->GetLocalPlayer() == 1) {
     loop_->Block();
