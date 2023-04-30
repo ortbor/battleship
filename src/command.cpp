@@ -24,16 +24,17 @@ bool SetCommand::Execute() {
   return true;
 }
 
-bool AddSymbolCommand::Execute() {
+bool IPBoxCommand::Execute() {
   loop_->GetWindow().SetShow("ip", "status", 1, false);
   loop_->GetWindow().SetShow("ip", "status", 2, false);
+  loop_->GetWindow().SetShow("ip", "status", 3, false);
 
   size_t code = loop_->GetWindow().GetEvent().text.unicode;
 
   if (code == 8 && !loop_->GetWindow().GetBox().empty()) {
     loop_->GetWindow().GetBox().pop_back();
   } else if (code == 13) {
-    SaveIPCommand().Execute();
+    ClientCommand().Execute();
   } else if (code >= 46 && code <= 58 && code != 47 &&
              loop_->GetWindow().GetBox().size() < 21) {
     loop_->GetWindow().GetBox().push_back(static_cast<char>(code));
@@ -50,7 +51,14 @@ std::string SaveIPCommand::ip_str_r =
     R"(^()" + ip_num_r + R"(\.){3})" + ip_num_r + R"(:)" + ip_port_r;
 std::regex SaveIPCommand::ip_regex(SaveIPCommand::ip_str_r);
 
-bool SaveIPCommand::Execute() {
+bool ServerCommand::Execute() {
+  return loop_->GetNetwork()->ServerConnect() == Socket::Status::Done;
+}
+
+bool ClientCommand::Execute() {
+  loop_->GetWindow().SetShow("ip", "status", 2, false);
+  loop_->GetWindow().SetShow("ip", "status", 3, false);
+
   string text = loop_->GetWindow().GetBox();
   if (!std::regex_match(text, ip_regex)) {
     loop_->GetWindow().SetShow("ip", "status", 1, true);
@@ -63,14 +71,20 @@ bool SaveIPCommand::Execute() {
     text.erase(text.begin());
   }
   text.erase(text.begin());
-  if (loop_->GetNetwork()->ClientConnect(ip_address, std::stoi(text)) !=
-      Socket::Status::Done) {
-    loop_->GetWindow().SetShow("ip", "status", 2, true);
-    return false;
+
+  switch (loop_->GetNetwork()->ClientConnect(ip_address, std::stoi(text))) {
+    case Socket::Status::Done:
+      loop_->GetWindow().SetShow("ip", "status", 0, true);
+      sf::sleep(sf::milliseconds(1000));
+      break;
+    case Socket::Status::Disconnected:
+      loop_->GetWindow().SetShow("ip", "status", 2, true);
+      return false;
+    default:
+      loop_->GetWindow().SetShow("ip", "status", 3, true);
+      return false;
   }
   loop_->GetWindow().GetBox().clear();
-  loop_->GetWindow().SetShow("ip", "status", 0, true);
-  sf::sleep(sf::milliseconds(1000));
 
   if (loop_->GetLocalPlayer() == 1) {
     loop_->Block();

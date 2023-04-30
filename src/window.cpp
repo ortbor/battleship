@@ -258,12 +258,12 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       TextObject("<-", 60, Color::Red, {85, 70}, font_));
 
   buttons_["ip"]["box"] = std::make_shared<KeyboardButton>(
-      std::make_shared<AddSymbolCommand>(),
+      std::make_shared<IPBoxCommand>(),
       RectObject({500, 70}, {200, 200, 200}, {708, 445}),
       TextObject("", 40, Color::Black, {715, 450}, font_));
 
   buttons_["ip"]["save"] = std::make_shared<MouseButton>(
-      Mouse::Button::Left, std::make_shared<SaveIPCommand>(),
+      Mouse::Button::Left, std::make_shared<ClientCommand>(),
       RectObject({260, 150}, {0, 255, 95}, {827, 600}),
       TextObject("Save", 100, Color::Red, {857, 600}, font_));
 
@@ -273,6 +273,8 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
                  false),
       TextObject("Invalid IP", 80, Color::Red, {775, 800}, font_, Text::Bold,
                  false),
+      TextObject("Server is offline", 80, Color::Red, {660, 800}, font_,
+                 Text::Bold, false),
       TextObject("Connection timeout!", 80, Color::Red, {590, 800}, font_,
                  Text::Bold, false));
 
