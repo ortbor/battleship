@@ -10,7 +10,7 @@ class Command {
   Command(const Event::EventType& type);
   virtual ~Command() = default;
 
-  virtual bool Execute() = 0;
+  virtual void Execute() = 0;
   const Event::EventType& GetType();
   static GameLoop* loop_;
 
@@ -23,7 +23,7 @@ class IPBoxCommand final : public Command {
   IPBoxCommand() = default;
   ~IPBoxCommand() final = default;
 
-  bool Execute();
+  void Execute();
 };
 
 class SaveIPCommand : public Command {
@@ -31,7 +31,7 @@ class SaveIPCommand : public Command {
   SaveIPCommand() = default;
   ~SaveIPCommand() override = default;
 
-  virtual bool Execute() override = 0;
+  virtual void Execute() override = 0;
 
  protected:
   static std::string ip_num_r;
@@ -45,7 +45,7 @@ class ServerCommand final : public SaveIPCommand {
   ServerCommand() = default;
   ~ServerCommand() final = default;
 
-  bool Execute();
+  void Execute();
 };
 
 class ClientCommand final : public SaveIPCommand {
@@ -53,7 +53,7 @@ class ClientCommand final : public SaveIPCommand {
   ClientCommand() = default;
   ~ClientCommand() final = default;
 
-  bool Execute();
+  void Execute();
 };
 
 class SetCommand final : public Command {
@@ -61,7 +61,7 @@ class SetCommand final : public Command {
   SetCommand(const string& str);
   ~SetCommand() final = default;
 
-  bool Execute() final;
+  void Execute() final;
 
  private:
   string str_;
@@ -73,7 +73,7 @@ class ExecCommand final : public Command {
               void (*func)(GameWindow& obj));
   ~ExecCommand() final = default;
 
-  bool Execute() final;
+  void Execute() final;
 
  protected:
   GameWindow& obj_;
@@ -84,7 +84,7 @@ class CellCommand : public Command {
  public:
   CellCommand(Player* player, Cell* cell);
   ~CellCommand() override = default;
-  virtual bool Execute() override = 0;
+  virtual void Execute() override = 0;
 
  protected:
   Player* player_;
@@ -100,7 +100,7 @@ class AddCellCommand final : public CellCommand {
  public:
   AddCellCommand(Player* player, Cell* cell);
   ~AddCellCommand() final = default;
-  bool Execute() final;
+  void Execute() final;
 
  protected:
   bool IsValid() const final;
@@ -111,7 +111,7 @@ class ShootCommand final : public CellCommand {
  public:
   ShootCommand(Player* player, Cell* cell);
   ~ShootCommand() final = default;
-  bool Execute() final;
+  void Execute() final;
 
  protected:
   bool IsValid() const final;
@@ -122,7 +122,7 @@ class AddShipCommand : public Command {
  public:
   AddShipCommand(Player* player);
   ~AddShipCommand() = default;
-  bool Execute() final;
+  void Execute() final;
 
  protected:
   Player* player_;

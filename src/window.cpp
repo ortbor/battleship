@@ -97,43 +97,38 @@ void GameWindow::DrawObjects() {
 }
 
 void GameWindow::SetVolume(Volume value) {
-  switch (value) {
-    case Volume::Silence:
-      for (auto& elem : music_) {
+  for (auto& elem : music_) {
+    switch (value) {
+      case Volume::Silence:
         elem.second.setVolume(0);
         elem.second.pause();
-      }
-      break;
+        break;
 
-    case Volume::Less:
-      for (auto& elem : music_) {
-        elem.second.setVolume(std::min(100.F, elem.second.getVolume() - 10));
-        if (elem.second.getStatus() == sf::SoundSource::Paused) {
+      case Volume::Less:
+        elem.second.setVolume(std::max(0.F, elem.second.getVolume() - 10));
+        if (elem.second.getVolume() == 0) {
           elem.second.pause();
         }
-      }
-      break;
+        break;
 
-    case Volume::More:
-      for (auto& elem : music_) {
+      case Volume::More:
         elem.second.setVolume(std::min(100.F, elem.second.getVolume() + 10));
         if (elem.second.getStatus() == sf::SoundSource::Paused) {
           elem.second.play();
         }
-      }
-      break;
+        break;
 
-    case Volume::Max:
-      for (auto& elem : music_) {
+      case Volume::Max:
         elem.second.setVolume(100);
         if (elem.second.getStatus() == sf::SoundSource::Paused) {
           elem.second.play();
         }
-      }
+        break;
 
-    default:
-      throw std::runtime_error("Unknown volume!");
-      break;
+      default:
+        throw std::runtime_error("Unknown volume!");
+        break;
+    }
   }
 }
 

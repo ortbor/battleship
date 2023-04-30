@@ -7,17 +7,13 @@
 #include "../lib/object.hpp"
 #include "../lib/player.hpp"
 
-Network::Network(GameLoop* loop) : opened_port_(2000), loop_(loop) {}
+Network::Network(GameLoop* loop) : opened_port_(2001), loop_(loop) {}
 
 void Network::UpdatePort(size_t port) { opened_port_ = port; }
 
 Socket::Status Network::ServerConnect() {
   listener_.listen(opened_port_);
   return listener_.accept(socket_);
-  char buf[2000];
-  size_t recei;
-  socket_.receive(buf, sizeof(buf), recei);
-  std::cout << buf << "DEEEEESPACITO!";
 }
 
 Socket::Status Network::ClientConnect(IpAddress m_ip, size_t port) {
@@ -34,16 +30,17 @@ void Network::Send(std::string command_type, std::string coords) {
 }
 
 Command* Network::GetCommand() {
-  if (socket_.receive(packet_) != Socket::Status::Done) {
+  while (socket_.getRemoteAddress() == IpAddress::None) {
+  }
+  if (socket_.receive(packet_) == Socket::Status::Done) {
     std::cout << "DEEEEESPACITO!";
     std::cout.flush();
   }
   std::string command_type;
   packet_ >> command_type;
 
-  string choose = "select_" + std::to_string(1 - loop_->GetLocalPlayer());
   if (command_type == "add_ship") {
-    return loop_->GetWindow().GetButtons()[choose]["ship"]->GetCommand().get();
+    return loop_->GetWnd().GetButtons()["select_1"]["ship"]->GetCommand().get();
   }
   std::string coords;
   packet_ >> coords;
@@ -51,9 +48,8 @@ Command* Network::GetCommand() {
     std::cout << "adding\n";
     std::cout.flush();
     string cell = "cell" + coords;
-    return loop_->GetWindow().GetButtons()[choose][cell]->GetCommand().get();
+    return loop_->GetWnd().GetButtons()["select_1"][cell]->GetCommand().get();
   }
-  string player = "play_" + std::to_string(1 - loop_->GetLocalPlayer());
   string cell = "cell_rival" + coords;
-  return loop_->GetWindow().GetButtons()[player][cell]->GetCommand().get();
+  return loop_->GetWnd().GetButtons()["play_1"][cell]->GetCommand().get();
 }
