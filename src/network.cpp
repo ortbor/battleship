@@ -9,7 +9,7 @@
 
 Network::Network(GameLoop* loop)
     : connect_thr(&Network::ServerAccept, this), loop_(loop) {
-  listener_.listen(2001);
+  listener_.listen(2000);
 }
 
 Socket::Status Network::UpdatePort(size_t port) {
