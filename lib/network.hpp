@@ -9,6 +9,7 @@ class Network {
   Socket::Status ServerConnect();
   Socket::Status ClientConnect(IpAddress m_ip, size_t port);
   void Send(std::string command_type, std::string coords = "");
+  void SetPort(size_t port);
   Command* GetCommand();
 
  protected:

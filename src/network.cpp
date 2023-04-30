@@ -29,6 +29,10 @@ void Network::Send(std::string command_type, std::string coords) {
   }
 }
 
+void Network::SetPort(size_t port) {
+  opened_port_ = port;
+}
+
 Command* Network::GetCommand() {
   while (socket_.getRemoteAddress() == IpAddress::None) {
   }

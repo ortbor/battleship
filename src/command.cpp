@@ -41,6 +41,22 @@ void IPBoxCommand::Execute() {
   loop_->GetWnd().SetObject("ip", "box", 1, loop_->GetWnd().GetBox());
 }
 
+void PortBoxCommand::Execute() {
+  loop_->GetWnd().SetShow("settings", "status", 1, false);
+
+  size_t code = loop_->GetWnd().GetEvent().text.unicode;
+
+  if (code == 8 && !loop_->GetWnd().GetBox().empty()) {
+    loop_->GetWnd().GetBox().pop_back();
+  } else if (code == 13) {
+    SavePortCommand().Execute();
+  } else if (code >= 48 && code <= 58 &&
+             loop_->GetWnd().GetBox().size() < 5) {
+    loop_->GetWnd().GetBox().push_back(static_cast<char>(code));
+  }
+  loop_->GetWnd().SetObject("settings", "box", 1, loop_->GetWnd().GetBox());
+}
+
 std::string SaveIPCommand::ip_num_r =
     R"(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))";
 std::string SaveIPCommand::ip_port_r =
@@ -48,6 +64,7 @@ std::string SaveIPCommand::ip_port_r =
 std::string SaveIPCommand::ip_str_r =
     R"(^()" + ip_num_r + R"(\.){3})" + ip_num_r + R"(:)" + ip_port_r;
 std::regex SaveIPCommand::ip_regex(SaveIPCommand::ip_str_r);
+std::regex SavePortCommand::port_regex(R"(([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))");
 
 void ServerCommand::Execute() {
   loop_->GetWnd().SetButtons("waiting");
@@ -88,6 +105,21 @@ void ClientCommand::Execute() {
   }
   loop_->GetWnd().GetBox().clear();
   loop_->GetWnd().SetButtons("select_0");
+}
+
+void SavePortCommand::Execute() {
+  loop_->GetWnd().SetShow("settings", "status", 0, false);
+  loop_->GetWnd().SetShow("settings", "status", 1, false);
+
+  string text = loop_->GetWnd().GetBox();
+  if (!std::regex_match(text, port_regex)) {
+    loop_->GetWnd().SetShow("settings", "status", 1, true);
+    return;
+  }
+  loop_->GetNetwork()->SetPort(std::stoi(text));
+  loop_->GetWnd().SetShow("settings", "status", 0, true);
+  sf::sleep(sf::milliseconds(1000));
+  loop_->GetWnd().SetShow("settings", "status", 0, false);
 }
 
 ExecCommand::ExecCommand(GameWindow& obj, const Event::EventType& type,

@@ -36,39 +36,60 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
 
   buttons_["settings"]["volume"] = std::make_shared<Button>(
       nullptr,
-      TextObject("Volume", 120, Color::Red, {430, 490}, font_, Text::Bold));
+      TextObject("Volume", 120, Color::Red, {430, 890}, font_, Text::Bold));
 
   buttons_["settings"]["vol_silence"] = std::make_shared<MouseButton>(
       Mouse::Button::Left,
       std::make_shared<ExecCommand>(
           *this, Event::MouseButtonPressed,
           [](GameWindow& window) { window.SetVolume(Volume::Silence); }),
-      RectObject({100, 100}, {0, 255, 95}, {900, 530}),
-      TextObject("<X", 60, Color::Red, {902, 540}, font_));
+      RectObject({100, 100}, {0, 255, 95}, {900, 930}),
+      TextObject("<X", 60, Color::Red, {902, 940}, font_));
 
   buttons_["settings"]["vol_less"] = std::make_shared<MouseButton>(
       Mouse::Button::Left,
       std::make_shared<ExecCommand>(
           *this, Event::MouseButtonPressed,
           [](GameWindow& window) { window.SetVolume(Volume::Less); }),
-      RectObject({100, 100}, {0, 255, 95}, {1050, 530}),
-      TextObject("-", 60, Color::Red, {1090, 535}, font_));
+      RectObject({100, 100}, {0, 255, 95}, {1050, 930}),
+      TextObject("-", 60, Color::Red, {1090, 935}, font_));
 
   buttons_["settings"]["vol_more"] = std::make_shared<MouseButton>(
       Mouse::Button::Left,
       std::make_shared<ExecCommand>(
           *this, Event::MouseButtonPressed,
           [](GameWindow& window) { window.SetVolume(Volume::More); }),
-      RectObject({100, 100}, {0, 255, 95}, {1200, 530}),
-      TextObject("+", 60, Color::Red, {1228, 535}, font_));
+      RectObject({100, 100}, {0, 255, 95}, {1200, 930}),
+      TextObject("+", 60, Color::Red, {1228, 935}, font_));
 
   buttons_["settings"]["vol_max"] = std::make_shared<MouseButton>(
       Mouse::Button::Left,
       std::make_shared<ExecCommand>(
           *this, Event::MouseButtonPressed,
           [](GameWindow& window) { window.SetVolume(Volume::Max); }),
-      RectObject({100, 100}, {0, 255, 95}, {1350, 530}),
-      TextObject("<))", 60, Color::Red, {1355, 535}, font_));
+      RectObject({100, 100}, {0, 255, 95}, {1350, 930}),
+      TextObject("<))", 60, Color::Red, {1355, 935}, font_));
+
+  buttons_["settings"]["change_port_text"] = std::make_shared<Button>(
+          nullptr,
+          TextObject("Change port (default is 2000)", 100, Color::Red, {330, 250}, font_, Text::Bold));
+
+  buttons_["settings"]["box"] = std::make_shared<KeyboardButton>(
+          std::make_shared<PortBoxCommand>(),
+          RectObject({500, 70}, {200, 200, 200}, {708, 445}),
+          TextObject("", 40, Color::Black, {715, 450}, font_));
+
+  buttons_["settings"]["save"] = std::make_shared<MouseButton>(
+          Mouse::Button::Left, std::make_shared<SavePortCommand>(),
+          RectObject({260, 150}, {0, 255, 95}, {827, 600}),
+          TextObject("Save", 100, Color::Red, {857, 600}, font_));
+
+  buttons_["settings"]["status"] = std::make_shared<Button>(
+          nullptr,
+          TextObject("Success", 80, Color::Green, {823, 800}, font_, Text::Bold,
+                     false),
+          TextObject("Invalid Port", 80, Color::Red, {775, 800}, font_, Text::Bold,
+                     false));
 
   buttons_["play"]["return"] = std::make_shared<MouseButton>(
       Mouse::Button::Left, std::make_shared<SetCommand>("menu"),
