@@ -1,69 +1,103 @@
+#include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
 #include <iostream>
+#include <string>
 
-#include "../lib/game.hpp"
+using namespace std;
+using namespace sf;
 
 int main() {
-  const size_t kSize = 10;
-  const size_t kShips = 2;
+  setlocale(LC_ALL, "");  // Поддержка кириллицы в консоли Windows
+  IpAddress ip = IpAddress::getLocalAddress();  // Локальный ip Адресс
+  TcpSocket socket;  // программный интерфейс для обеспечения обмена данными
+                     // между процессами
+  Packet packet;  // Для осуществления пакетной передачи дынных
+  char type;
+  char mode = ' ';  // Мод s- сервер, с - клиент
+  int x = 0;        // координаты шара
+  int y = 0;
+  char buffer[2000];
+  size_t received;  //??
+  string text = "connect to: ";
 
-  /*sf::RenderWindow wnd;
-  wnd.create(VideoMode(1920, VideoMode::getDesktopMode().height), "sds");
+  //***********Подключение***************//
+  cout << ip << endl;
+  cout << "Введите тип подключения:  c -клиент, s -сервер" << endl;
+  cin >> type;
+  if (type == 's') {
+    TcpListener listener;
+    listener.listen(2000);
+    listener.accept(socket);  // который будет содержать новое соединение
+    text += "Serwer";
+    mode = 's';
 
-  sf::View view;
-  view.setSize(1920, VideoMode::getDesktopMode().height);
-  view.setCenter(Vector2f(view.getSize().x / 2, view.getSize().y / 2));
-  wnd.setView(view);
+  } else if (type == 'c') {
+    cout << "new ip:";
+    cin >> ip;
 
-  Texture background;
-  if (!background.loadFromFile(Path().string() + kRes + "background.jpg")) {
-    throw std::runtime_error("Cannot load background");
+    socket.connect(ip, 2000);  // ip и Порт
+    text += "client";
+    mode = 'r';
   }
-  sf::Sprite str(background);
-  Event event;
-  while (wnd.isOpen()) {
-    while (wnd.pollEvent(event)) {
-      if (event.type == Event::MouseButtonPressed) {
-        std::cout << (Mouse::getPosition().y - wnd.getPosition().y) * 1080 /
-                         wnd.getSize().y
-                  << ' ' << Mouse::getPosition().y << ' ' << wnd.getPosition().y
-                  << ' '
-                  << wnd.mapPixelToCoords(Mouse::getPosition()).y *
-                         wnd.getSize().y / 1080
-                  << '\n';
+  socket.send(text.c_str(), text.length() + 1);
+  socket.receive(buffer, sizeof(buffer), received);
+  cout << buffer << endl;
 
-        if (event.type == Event::Resized) {
-          wnd.setView(view);
-        }
-      }
-    }
-    wnd.clear();
-    wnd.draw(str);
-    wnd.display();
-  }*/
-
-  /*
-  sf::RenderWindow window(sf::VideoMode(1280, 840), "SFML works!");
-
-  sfe::Movie movie;
-  movie.openFromFile("../share/battlesh1p/bug.or.ficha");
-  movie.fit(200, 0, 450, 800);
-  movie.play();
+  //**********Отрисовка Формы***********************//
+  RenderWindow window(sf::VideoMode(800, 600),
+                      "Network");  // Создаем размер Главного окна
+  //*******Элементы********************//
+  CircleShape shape(10);  // создаем шар с радиусом 50
 
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed) window.close();
+      if (event.type == sf::Event::Closed) {
+        window.close();
+      }
+    }
+    if (mode == 's') {
+      socket.receive(packet);  // Команда которая ожидает данных в виде пакета
+                               // от клиентской части
+      if (packet >> x >> y) {  // вытаскиваем значение из пакета в переменную x
+                               // и у (действие уже происходит)
+        cout << x << ":" << y
+             << endl;  //..и если все прошло успешно то выводим её координаты
+      }
     }
 
-    movie.update();
+    if (mode == 'r') {
+      if (Keyboard::isKeyPressed(
+              Keyboard::Right)) {  // первая координата Х отрицательна =>идём
+                                   // влево
+        x++;
+      }
+      if (Keyboard::isKeyPressed(
+              Keyboard::Left)) {  // первая координата Х отрицательна =>идём
+                                  // влево
+        x--;
+      }
 
+      if (Keyboard::isKeyPressed(
+              Keyboard::Down)) {  // первая координата Х отрицательна =>идём
+                                  // влево
+        y++;
+      }
+      if (Keyboard::isKeyPressed(
+              Keyboard::Up)) {  // первая координата Х отрицательна =>идём влево
+        y--;
+      }
+
+      packet << x << y;  // Пакуем значения координат в Пакет
+      socket.send(packet);  // Отправка данных
+      packet.clear();       // Чистим пакет
+    }
     window.clear();
-    window.draw(movie);
+    shape.setPosition(x, y);  // выставляем шар на координаты
+    window.draw(shape);  // отрисовываем шар
     window.display();
-  }*/
-
-  GameLoop game(Vector2f(kSize, kSize), kShips);
-  game.Go();
+    sleep(sf::milliseconds(10));  // Задержка
+  }                               // END
 
   return 0;
 }

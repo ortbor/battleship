@@ -48,18 +48,6 @@ void GameLoop::SwitchBlock() { is_blocked_ = !is_blocked_; }
 
 bool GameLoop::IsBlocked() const { return is_blocked_; }
 
-const string& GameLoop::GetIP() const { return ip_; }
-
-void GameLoop::AddToIP(char symbol) { ip_ += symbol; }
-
-void GameLoop::RemoveLastIP() {
-  if (!ip_.empty()) {
-    ip_.pop_back();
-  }
-}
-
-void GameLoop::CleanIP() { ip_ = ""; }
-
 void GameLoop::Clear() {
   for (int pl = 0; pl < 2; ++pl) {
     players_[pl].Clear();

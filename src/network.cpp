@@ -7,14 +7,15 @@
 #include "../lib/object.hpp"
 #include "../lib/player.hpp"
 
-Network::Network(GameLoop* loop) : loop_(loop) {
-  listener_.listen(2000);
-}
+Network::Network(GameLoop* loop) : opened_port_(2000), loop_(loop) { }
 
-void Network::SetOtherIP(sf::IpAddress other_ip, size_t ip_port) {
+Socket::Status Network::ClientConnect(IpAddress other_ip, size_t port) {
+  listener_.listen(opened_port_);
+  listener_.accept(server_socket_);
+
   other_ip_ = other_ip;
-  port_ = ip_port;
-  if (server_socket_.connect("192.168.1.189", 2000) == sf::Socket::Done) {
+  port_ = port;
+  if (server_socket_.connect("192.168.1.189", 2000, sf::milliseconds(1500)) == sf::Socket::Done) {
     std::cout << "done\n";
     std::cout.flush();
   }
@@ -22,11 +23,12 @@ void Network::SetOtherIP(sf::IpAddress other_ip, size_t ip_port) {
     std::cout << "done\n";
     std::cout.flush();
   }
-  if (client_socket_.connect("192.168.1.189", 2000) == sf::Socket::Done) {
+  if (client_socket_.connect("192.168.1.189", 2000, sf::milliseconds(1500)) == sf::Socket::Done) {
     std::cout << "done\n";
     std::cout.flush();
   }
   //socket_.connect(other_ip, ip_port);
+  return sf::Socket::Status::Done;
 }
 
 void Network::Send(std::string command_type, std::string coords) {

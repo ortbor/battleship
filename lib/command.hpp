@@ -26,12 +26,34 @@ class AddSymbolCommand final : public Command {
   bool Execute();
 };
 
-class SaveIPCommand final : public Command {
+class SaveIPCommand : public Command {
  public:
-    SaveIPCommand() = default;
-    ~SaveIPCommand() final = default;
+  SaveIPCommand() = default;
+  ~SaveIPCommand() override = default;
 
-    bool Execute();
+  virtual bool Execute() override = 0;
+
+ private:
+  static std::string ip_num_r;
+  static std::string ip_port_r;
+  static std::string ip_str_r;
+  static std::regex ip_regex;
+};
+
+class ServerCommand final : public SaveIPCommand {
+ public:
+  ServerCommand() = default;
+  ~ServerCommand() final = default;
+
+  bool Execute();
+};
+
+class ClientCommand final : public SaveIPCommand {
+ public:
+  ClientCommand() = default;
+  ~ClientCommand() final = default;
+
+  bool Execute();
 };
 
 class SetCommand final : public Command {
