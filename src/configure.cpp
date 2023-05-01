@@ -186,6 +186,44 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
   buttons_["player_0"]["field_rival"] = std::make_shared<Button>(
       nullptr, TextObject("Rival field", 80, Color::Red, {1410, 950}, font_));
 
+  buttons_["select_1"]["text"] = std::make_shared<Button>(
+          nullptr,
+          TextObject("Select your ships", 80, Color::Blue, {1110, 300}, font_));
+
+  buttons_["select_1"]["ship"] = std::make_shared<MouseButton>(
+          Mouse::Button::Left, std::make_shared<AddShipCommand>(players.data() + 1),
+          RectObject({335, 110}, {0, 255, 95}, {1210, 530}),
+          TextObject("Add ship", 80, Color::Red, {1220, 530}, font_));
+
+  buttons_["select_1"]["return"] = std::make_shared<MouseButton>(
+          Mouse::Button::Left, std::make_shared<SetCommand>("play"),
+          RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+          TextObject("<-", 60, Color::Red, {85, 72}, font_));
+
+  buttons_["select_1"]["status"] = std::make_shared<Button>(
+          nullptr,
+          TextObject("Success!", 80, Color::Green, {1240, 750}, font_, Text::Bold,
+                     false),
+          TextObject("Cannot select\n    this cell!", 80, Color::Red, {1120, 750},
+                     font_, Text::Bold, false),
+          TextObject("Wrong shaped ship!", 80, Color::Red, {1030, 750}, font_,
+                     Text::Bold, false));
+
+  buttons_["player_1"]["return"] = std::make_shared<MouseButton>(
+          Mouse::Left, std::make_shared<SetCommand>("play"),
+          RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+          TextObject("<-", 60, Color::Red, {85, 72}, font_));
+
+  buttons_["player_1"]["turn"] = std::make_shared<Button>(
+          nullptr, TextObject("Your turn ", 100, Color::Red, {675, 930}, font_,
+                              sf::Text::Bold));
+
+  buttons_["player_1"]["field_your"] = std::make_shared<Button>(
+          nullptr, TextObject("Your field", 80, Color::Red, {133, 950}, font_));
+
+  buttons_["player_1"]["field_rival"] = std::make_shared<Button>(
+          nullptr, TextObject("Rival field", 80, Color::Red, {1410, 950}, font_));
+
   buttons_["won_0"]["text"] = std::make_shared<Button>(
       nullptr,
       TextObject("You win!", 120, Color::Red, {600, 350}, font_, Text::Bold),
@@ -214,7 +252,7 @@ void GameWindow::Configure(array<Player, 2>& players, const Vector2f& size) {
       for (size_t j = 0; j < size.y; ++j) {
         auto pos_my = Vector2f(140 + i * 70, 250 + j * 70);
         auto pos_rv = Vector2f(1080 + i * 70 - pl * 940, 250 + j * 70);
-        std::string ind = std::to_string(i * size.y + j);
+        std::string ind = std::to_string(static_cast<size_t>(i * size.y + j));
         auto* cell_my = players[pl].GetField()->GetCell(Vector2f(i, j));
         auto* cell_rv = players[pl].GetRField()->GetCell(Vector2f(i, j));
 

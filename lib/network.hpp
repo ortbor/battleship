@@ -14,6 +14,7 @@ class Network {
   Command* GetCommand();
 
  protected:
+  size_t port_ = 2000;
   TcpSocket socket_;
   TcpListener listener_;
   Packet packet_;

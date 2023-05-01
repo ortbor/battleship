@@ -16,14 +16,14 @@ const Event::EventType& Command::GetType() { return type_; }
 
 SetCommand::SetCommand(const string& str) : str_(str) {}
 
-void SetCommand::Execute() {
+void SetCommand::Execute(bool is_remote) {
   if (str_ == "menu") {
     loop_->Clear();
   }
   loop_->GetWnd().SetButtons(str_);
 }
 
-void IPBoxCommand::Execute() {
+void IPBoxCommand::Execute(bool is_remote) {
   loop_->GetWnd().SetShow("ip", "status", 1, false);
   loop_->GetWnd().SetShow("ip", "status", 2, false);
   loop_->GetWnd().SetShow("ip", "status", 3, false);
@@ -41,7 +41,7 @@ void IPBoxCommand::Execute() {
   loop_->GetWnd().SetObject("ip", "box", 1, loop_->GetWnd().GetBox());
 }
 
-void PortBoxCommand::Execute() {
+void PortBoxCommand::Execute(bool is_remote) {
   loop_->GetWnd().SetShow("settings", "status", 1, false);
 
   size_t code = loop_->GetWnd().GetEvent().text.unicode;
@@ -57,21 +57,25 @@ void PortBoxCommand::Execute() {
 }
 
 std::string SaveIPCommand::ip_num_r =
-    R"(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))";
+        R"(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))";
 std::string SaveIPCommand::ip_port_r =
-    R"(([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))";
+        R"(([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))";
 std::string SaveIPCommand::ip_str_r =
-    R"(^()" + ip_num_r + R"(\.){3})" + ip_num_r + R"(:)" + ip_port_r;
+        R"(^()" + ip_num_r + R"(\.){3})" + ip_num_r + R"(:)" + ip_port_r;
 std::regex SaveIPCommand::ip_regex(SaveIPCommand::ip_str_r);
 std::regex SavePortCommand::port_regex(
-    R"(([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))");
+        R"(([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))");
 
-void ServerCommand::Execute() {
+void ServerCommand::Execute(bool is_remote) {
+  loop_->Blocked() = true;
+  loop_->SetLocalPlayer(1);
   loop_->GetWnd().SetButtons("waiting");
   loop_->GetNetwork().ServerConnect();
 }
 
-void ClientCommand::Execute() {
+void ClientCommand::Execute(bool is_remote) {
+  loop_->Blocked() = false;
+  loop_->SetLocalPlayer(0);
   loop_->GetWnd().SetShow("ip", "status", 2, false);
   loop_->GetWnd().SetShow("ip", "status", 3, false);
 
@@ -107,10 +111,10 @@ pair<string, size_t> ClientCommand::ParseIp() {
   return {ip_address, std::stoi(text)};
 }
 
-void SavePortCommand::Execute() {
+void SavePortCommand::Execute(bool is_remote) {
   loop_->GetWnd().SetShow("settings", "status", 1, false);
   loop_->GetWnd().SetShow("settings", "status", 2, false);
-  
+
   string text = loop_->GetWnd().GetBox();
   if (!std::regex_match(text, port_regex)) {
     loop_->GetWnd().SetShow("settings", "status", 1, true);
@@ -128,7 +132,7 @@ void SavePortCommand::Execute() {
   }
 }
 
-void TerminateCommand::Execute() {
+void TerminateCommand::Execute(bool is_remote) {
   loop_->GetNetwork().Terminate();
   loop_->Terminate();
   loop_->GetWnd().SetButtons("play");
@@ -136,38 +140,43 @@ void TerminateCommand::Execute() {
 
 ExecCommand::ExecCommand(GameWindow& obj, const Event::EventType& type,
                          void (*func)(GameWindow& obj))
-    : Command(type), obj_(obj), func_(func) {}
+        : Command(type), obj_(obj), func_(func) {}
 
-void ExecCommand::Execute() { (*func_)(obj_); }
+void ExecCommand::Execute(bool is_remote) { (*func_)(obj_); }
 
 CellCommand::CellCommand(Player* player, Cell* cell)
-    : player_(player), cell_(cell) {}
+        : player_(player), cell_(cell) {}
 
 AddCellCommand::AddCellCommand(Player* player, Cell* cell)
-    : CellCommand(player, cell) {}
+        : CellCommand(player, cell) {}
 
-void AddCellCommand::Execute() {
-  Send();
+void AddCellCommand::Execute(bool is_remote) {
   string scene = "select_" + std::to_string(player_->GetIndex());
   loop_->GetWnd().SetShow(scene, "status", 0, false);
   loop_->GetWnd().SetShow(scene, "status", 2, false);
-
-  if (!IsValid()) {
+  std::cout << "executing\n";
+  std::cout.flush();
+  if ((!is_remote && loop_->Blocked()) || !IsValid()) {
     loop_->GetWnd().SetShow(scene, "status", 1, true);
     return;
   }
+  if (!is_remote) {
+    Send();
+  }
+
+  std::cout << "executing3\n";
+  std::cout.flush();
   if (cell_->GetState() == State::Clear) {
     player_->ship_in_process_.AddCell(cell_);
   } else {
     player_->ship_in_process_.EraseCell(cell_);
   }
   loop_->GetWnd().SetShow(scene, "status", 1, false);
+  std::cout << "executing4\n";
+  std::cout.flush();
 }
 
 bool AddCellCommand::IsValid() const {
-  if (loop_->Blocked()) {
-    return false;
-  }
   return cell_->GetState() == State::Clear ||
          cell_->GetState() == State::Chosen;
 }
@@ -179,23 +188,30 @@ void AddCellCommand::Send() {
 
 AddShipCommand::AddShipCommand(Player* player) : player_(player) {}
 
-void AddShipCommand::Execute() {
-  Send();
+void AddShipCommand::Execute(bool is_remote) {
   string scene = "select_" + std::to_string(player_->GetIndex());
   loop_->GetWnd().SetShow(scene, "status", 1, false);
-
-  if (!IsValid()) {
+  if ((!is_remote && loop_->Blocked()) || !IsValid()) {
+    std::cout << "blocked(\n";
+    std::cout.flush();
     loop_->GetWnd().SetShow(scene, "status", 0, false);
     loop_->GetWnd().SetShow(scene, "status", 2, true);
     return;
   }
+  if (!is_remote) {
+    Send();
+  }
+
   player_->AddShip();
   loop_->GetWnd().SetShow(scene, "status", 0, true);
   loop_->GetWnd().SetShow(scene, "status", 2, false);
   loop_->GetWnd().DrawObjects();
   sf::sleep(sf::milliseconds(1000));
+  std::cout << "shipcounts " << player_->GetShipCount() << " " << loop_->kShips << "\n";
   if (player_->GetShipCount() == loop_->kShips) {
     loop_->Blocked() = !loop_->Blocked();
+    std::cout << "here " << loop_->Blocked() << "\n";
+    std::cout.flush();
     player_->GetField()->RemoveProhibited();
     if (player_->GetIndex() == 0) {
       loop_->GetWnd().SetButtons("select_1");
@@ -208,7 +224,7 @@ void AddShipCommand::Execute() {
 }
 
 bool AddShipCommand::IsValid() const {
-  if (loop_->Blocked() || !player_->GetShipInProcess()->IsClassic()) {
+  if (!player_->GetShipInProcess()->IsClassic()) {
     return false;
   }
   return player_->GetNumberOfShips(player_->GetShipInProcess()->GetSize()) <
@@ -218,12 +234,14 @@ bool AddShipCommand::IsValid() const {
 void AddShipCommand::Send() { loop_->GetNetwork().Send("add_ship"); }
 
 ShootCommand::ShootCommand(Player* player, Cell* cell)
-    : CellCommand(player, cell) {}
+        : CellCommand(player, cell) {}
 
-void ShootCommand::Execute() {
-  Send();
-  if (!IsValid()) {
+void ShootCommand::Execute(bool is_remote) {
+  if ((!is_remote && loop_->Blocked()) || !IsValid()) {
     return;
+  }
+  if (!is_remote) {
+    Send();
   }
 
   size_t index = player_->GetIndex();
@@ -241,7 +259,7 @@ void ShootCommand::Execute() {
   }
 }
 
-bool ShootCommand::IsValid() const { return !loop_->Blocked(); }
+bool ShootCommand::IsValid() const { return true; }
 
 void ShootCommand::Send() {
   size_t index = cell_->GetCoord().x * loop_->GetSize().y + cell_->GetCoord().y;

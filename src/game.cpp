@@ -17,7 +17,7 @@ GameLoop::GameLoop(const Vector2f& size, size_t ships)
 
 void GameLoop::ProcessNetwork() {
   while (window_.isOpen()) {
-    network_.GetCommand()->Execute();
+    network_.GetCommand()->Execute(true);
   }
 }
 
@@ -45,3 +45,13 @@ void GameLoop::Clear() {
     players_[pl].Clear();
   }
 }
+
+
+int GameLoop::GetLocalPlayer() const {
+  return local_player_;
+}
+
+void GameLoop::SetLocalPlayer(int local_player) {
+  local_player_ = local_player;
+}
+
