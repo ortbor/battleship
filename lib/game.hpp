@@ -18,6 +18,8 @@ class GameLoop {
   void Terminate();
   const Vector2u& GetSize() const;
   bool& Blocked();
+  size_t GetLocalPlayer() const;
+  void SetLocalPlayer(size_t local_player);
 
   const size_t kShips;
 
@@ -29,6 +31,7 @@ class GameLoop {
   Network m_network;
   Thread m_network_thr;
   bool m_blocked = false;
+  size_t m_local_player = 0;
 
   void ProcessNetwork();
 };

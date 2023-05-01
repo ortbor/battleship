@@ -76,57 +76,63 @@ void Push::ConfigSettings(const Font& font, const map<string, Music>& music,
 }
 
 void Push::ConfigVolume(const Font& font, const map<string, Music>& music) {
-  float x = 370, y = 590;
+  Vector2u coord(370, 590);
 
-  Set<Button>("settings", "volume", nullptr,
-              TextObject("Volume: " + bs::atos(music.at("main").getVolume()),
-                         100, Color::Red, {x, y}, font, Text::Bold));
+  Set<Button>(
+      "settings", "volume", nullptr,
+      TextObject("Volume: " + bs::atos(music.at("main").getVolume()), 100,
+                 Color::Red, {coord.x, coord.y}, font, Text::Bold));
 
-  Set<MouseButton>("settings", "vol_silence", Mouse::Left,
-                   make_shared<VolumeCommand>(CMDVolume::Silence),
-                   RectObject({100, 100}, {0, 255, 95}, {x + 590, y + 22}),
-                   TextObject("<X", 60, Color::Red, {x + 592, y + 32}, font));
+  Set<MouseButton>(
+      "settings", "vol_silence", Mouse::Left,
+      make_shared<VolumeCommand>(CMDVolume::Silence),
+      RectObject({100, 100}, {0, 255, 95}, {coord.x + 590, coord.y + 22}),
+      TextObject("<X", 60, Color::Red, {coord.x + 592, coord.y + 32}, font));
 
-  Set<MouseButton>("settings", "vol_less", Mouse::Left,
-                   make_shared<VolumeCommand>(CMDVolume::Less),
-                   RectObject({100, 100}, {0, 255, 95}, {x + 740, y + 22}),
-                   TextObject("-", 60, Color::Red, {x + 777, y + 29}, font));
+  Set<MouseButton>(
+      "settings", "vol_less", Mouse::Left,
+      make_shared<VolumeCommand>(CMDVolume::Less),
+      RectObject({100, 100}, {0, 255, 95}, {coord.x + 740, coord.y + 22}),
+      TextObject("-", 60, Color::Red, {coord.x + 777, coord.y + 29}, font));
 
-  Set<MouseButton>("settings", "vol_more", Mouse::Left,
-                   make_shared<VolumeCommand>(CMDVolume::More),
-                   RectObject({100, 100}, {0, 255, 95}, {x + 890, y + 22}),
-                   TextObject("+", 60, Color::Red, {x + 918, y + 27}, font));
+  Set<MouseButton>(
+      "settings", "vol_more", Mouse::Left,
+      make_shared<VolumeCommand>(CMDVolume::More),
+      RectObject({100, 100}, {0, 255, 95}, {coord.x + 890, coord.y + 22}),
+      TextObject("+", 60, Color::Red, {coord.x + 918, coord.y + 27}, font));
 
-  Set<MouseButton>("settings", "vol_max", Mouse::Left,
-                   make_shared<VolumeCommand>(CMDVolume::Max),
-                   RectObject({100, 100}, {0, 255, 95}, {x + 1040, y + 22}),
-                   TextObject("<))", 60, Color::Red, {x + 1045, y + 27}, font));
+  Set<MouseButton>(
+      "settings", "vol_max", Mouse::Left,
+      make_shared<VolumeCommand>(CMDVolume::Max),
+      RectObject({100, 100}, {0, 255, 95}, {coord.x + 1040, coord.y + 22}),
+      TextObject("<))", 60, Color::Red, {coord.x + 1045, coord.y + 27}, font));
 }
 
 void Push::ConfigPort(const Font& font, const map<string, string>& boxes) {
-  float x = 475, y = 300;
+  Vector2u coord(475, 300);
 
-  Set<Button>(
-      "settings", "port", nullptr,
-      TextObject("Change port: ", 100, Color::Red, {x, y}, font, Text::Bold));
+  Set<Button>("settings", "port", nullptr,
+              TextObject("Change port: ", 100, Color::Red, {coord.x, coord.y},
+                         font, Text::Bold));
 
   Set<KeyboardButton>(
       "settings", "port_box", make_shared<PortBoxCommand>(),
-      RectObject({120, 70}, {200, 200, 200}, {x + 608, y + 35}),
-      TextObject(boxes.at("port"), 40, Color::Black, {x + 618, y + 43}, font));
+      RectObject({120, 70}, {200, 200, 200}, {coord.x + 608, coord.y + 35}),
+      TextObject(boxes.at("port"), 40, Color::Black,
+                 {coord.x + 618, coord.y + 43}, font));
 
-  Set<MouseButton>("settings", "port_save", Mouse::Left,
-                   make_shared<PortCommand>(),
-                   RectObject({150, 90}, {0, 255, 95}, {x + 807, y + 25}),
-                   TextObject("Save", 60, Color::Red, {x + 820, y + 27}, font));
+  Set<MouseButton>(
+      "settings", "port_save", Mouse::Left, make_shared<PortCommand>(),
+      RectObject({150, 90}, {0, 255, 95}, {coord.x + 807, coord.y + 25}),
+      TextObject("Save", 60, Color::Red, {coord.x + 820, coord.y + 27}, font));
 
   Set<Button>("settings", "port_status", nullptr,
-              TextObject("Success", 80, Color::Green, {x + 348, 445}, font,
-                         Text::Bold, false),
-              TextObject("Invalid Port", 80, Color::Red, {x + 260, 445}, font,
-                         Text::Bold, false),
-              TextObject("Failed to set", 80, Color::Red, {x + 258, 445}, font,
-                         Text::Bold, false));
+              TextObject("Success", 80, Color::Green, {coord.x + 348, 445},
+                         font, Text::Bold, false),
+              TextObject("Invalid Port", 80, Color::Red, {coord.x + 260, 445},
+                         font, Text::Bold, false),
+              TextObject("Failed to set", 80, Color::Red, {coord.x + 258, 445},
+                         font, Text::Bold, false));
 }
 
 void Push::ConfigPlayMenu(const Font& font) {
@@ -195,10 +201,10 @@ void Push::ConfigField(array<Player, 2>& players, const Vector2u& size) {
         auto cell = std::to_string(i * size.y + j);
         auto select = "select_" + std::to_string(pl);
 
-        auto pos_my = Vector2f(140 + i * 70, 250 + j * 70);
-        auto pos_rv = Vector2f(1080 + i * 70 - pl * 940, 250 + j * 70);
+        auto pos_my = Vector2u(140 + i * 70, 250 + j * 70);
+        auto pos_rv = Vector2u(1080 + i * 70 - pl * 940, 250 + j * 70);
         Set<MouseButton>(
-            play, "cell_m_" + cell, Mouse::Left,
+            select, "cell_m_" + cell, Mouse::Left,
             make_shared<AddCellCommand>(players.data() + pl, cell_my),
             RectObject({65, 65}, {255, 120, 255}, pos_my));
         Set<MouseButton>(
@@ -206,10 +212,10 @@ void Push::ConfigField(array<Player, 2>& players, const Vector2u& size) {
             make_shared<ShootCommand>(players.data() + pl, cell_rv),
             RectObject({65, 65}, {255, 255, 255}, pos_rv));
 
-        Set<Button>(select, "cell" + cell, nullptr,
-                    Get(play, "cell_m_" + cell)->GetShapes()[0]);
+        Set<Button>(play, "cell_m_" + cell, nullptr,
+                    Get(select, "cell_m_" + cell)->GetShapes()[0]);
 
-        auto rect_my = Get(play, "cell_m_" + cell)->GetShapes()[0];
+        auto rect_my = Get(select, "cell_m_" + cell)->GetShapes()[0];
         auto rect_rv = Get(play, "cell_r_" + cell)->GetShapes()[0];
         cell_my->SetShape(dynamic_cast<RectangleShape*>(rect_my.sprite.get()));
         cell_rv->SetShape(dynamic_cast<RectangleShape*>(rect_rv.sprite.get()));
@@ -219,38 +225,42 @@ void Push::ConfigField(array<Player, 2>& players, const Vector2u& size) {
 }
 
 void Push::ConfigPlay(array<Player, 2>& players, const Font& font) {
-  Set<MouseButton>(
-      "select_0", "return", Mouse::Left, make_shared<SetSceneCommand>("play"),
-      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-      TextObject("<-", 60, Color::Red, {85, 70}, font),
-      TextObject("Select your ships", 80, Color::Blue, {1110, 300}, font));
+  for (size_t pl = 0; pl < 2; ++pl) {
+    auto play = "play_" + std::to_string(pl);
+    auto select = "select_" + std::to_string(pl);
+    Set<MouseButton>(
+        select, "return", Mouse::Left, make_shared<SetSceneCommand>("play"),
+        RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+        TextObject("<-", 60, Color::Red, {85, 70}, font),
+        TextObject("Select your ships", 80, Color::Blue, {1110, 300}, font));
 
-  Set<MouseButton>("select_0", "ship", Mouse::Left,
-                   make_shared<AddShipCommand>(players.data()),
-                   RectObject({335, 110}, {0, 255, 95}, {1210, 530}),
-                   TextObject("Add ship", 80, Color::Red, {1220, 530}, font));
+    Set<MouseButton>(select, "ship", Mouse::Left,
+                     make_shared<AddShipCommand>(players.data() + pl),
+                     RectObject({335, 110}, {0, 255, 95}, {1210, 530}),
+                     TextObject("Add ship", 80, Color::Red, {1220, 530}, font));
 
-  Set<MouseButton>("select_0", "return", Mouse::Left,
-                   make_shared<SetSceneCommand>("play"),
-                   RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-                   TextObject("<-", 60, Color::Red, {85, 72}, font));
+    Set<MouseButton>(select, "return", Mouse::Left,
+                     make_shared<SetSceneCommand>("play"),
+                     RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+                     TextObject("<-", 60, Color::Red, {85, 72}, font));
 
-  Set<Button>("select_0", "status", nullptr,
-              TextObject("Success!", 80, Color::Green, {1240, 750}, font,
-                         Text::Bold, false),
-              TextObject("Cannot select\n    this cell!", 80, Color::Red,
-                         {1120, 750}, font, Text::Bold, false),
-              TextObject("Wrong shaped ship!", 80, Color::Red, {1030, 750},
-                         font, Text::Bold, false));
+    Set<Button>(select, "status", nullptr,
+                TextObject("Success!", 80, Color::Green, {1240, 750}, font,
+                           Text::Bold, false),
+                TextObject("Cannot select\n    this cell!", 80, Color::Red,
+                           {1120, 750}, font, Text::Bold, false),
+                TextObject("Wrong shaped ship!", 80, Color::Red, {1030, 750},
+                           font, Text::Bold, false));
 
-  Set<MouseButton>(
-      "player_0", "return", Mouse::Left, make_shared<SetSceneCommand>("menu"),
-      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-      TextObject("<-", 60, Color::Red, {85, 72}, font),
-      TextObject("Your turn ", 100, Color::Red, {675, 930}, font,
-                 sf::Text::Bold),
-      TextObject("Your field", 80, Color::Red, {133, 950}, font),
-      TextObject("Rival field", 80, Color::Red, {1410, 950}, font));
+    Set<MouseButton>(
+        play, "return", Mouse::Left, make_shared<SetSceneCommand>("menu"),
+        RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+        TextObject("<-", 60, Color::Red, {85, 72}, font),
+        TextObject("Your turn ", 100, Color::Red, {675, 930}, font,
+                   sf::Text::Bold),
+        TextObject("Your field", 80, Color::Red, {133, 950}, font),
+        TextObject("Rival field", 80, Color::Red, {1410, 950}, font));
+  }
 
   Set<MouseButton>("won_0", "return", Mouse::Left,
                    make_shared<SetSceneCommand>("menu"),

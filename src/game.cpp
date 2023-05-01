@@ -15,7 +15,7 @@ GameLoop::GameLoop(const Vector2u& size, size_t ships)
 
 void GameLoop::ProcessNetwork() {
   while (m_window.isOpen()) {
-    m_network.GetCommand()->Execute();
+    m_network.GetCommand()->Execute(true);
   }
 }
 
@@ -44,3 +44,8 @@ const Vector2u& GameLoop::GetSize() const { return m_size; }
 
 bool& GameLoop::Blocked() { return m_blocked; }
 
+size_t GameLoop::GetLocalPlayer() const { return m_local_player; }
+
+void GameLoop::SetLocalPlayer(size_t local_player) {
+  m_local_player = local_player;
+}

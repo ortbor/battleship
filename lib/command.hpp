@@ -10,7 +10,7 @@ class Command {
   Command(const Event::EventType& type);
   virtual ~Command() = default;
 
-  virtual void Execute() = 0;
+  virtual void Execute(bool is_remote = false) = 0;
   const Event::EventType& GetType();
 
  protected:
@@ -23,7 +23,7 @@ class IPBoxCommand final : public Command {
   IPBoxCommand() = default;
   ~IPBoxCommand() final = default;
 
-  void Execute();
+  void Execute(bool is_remote = false);
 };
 
 class PortBoxCommand final : public Command {
@@ -31,7 +31,7 @@ class PortBoxCommand final : public Command {
   PortBoxCommand() = default;
   ~PortBoxCommand() final = default;
 
-  void Execute();
+  void Execute(bool is_remote = false);
 };
 
 class IPClientCommand final : public Command {
@@ -39,7 +39,7 @@ class IPClientCommand final : public Command {
   IPClientCommand() = default;
   ~IPClientCommand() final = default;
 
-  void Execute();
+  void Execute(bool is_remote = false);
 
   static std::string m_ip_port;
 
@@ -56,7 +56,7 @@ class IPServerCommand final : public Command {
   IPServerCommand() = default;
   ~IPServerCommand() final = default;
 
-  void Execute();
+  void Execute(bool is_remote = false);
 };
 
 class PortCommand final : public Command {
@@ -64,7 +64,7 @@ class PortCommand final : public Command {
   PortCommand() = default;
   ~PortCommand() final = default;
 
-  void Execute();
+  void Execute(bool is_remote = false);
 
  protected:
   static std::regex m_port_regex;
@@ -75,7 +75,7 @@ class TerminateCommand final : public Command {
   TerminateCommand() = default;
   ~TerminateCommand() final = default;
 
-  void Execute();
+  void Execute(bool is_remote = false);
 };
 
 class WindowCommand final : public Command {
@@ -83,7 +83,7 @@ class WindowCommand final : public Command {
   WindowCommand(CMDType request);
   ~WindowCommand() final = default;
 
-  void Execute();
+  void Execute(bool is_remote = false);
 
  private:
   CMDType m_request;
@@ -94,7 +94,7 @@ class VolumeCommand final : public Command {
   VolumeCommand(CMDVolume type);
   ~VolumeCommand() final = default;
 
-  void Execute();
+  void Execute(bool is_remote = false);
 
  private:
   CMDVolume m_type;
@@ -105,7 +105,7 @@ class SetSceneCommand final : public Command {
   SetSceneCommand(const string& str);
   ~SetSceneCommand() final = default;
 
-  void Execute() final;
+  void Execute(bool is_remote = false) final;
 
  private:
   string str_;
@@ -115,7 +115,7 @@ class CellCommand : public Command {
  public:
   CellCommand(Player* player, Cell* cell);
   ~CellCommand() override = default;
-  virtual void Execute() override = 0;
+  virtual void Execute(bool is_remote = false) override = 0;
 
  protected:
   Player* m_player;
@@ -131,7 +131,7 @@ class AddCellCommand final : public CellCommand {
  public:
   AddCellCommand(Player* player, Cell* cell);
   ~AddCellCommand() final = default;
-  void Execute() final;
+  void Execute(bool is_remote = false) final;
 
  protected:
   bool IsValid() const final;
@@ -142,7 +142,7 @@ class ShootCommand final : public CellCommand {
  public:
   ShootCommand(Player* player, Cell* cell);
   ~ShootCommand() final = default;
-  void Execute() final;
+  void Execute(bool is_remote = false) final;
 
  protected:
   bool IsValid() const final;
@@ -153,7 +153,7 @@ class AddShipCommand : public Command {
  public:
   AddShipCommand(Player* player);
   ~AddShipCommand() = default;
-  void Execute() final;
+  void Execute(bool is_remote = false) final;
 
  protected:
   Player* m_player;
