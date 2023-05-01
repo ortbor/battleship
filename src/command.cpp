@@ -191,8 +191,8 @@ void AddCellCommand::Execute(bool is_remote) {
 
   std::cout << "executing3\n";
   std::cout.flush();
-  if (cell_->GetState() == State::Clear) {
-    player_->ship_in_process_.AddCell(cell_);
+  if (m_cell->GetState() == CellState::Clear) {
+    m_player->m_ship_in_process.AddCell(m_cell);
   } else {
     m_player->m_ship_in_process.EraseCell(m_cell);
   }
@@ -214,9 +214,9 @@ void AddCellCommand::Send() {
 AddShipCommand::AddShipCommand(Player* player) : m_player(player) {}
 
 void AddShipCommand::Execute(bool is_remote) {
-  string scene = "select_" + std::to_string(player_->GetIndex());
-  loop_->GetWnd().SetShow(scene, "status", 1, false);
-  if ((!is_remote && loop_->Blocked()) || !IsValid()) {
+  string scene = "select_" + std::to_string(m_player->GetIndex());
+  m_loop->GetWnd().SetShow(scene, "status", 1, false);
+  if ((!is_remote && m_loop->Blocked()) || !IsValid()) {
     std::cout << "blocked(\n";
     std::cout.flush();
     m_loop->GetWnd().SetShow(scene, "status", 0, false);
@@ -232,10 +232,11 @@ void AddShipCommand::Execute(bool is_remote) {
   m_loop->GetWnd().SetShow(scene, "status", 2, false);
   m_loop->GetWnd().DrawObjects();
   sf::sleep(sf::milliseconds(1000));
-  std::cout << "shipcounts " << player_->GetShipCount() << " " << loop_->kShips << "\n";
-  if (player_->GetShipCount() == loop_->kShips) {
-    loop_->Blocked() = !loop_->Blocked();
-    std::cout << "here " << loop_->Blocked() << "\n";
+  std::cout << "shipcounts " << m_player->GetShipCount() << " " << m_loop->kShips
+            << "\n";
+  if (m_player->GetShipCount() == m_loop->kShips) {
+    m_loop->Blocked() = !m_loop->Blocked();
+    std::cout << "here " << m_loop->Blocked() << "\n";
     std::cout.flush();
     m_player->GetMField()->RemoveProhibited();
     if (m_player->GetIndex() == 0) {
@@ -249,7 +250,7 @@ void AddShipCommand::Execute(bool is_remote) {
 }
 
 bool AddShipCommand::IsValid() const {
-  if (!player_->GetShipInProcess()->IsClassic()) {
+  if (!m_player->GetShipInProcess()->IsClassic()) {
     return false;
   }
   return m_player->GetNumberOfShips(m_player->GetShipInProcess()->GetSize()) <

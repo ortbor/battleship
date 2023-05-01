@@ -15,11 +15,9 @@ class Network {
   Command* GetCommand();
 
  protected:
-  TcpSocket m_socket_in;
-  TcpSocket m_socket_out;
+  TcpSocket m_socket;
   TcpListener m_listener;
-  Packet m_packet_in;
-  Packet m_packet_out;
+  Packet m_packet;
   Thread m_connect_thr;
   GameLoop* m_loop;
 };
