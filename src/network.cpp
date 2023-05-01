@@ -39,10 +39,18 @@ void Network::ServerAccept() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ||||||| 1e36bb9 (Revert "Fixed a lot of bugs, added more new ones")
 void Network::ServerConnect() {
   m_connect_thr.launch();
 }
+||||||| 1e36bb9 (Revert "Fixed a lot of bugs, added more new ones")
+void Network::ServerConnect() {
+  m_connect_thr.launch();
+}
+=======
+void Network::ServerConnect() { m_connect_thr.launch(); }
+>>>>>>> parent of 1e36bb9 (Revert "Fixed a lot of bugs, added more new ones")
 
 =======
 void Network::ServerConnect() { m_connect_thr.launch(); }
