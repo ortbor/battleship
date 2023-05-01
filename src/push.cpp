@@ -117,7 +117,8 @@ void Push::ConfigVolume(const map<string, Music>& music) {
       "settings", "vol_max", Mouse::Left,
       make_shared<VolumeCommand>(CMDVolume::Max),
       RectObject({100, 100}, {0, 255, 95}, {coord.x + 1040, coord.y + 22}),
-      TextObject("<))", 60, Color::Red, {coord.x + 1045, coord.y + 27}, m_font));
+      TextObject("<))", 60, Color::Red, {coord.x + 1045, coord.y + 27},
+                 m_font));
 }
 
 void Push::ConfigPort(const map<string, string>& boxes) {
@@ -136,7 +137,8 @@ void Push::ConfigPort(const map<string, string>& boxes) {
   Set<MouseButton>(
       "settings", "port_save", Mouse::Left, make_shared<PortCommand>(),
       RectObject({150, 90}, {0, 255, 95}, {coord.x + 807, coord.y + 25}),
-      TextObject("Save", 60, Color::Red, {coord.x + 820, coord.y + 27}, m_font));
+      TextObject("Save", 60, Color::Red, {coord.x + 820, coord.y + 27},
+                 m_font));
 
   Set<Button>("settings", "port_status", nullptr,
               TextObject("Success", 80, Color::Green, {coord.x + 348, 445},
@@ -184,8 +186,8 @@ void Push::ConfigClient() {
                          Text::Bold, false),
               TextObject("Invalid IP", 80, Color::Red, {775, 800}, m_font,
                          Text::Bold, false),
-              TextObject("Server is offline", 80, Color::Red, {660, 800}, m_font,
-                         Text::Bold, false),
+              TextObject("Server is offline", 80, Color::Red, {660, 800},
+                         m_font, Text::Bold, false),
               TextObject("Connection timeout!", 80, Color::Red, {590, 800},
                          m_font, Text::Bold, false));
 }
@@ -246,10 +248,11 @@ void Push::ConfigPlay(array<Player, 2>& players) {
         TextObject("<-", 60, Color::Red, {85, 70}, m_font),
         TextObject("Select your ships", 80, Color::Blue, {1110, 300}, m_font));
 
-    Set<MouseButton>(select, "ship", Mouse::Left,
-                     make_shared<AddShipCommand>(players.data() + pl),
-                     RectObject({335, 110}, {0, 255, 95}, {1210, 530}),
-                     TextObject("Add ship", 80, Color::Red, {1220, 530}, m_font));
+    Set<MouseButton>(
+        select, "ship", Mouse::Left,
+        make_shared<AddShipCommand>(players.data() + pl),
+        RectObject({335, 110}, {0, 255, 95}, {1210, 530}),
+        TextObject("Add ship", 80, Color::Red, {1220, 530}, m_font));
 
     Set<MouseButton>(select, "return", Mouse::Left,
                      make_shared<SetSceneCommand>("play"),
