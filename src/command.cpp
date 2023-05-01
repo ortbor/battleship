@@ -168,6 +168,8 @@ void AddCellCommand::Execute(bool is_remote) {
   std::cout.flush();
   if (cell_->GetState() == State::Clear) {
     player_->ship_in_process_.AddCell(cell_);
+    std::cout << "cell_added\n";
+    std::cout.flush();
   } else {
     player_->ship_in_process_.EraseCell(cell_);
   }
@@ -192,7 +194,7 @@ void AddShipCommand::Execute(bool is_remote) {
   string scene = "select_" + std::to_string(player_->GetIndex());
   loop_->GetWnd().SetShow(scene, "status", 1, false);
   if ((!is_remote && loop_->Blocked()) || !IsValid()) {
-    std::cout << "blocked(\n";
+    std::cout << "blocked( " << IsValid() << "\n";
     std::cout.flush();
     loop_->GetWnd().SetShow(scene, "status", 0, false);
     loop_->GetWnd().SetShow(scene, "status", 2, true);
@@ -208,6 +210,7 @@ void AddShipCommand::Execute(bool is_remote) {
   loop_->GetWnd().DrawObjects();
   sf::sleep(sf::milliseconds(1000));
   std::cout << "shipcounts " << player_->GetShipCount() << " " << loop_->kShips << "\n";
+  std::cout.flush();
   if (player_->GetShipCount() == loop_->kShips) {
     loop_->Blocked() = !loop_->Blocked();
     std::cout << "here " << loop_->Blocked() << "\n";
@@ -225,6 +228,8 @@ void AddShipCommand::Execute(bool is_remote) {
 
 bool AddShipCommand::IsValid() const {
   if (!player_->GetShipInProcess()->IsClassic()) {
+    std::cout << "xex " << player_->GetShipInProcess()->GetSize() << "\n";
+    std::cout.flush();
     return false;
   }
   return player_->GetNumberOfShips(player_->GetShipInProcess()->GetSize()) <

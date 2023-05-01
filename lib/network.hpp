@@ -15,9 +15,9 @@ class Network {
 
  protected:
   size_t port_ = 2000;
-  TcpSocket socket_;
+  TcpSocket in_socket_, out_socket_;
   TcpListener listener_;
-  Packet packet_;
+  Packet in_packet_, out_packet_;
   Thread connect_thr;
   GameLoop* loop_;
 };

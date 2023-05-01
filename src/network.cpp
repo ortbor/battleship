@@ -18,7 +18,8 @@ Socket::Status Network::UpdatePort(size_t port) {
 void Network::Terminate() { connect_thr.terminate(); }
 
 void Network::ServerAccept() {
-  listener_.accept(socket_);
+  listener_.accept(in_socket_);
+  listener_.accept(out_socket_);
   loop_->LaunckNetwork();
   loop_->Blocked() = true;
   loop_->GetWnd().SetButtons("select_0");
@@ -33,30 +34,33 @@ Socket::Status Network::ClientConnect(pair<IpAddress, size_t> address) {
   if (address.first.toString().empty()) {
     return Socket::Error;
   }
-  return socket_.connect(address.first, address.second, sf::milliseconds(1500));
+  in_socket_.connect(address.first, address.second, sf::milliseconds(1500));
+  return out_socket_.connect(address.first, address.second, sf::milliseconds(1500));
 }
 
 void Network::Send(std::string command_type, std::string coords) {
-  packet_.clear();
-  packet_ << command_type << coords;
-  if (socket_.send(packet_) == Socket::Done) {
+  out_packet_.clear();
+  out_packet_ << command_type << coords;
+  if (out_socket_.send(out_packet_) == Socket::Done) {
     std::cout << "sent\n";
     std::cout.flush();
   }
 }
 
 Command* Network::GetCommand() {
-  socket_.receive(packet_);
+  in_packet_.clear();
+  in_socket_.receive(in_packet_);
   std::string command_type;
-  packet_ >> command_type;
-
+  in_packet_ >> command_type;
+  std::cout << "got command " << command_type << "\n";
+  std::string coords;
+  in_packet_ >> coords;
   auto& buttons = loop_->GetWnd().GetButtons();
   if (command_type == "add_ship") {
     return buttons["select_" + std::to_string(1 - loop_->GetLocalPlayer())]["ship"]->GetCommand().get();
   }
 
-  std::string coords;
-  packet_ >> coords;
+
   if (command_type == "add_cell") {
     return buttons["select_" + std::to_string(1 - loop_->GetLocalPlayer())]["cell" + coords]->GetCommand().get();
   }
