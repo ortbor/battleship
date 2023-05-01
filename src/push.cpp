@@ -209,8 +209,8 @@ void Push::ConfigField(array<Player, 2>& players, const Vector2u& size) {
         Set<Button>(select, "cell" + cell, nullptr,
                     Get(play, "cell_m_" + cell)->GetShapes()[0]);
 
-        auto& rect_my = Get(play, "cell_m_" + cell)->GetShapes()[0];
-        auto& rect_rv = Get(play, "cell_r_" + cell)->GetShapes()[0];
+        auto rect_my = Get(play, "cell_m_" + cell)->GetShapes()[0];
+        auto rect_rv = Get(play, "cell_r_" + cell)->GetShapes()[0];
         cell_my->SetShape(dynamic_cast<RectangleShape*>(rect_my.sprite.get()));
         cell_rv->SetShape(dynamic_cast<RectangleShape*>(rect_rv.sprite.get()));
       }
@@ -245,39 +245,6 @@ void Push::ConfigPlay(array<Player, 2>& players, const Font& font) {
 
   Set<MouseButton>(
       "player_0", "return", Mouse::Left, make_shared<SetSceneCommand>("menu"),
-      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-      TextObject("<-", 60, Color::Red, {85, 72}, font),
-      TextObject("Your turn ", 100, Color::Red, {675, 930}, font,
-                 sf::Text::Bold),
-      TextObject("Your field", 80, Color::Red, {133, 950}, font),
-      TextObject("Rival field", 80, Color::Red, {1410, 950}, font));
-
-  Set<MouseButton>(
-      "select_1", "return", Mouse::Left, make_shared<SetSceneCommand>("play"),
-      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-      TextObject("<-", 60, Color::Red, {85, 70}, font),
-      TextObject("Select your ships", 80, Color::Blue, {1110, 300}, font));
-
-  Set<MouseButton>("select_1", "ship", Mouse::Left,
-                   make_shared<AddShipCommand>(players.data() + 1),
-                   RectObject({335, 110}, {0, 255, 95}, {1210, 530}),
-                   TextObject("Add ship", 80, Color::Red, {1220, 530}, font));
-
-  Set<MouseButton>("select_1", "return", Mouse::Left,
-                   make_shared<SetSceneCommand>("play"),
-                   RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-                   TextObject("<-", 60, Color::Red, {85, 72}, font));
-
-  Set<Button>("select_1", "status", nullptr,
-              TextObject("Success!", 80, Color::Green, {1240, 750}, font,
-                         Text::Bold, false),
-              TextObject("Cannot select\n    this cell!", 80, Color::Red,
-                         {1120, 750}, font, Text::Bold, false),
-              TextObject("Wrong shaped ship!", 80, Color::Red, {1030, 750},
-                         font, Text::Bold, false));
-
-  Set<MouseButton>(
-      "player_1", "return", Mouse::Left, make_shared<SetSceneCommand>("menu"),
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("<-", 60, Color::Red, {85, 72}, font),
       TextObject("Your turn ", 100, Color::Red, {675, 930}, font,
