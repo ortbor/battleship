@@ -218,22 +218,14 @@ void SavePortCommand::Execute() {
   }
 }
 
-<<<<<<< HEAD
 void TerminateCommand::Execute(bool is_remote) {
   m_loop->GetNetwork().Terminate();
   m_loop->Terminate();
   m_loop->GetWnd().SetButtons("play");
-||||||| 82297ec (Fixed a lot of bugs, added more new ones)
-void TerminateCommand::Execute() {
-  m_loop->GetNetwork().Terminate();
-  m_loop->Terminate();
-  m_loop->GetWnd().SetButtons("play");
-=======
 void TerminateCommand::Execute() {
   loop_->GetNetwork().Terminate();
   loop_->Terminate();
   loop_->GetWnd().SetButtons("play");
->>>>>>> parent of 82297ec (Fixed a lot of bugs, added more new ones)
 }
 
 ExecCommand::ExecCommand(GameWindow& obj, const Event::EventType& type,
