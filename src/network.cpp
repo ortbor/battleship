@@ -32,7 +32,9 @@ void Network::ServerAccept() {
   m_loop->GetWnd().SetButtons("select_0");
 }
 
-void Network::ServerConnect() { m_connect_thr.launch(); }
+void Network::ServerConnect() {
+  m_connect_thr.launch();
+}
 
 void Network::Send(std::string command_type, std::string coords) {
   m_packet.clear();
