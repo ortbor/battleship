@@ -38,6 +38,16 @@ void Network::ServerAccept() {
   m_loop->GetWnd().SetButtons("select_0");
 }
 
+<<<<<<< HEAD
+||||||| 1e36bb9 (Revert "Fixed a lot of bugs, added more new ones")
+void Network::ServerConnect() {
+  m_connect_thr.launch();
+}
+
+=======
+void Network::ServerConnect() { m_connect_thr.launch(); }
+
+>>>>>>> parent of 1e36bb9 (Revert "Fixed a lot of bugs, added more new ones")
 void Network::Send(std::string command_type, std::string coords) {
   packet_.clear();
   packet_ << command_type << coords;

@@ -104,7 +104,7 @@ std::regex PortCommand::m_port_regex(IPClientCommand::m_ip_port);
 ||||||| 82297ec (Fixed a lot of bugs, added more new ones)
 std::string IPClientCommand::m_ip_full =
     R"(^()" + m_ip_addr + R"(\.){3})" + m_ip_addr + R"(:)" + m_ip_port;
-std::regex IPClientCommand::m_ip_regex(IPClientCommand::m_ip_port);
+std::regex IPClientCommand::m_ip_regex(IPClientCommand::m_ip_full);
 std::regex PortCommand::m_port_regex(IPClientCommand::m_ip_port);
 =======
 std::string SaveIPCommand::ip_str_r =
