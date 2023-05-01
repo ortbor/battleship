@@ -4,28 +4,28 @@
 
 class Cell {
   public:
-  Cell(const Vector2u& coord);
+  Cell(const Vector2f& coord);
   ~Cell() = default;
 
-  const Vector2u& GetCoord() const;
-  CellState GetState() const;
+  const Vector2f& GetCoord() const;
+  State GetState() const;
   Ship* GetShip() const;
   Cell* GetTwin() const;
   sf::RectangleShape* GetShape() const;
-  void SetState(CellState state);
-  void SetStateExcept(CellState state, CellState except);
+  void SetState(State state);
+  void SetStateExcept(State set_state, State except);
   void SetShip(Ship* ship);
-  void SetTwins(Cell* other);
+  void SetTwins(Cell* other_cell);
   void SetShape(sf::RectangleShape* shape);
 
  private:
-  Vector2u m_coord;
-  CellState m_state;
-  Ship* m_ship;
-  Cell* m_cell_t;
-  sf::RectangleShape* m_shape;
+  Vector2f coord_;
+  State state_;
+  Ship* ship_;
+  Cell* twin_cell_;
+  sf::RectangleShape* shape_;
 
   void UpdateColor();
 };
 
-bool CellComparator(const Cell* cell_1, const Cell* cell_2);
+bool CellComparator(const Cell* cell1, const Cell* cell2);

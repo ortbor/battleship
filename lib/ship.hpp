@@ -17,7 +17,7 @@ class Ship {
   void EraseCell(Cell* cell_);
   bool IsClassic() const;
 
- private:
-  size_t m_health = 0;
-  deque<Cell*> m_cells;
+ protected:
+  int health_ = 0;
+  deque<Cell*> cells_;
 };

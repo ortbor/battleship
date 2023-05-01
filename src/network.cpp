@@ -8,21 +8,27 @@
 #include "../lib/player.hpp"
 
 Network::Network(GameLoop* loop)
-    : m_connect_thr(&Network::ServerAccept, this), m_loop(loop) {
-  m_listener.listen(2000);
+    : connect_thr(&Network::ServerAccept, this), loop_(loop) {
+  listener_.listen(2000);
 }
-
-size_t Network::GetPort() { return m_listener.getLocalPort(); }
 
 Socket::Status Network::UpdatePort(size_t port) {
-  return m_listener.listen(port);
+  return listener_.listen(port);
 }
 
-void Network::Terminate() { m_connect_thr.terminate(); }
+void Network::Terminate() { connect_thr.terminate(); }
+
+void Network::ServerAccept() {
+  listener_.accept(socket_);
+  loop_->LaunckNetwork();
+  loop_->Blocked() = true;
+  loop_->GetWnd().SetButtons("select_0");
+}
+
+void Network::ServerConnect() { connect_thr.launch(); }
 
 Socket::Status Network::ClientConnect(pair<IpAddress, size_t> address) {
-  return m_socket.connect(address.first, address.second,
-                          sf::milliseconds(1500));
+  return m_socket.connect(address.first, address.second, sf::milliseconds(1500));
 }
 
 void Network::ServerAccept() {
@@ -32,32 +38,29 @@ void Network::ServerAccept() {
   m_loop->GetWnd().SetButtons("select_0");
 }
 
-void Network::ServerConnect() { m_connect_thr.launch(); }
-
 void Network::Send(std::string command_type, std::string coords) {
-  m_packet.clear();
-  m_packet << command_type << coords;
-  if (m_socket.send(m_packet) == Socket::Done) {
+  packet_.clear();
+  packet_ << command_type << coords;
+  if (socket_.send(packet_) == Socket::Done) {
     std::cout << "sent\n";
     std::cout.flush();
   }
 }
 
 Command* Network::GetCommand() {
-  m_socket.receive(m_packet);
+  socket_.receive(packet_);
   std::string command_type;
-  m_packet >> command_type;
+  packet_ >> command_type;
 
   auto& buttons = m_loop->GetWnd().GetButtons();
-  auto ind = std::to_string(1 - m_loop->GetLocalPlayer());
   if (command_type == "add_ship") {
-    return buttons.Get("select_" + ind, "ship")->GetCommand().get();
+    return buttons.Get("select_1", "ship")->GetCommand().get();
   }
 
   std::string coords;
-  m_packet >> coords;
+  packet_ >> coords;
   if (command_type == "add_cell") {
-    return buttons.Get("select_" + ind, "cell_m_" + coords)->GetCommand().get();
+    return buttons.Get("select_1", "cell_m_" + coords)->GetCommand().get();
   }
-  return buttons.Get("play_" + ind, "cell_r_" + coords)->GetCommand().get();
+  return buttons.Get("play_1", "cell_r_" + coords)->GetCommand().get();
 }
