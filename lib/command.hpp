@@ -12,10 +12,10 @@ class Command {
 
   virtual void Execute() = 0;
   const Event::EventType& GetType();
-  static GameLoop* loop_;
 
  protected:
-  Event::EventType type_;
+  static GameLoop* m_loop;
+  Event::EventType m_type;
 };
 
 class IPBoxCommand final : public Command {
@@ -27,87 +27,88 @@ class IPBoxCommand final : public Command {
 };
 
 class PortBoxCommand final : public Command {
-public:
-    PortBoxCommand() = default;
-    ~PortBoxCommand() final = default;
-
-    void Execute();
-};
-
-class SaveIPCommand : public Command {
  public:
-  SaveIPCommand() = default;
-  ~SaveIPCommand() override = default;
-
-  virtual void Execute() override = 0;
-
- protected:
-  static std::string ip_num_r;
-  static std::string ip_port_r;
-  static std::string ip_str_r;
-  static std::regex ip_regex;
-};
-
-class ServerCommand final : public SaveIPCommand {
- public:
-  ServerCommand() = default;
-  ~ServerCommand() final = default;
+  PortBoxCommand() = default;
+  ~PortBoxCommand() final = default;
 
   void Execute();
 };
 
-class ClientCommand final : public SaveIPCommand {
+class IPClientCommand final : public Command {
  public:
-  ClientCommand() = default;
-  ~ClientCommand() final = default;
+  IPClientCommand() = default;
+  ~IPClientCommand() final = default;
+
+  void Execute();
+
+  static std::string m_ip_port;
+
+ private:
+  static std::string m_ip_addr;
+  static std::string m_ip_full;
+  static std::regex m_ip_regex;
+
+  static pair<string, size_t> ParseIp();
+};
+
+class IPServerCommand final : public Command {
+ public:
+  IPServerCommand() = default;
+  ~IPServerCommand() final = default;
+
+  void Execute();
+};
+
+class PortCommand final : public Command {
+ public:
+  PortCommand() = default;
+  ~PortCommand() final = default;
+
+  void Execute();
+
+ protected:
+  static std::regex m_port_regex;
+};
+
+class TerminateCommand final : public Command {
+ public:
+  TerminateCommand() = default;
+  ~TerminateCommand() final = default;
+
+  void Execute();
+};
+
+class WindowCommand final : public Command {
+ public:
+  WindowCommand(CMDType request);
+  ~WindowCommand() final = default;
 
   void Execute();
 
  private:
-  pair<string, size_t> ParseIp();
+  CMDType m_request;
 };
 
-class SavePortCommand final : public Command {
-public:
-    SavePortCommand() = default;
-    ~SavePortCommand() final = default;
-
-    void Execute();
-
-protected:
-    static std::regex port_regex;
-};
-
-class TerminateCommand final : public Command {
-   public:
-    TerminateCommand() = default;
-    ~TerminateCommand() final = default;
-
-    void Execute();
-};
-
-class SetCommand final : public Command {
+class VolumeCommand final : public Command {
  public:
-  SetCommand(const string& str);
-  ~SetCommand() final = default;
+  VolumeCommand(CMDVolume type);
+  ~VolumeCommand() final = default;
+
+  void Execute();
+
+ private:
+  CMDVolume m_type;
+};
+
+class SetSceneCommand final : public Command {
+ public:
+  SetSceneCommand(const string& str);
+  ~SetSceneCommand() final = default;
 
   void Execute() final;
 
  private:
   string str_;
-};
-
-class ExecCommand final : public Command {
- public:
-  ExecCommand(GameWindow& obj, const Event::EventType& type,
-              void (*func)(GameWindow& obj));
-  ~ExecCommand() final = default;
-
-  void Execute() final;
-
- protected:
-  GameWindow& obj_;
-  void (*func_)(GameWindow& obj);
 };
 
 class CellCommand : public Command {
@@ -117,8 +118,8 @@ class CellCommand : public Command {
   virtual void Execute() override = 0;
 
  protected:
-  Player* player_;
-  Cell* cell_;
+  Player* m_player;
+  Cell* m_cell;
 
   virtual bool IsValid() const = 0;
   virtual void Send() = 0;
@@ -155,7 +156,7 @@ class AddShipCommand : public Command {
   void Execute() final;
 
  protected:
-  Player* player_;
+  Player* m_player;
 
   bool IsValid() const;
   static void Send();

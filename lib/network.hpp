@@ -5,18 +5,19 @@
 class Network {
  public:
   explicit Network(GameLoop* loop);
+  size_t GetPort();
   Socket::Status UpdatePort(size_t port);
   void Terminate();
+  Socket::Status ClientConnect(pair<IpAddress, size_t> address);
   void ServerAccept();
   void ServerConnect();
-  Socket::Status ClientConnect(pair<IpAddress, size_t> address);
   void Send(std::string command_type, std::string coords = "");
   Command* GetCommand();
 
  protected:
-  TcpSocket socket_;
-  TcpListener listener_;
-  Packet packet_;
-  Thread connect_thr;
-  GameLoop* loop_;
+  TcpSocket m_socket;
+  TcpListener m_listener;
+  Packet m_packet;
+  Thread m_connect_thr;
+  GameLoop* m_loop;
 };
