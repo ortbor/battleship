@@ -3,44 +3,32 @@
 #include "../lib/button.hpp"
 #include "../lib/object.hpp"
 
-GameWindow::GameWindow(array<Player, 2>& players, const Vector2u& size,
-                       Vector2u sides) {
-  if (sides.x == 0) {
-    sides.x = 1920;
-    sides.y = 1080;
-  }
-  create(VideoMode(sides.x, sides.y), kName, sf::Style::Fullscreen);
-  m_view.setSize(Vector2f(sides));
+GameWindow::GameWindow(array<Player, 2>& players, const Vector2u& size) {
+  create(VideoMode(1920, 1080), kName, sf::Style::Fullscreen);
+  m_view.setSize(Vector2f(getSize()));
   m_view.setCenter(Vector2f(m_view.getSize().x / 2, m_view.getSize().y / 2));
   setView(m_view);
 
-  if (!m_font.loadFromFile(Path().string() + kRes + "symbola.ttf")) {
-    throw std::runtime_error("Cannot load font");
-  }
-  if (!m_background.loadFromFile(Path().string() + kRes + "background.jpg")) {
-    throw std::runtime_error("Cannot load background");
-  }
-  if (!m_movie.openFromFile(Path().string() + kRes + "bug.or.ficha")) {
+  if (!m_music["game"].openFromFile(bs::Path() + kRes + "ficha2.what")) {
     throw std::runtime_error("Cannot load ficha");
   }
-
-  if (!m_music["game"].openFromFile(Path().string() + kRes + "ficha3.whaaaat")) {
-    throw std::runtime_error("Cannot load ficha");
-  }
-  if (!m_music["main"].openFromFile(Path().string() + kRes + "ficha2.what")) {
+  if (!m_music["main"].openFromFile(bs::Path() + kRes + "ficha1.what")) {
     throw std::runtime_error("Cannot load fichaaaa");
   }
+  if (!m_movie.openFromFile(bs::Path() + kRes + "ficha3.what")) {
+    throw std::runtime_error("Cannot load ficha");
+  }
 
-  m_music["main"].setLoop(true);
   m_music["game"].setLoop(true);
+  m_music["main"].setLoop(true);
   m_music["main"].play();
-  m_movie.fit(0, 0, sides.x, sides.y);
+  m_movie.fit(0, 0, getSize().x, getSize().y);
 
+  m_boxes["scene"] = "menu";
   m_boxes["port"] = "2000";
   m_boxes["ip"] = "";
-  m_boxes["scene"] = "menu";
 
-  m_push.Config(players, size, m_font, m_background, m_music, m_boxes);
+  m_push.Config(players, size, m_music, m_boxes);
   DrawObjects();
 }
 
@@ -138,18 +126,4 @@ void GameWindow::Ficha() {
     draw(m_movie);
     display();
   }
-}
-
-std::filesystem::path GameWindow::Path() {
-  std::string path_str(PATH_MAX + 1, 0);
-#if defined(__unix)
-  if (readlink("/proc/self/exe", path_str.data(), PATH_MAX) == -1) {
-    throw std::runtime_error("Cannot specify program path!");
-  }
-#elif defined(_WIN32)
-  GetModuleFileName(NULL, path_str.data(), 0 PATH_MAX);
-#else
-  throw std::runtime_error("Unsupported OS");
-#endif
-  return std::filesystem::path(path_str).parent_path().parent_path();
 }

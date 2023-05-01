@@ -4,7 +4,7 @@
 
 class Push {
  public:
-  Push() = default;
+  Push();
 
   template <typename Type, typename... Args>
   void Set(string scene, string obj, Args... param);
@@ -13,23 +13,25 @@ class Push {
   Button* GetPressed(const string& scene, const Event& event);
   Button* Get(const string& scene, const string& obj);
 
-  void Config(array<Player, 2>& players, const Vector2u& size, const Font& font,
-              const Texture& background, const map<string, Music>& music,
+  void Config(array<Player, 2>& players, const Vector2u& size,
+              const map<string, Music>& music,
               const map<string, string>& boxes);
 
  private:
+  Font m_font;
+  Texture m_bg;
   map<string, map<string, shared_ptr<Button>>> m_buttons;
 
-  void ConfigMainMenu(const Font& font);
-  void ConfigSettings(const Font& font, const map<string, Music>& music,
+  void ConfigMainMenu();
+  void ConfigSettings(const map<string, Music>& music,
                       const map<string, string>& boxes);
-  void ConfigVolume(const Font& font, const map<string, Music>& music);
-  void ConfigPort(const Font& font, const map<string, string>& boxes);
-  void ConfigPlayMenu(const Font& font);
-  void ConfigClient(const Font& font);
-  void ConfigServer(const Font& font);
+  void ConfigVolume(const map<string, Music>& music);
+  void ConfigPort(const map<string, string>& boxes);
+  void ConfigPlayMenu();
+  void ConfigClient();
+  void ConfigServer();
   void ConfigField(array<Player, 2>& players, const Vector2u& size);
-  void ConfigPlay(array<Player, 2>& players, const Font& font);
+  void ConfigPlay(array<Player, 2>& players);
 };
 
 template <typename Type, typename... Args>

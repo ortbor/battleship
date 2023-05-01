@@ -102,8 +102,10 @@ enum class CellState {
 };
 
 static const string kName = "BATTLESH!P!!";
+static const string kRes = "/share/battlesh1p/";
 static const size_t kMoveSleep = 700;
 
 namespace bs {
 string atos(long double num);
+string Path();
 }

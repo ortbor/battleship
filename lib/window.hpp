@@ -5,8 +5,7 @@
 
 class GameWindow : public sf::RenderWindow {
  public:
-  GameWindow(array<Player, 2>& players, const Vector2u& size,
-             Vector2u sides = {0, 0});
+  GameWindow(array<Player, 2>& players, const Vector2u& size);
   ~GameWindow();
 
   const std::shared_ptr<Command>& GetCommand();
@@ -24,18 +23,11 @@ class GameWindow : public sf::RenderWindow {
   void Ficha();
 
  protected:
-  const std::string kRes = "/share/battlesh1p/";
-  const Vector2f screen_ = Vector2f(VideoMode::getDesktopMode().width,
-                                    VideoMode::getDesktopMode().height);
   View m_view;
   Event m_event;
 
-  Font m_font;
-  Texture m_background;
   Movie m_movie;
   map<string, Music> m_music;
   map<string, string> m_boxes;
   Push m_push;
-
-  static std::filesystem::path Path();
 };
