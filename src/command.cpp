@@ -56,7 +56,7 @@ std::string IPClientCommand::m_ip_port =
     R"(([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))";
 std::string IPClientCommand::m_ip_full =
     R"(^()" + m_ip_addr + R"(\.){3})" + m_ip_addr + R"(:)" + m_ip_port;
-std::regex IPClientCommand::m_ip_regex(IPClientCommand::m_ip_port);
+std::regex IPClientCommand::m_ip_regex(IPClientCommand::m_ip_full);
 std::regex PortCommand::m_port_regex(IPClientCommand::m_ip_port);
 
 void IPClientCommand::Execute(bool is_remote) {
@@ -176,13 +176,16 @@ CellCommand::CellCommand(Player* player, Cell* cell)
     : m_player(player), m_cell(cell) {}
 
 AddCellCommand::AddCellCommand(Player* player, Cell* cell)
-    : CellCommand(player, cell) {}
+    : CellCommand(player, cell) {
+  std::cout << "executing\n";
+  std::cout.flush();
+}
 
 void AddCellCommand::Execute(bool is_remote) {
   string scene = "select_" + std::to_string(m_player->GetIndex());
   m_loop->GetWnd().SetShow(scene, "status", 0, false);
   m_loop->GetWnd().SetShow(scene, "status", 2, false);
-  std::cout << "executing\n";
+  std::cout << "fuuck\n";
   std::cout.flush();
   if ((!is_remote && m_loop->Blocked()) || !IsValid()) {
     m_loop->GetWnd().SetShow(scene, "status", 1, true);
