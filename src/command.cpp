@@ -85,7 +85,7 @@ void ClientCommand::Execute(bool is_remote) {
       sf::sleep(sf::milliseconds(1000));
       loop_->LaunckNetwork();
       loop_->GetWnd().GetBox().clear();
-      loop_->GetWnd().SetButtons("select_0");
+      loop_->GetWnd().SetButtons("select_" + std::to_string(loop_->GetLocalPlayer()));
       break;
     case Socket::Disconnected:
       loop_->GetWnd().SetShow("ip", "status", 2, true);
@@ -203,12 +203,21 @@ void AddShipCommand::Execute(bool is_remote) {
     loop_->Blocked() = !loop_->Blocked();
     player_->GetField()->RemoveProhibited();
     if (player_->GetIndex() == 0) {
-      loop_->GetWnd().SetButtons("select_1");
+      if (loop_->GetLocalPlayer() == 0) {
+        loop_->Blocked() = true;
+      } else {
+        loop_->Blocked() = false;
+      }
     } else {
       loop_->GetWnd().GetMusic("main").stop();
       loop_->GetWnd().GetMusic("game").play();
       loop_->GetWnd().SetButtons("play_" + std::to_string(loop_->GetLocalPlayer()));
       loop_->GetWnd().SetShow("play_" + std::to_string(loop_->GetLocalPlayer()), "turn", loop_->GetLocalPlayer(), true);
+      if (loop_->GetLocalPlayer() == 0) {
+        loop_->Blocked() = false;
+      } else {
+        loop_->Blocked() = true;
+      }
     }
   }
 }

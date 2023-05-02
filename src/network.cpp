@@ -21,7 +21,7 @@ void Network::ServerAccept() {
   listener_.accept(socket_);
   loop_->LaunckNetwork();
   loop_->Blocked() = true;
-  loop_->GetWnd().SetButtons("select_0");
+  loop_->GetWnd().SetButtons("select_" + std::to_string(loop_->GetLocalPlayer()));
 }
 
 void Network::ServerConnect() {
