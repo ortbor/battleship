@@ -3,7 +3,8 @@
 #include "../lib/cell.hpp"
 
 Player::Player(size_t index, const Vector2u& size)
-    : m_last_shot_state(ShotState::Unknown),
+    : m_index(index),
+      m_last_shot_state(ShotState::Unknown),
       m_ship_count(0),
       m_field_m(MyField(size)),
       m_field_r(RivalField(size)),

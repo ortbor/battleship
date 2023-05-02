@@ -9,7 +9,7 @@
 
 Network::Network(GameLoop* loop)
     : m_connect_thr(&Network::ServerAccept, this), m_loop(loop) {
-  m_listener.listen(2001);
+  m_listener.listen(2000);
 }
 
 size_t Network::GetPort() { return m_listener.getLocalPort(); }

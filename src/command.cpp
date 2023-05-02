@@ -73,7 +73,7 @@ void IPClientCommand::Execute(bool is_remote) {
 
   switch (m_loop->GetNetwork().ClientConnect(ip_got)) {
     case Socket::Done:
-      m_loop->GetWnd().SetShow("ip", "status", 0, true);
+      m_loop->GetWnd().SetShow("client", "status", 0, true);
       sf::sleep(sf::milliseconds(1000));
       m_loop->LaunchNetwork();
       m_loop->GetWnd().GetBoxes()["ip"].clear();
@@ -173,7 +173,6 @@ void SetSceneCommand::Execute(bool is_remote) {
   }
   m_loop->GetWnd().SetButtons(str_);
 }
-
 CellCommand::CellCommand(Player* player, Cell* cell)
     : m_player(player), m_cell(cell) {}
 
@@ -198,9 +197,6 @@ void AddCellCommand::Execute(bool is_remote) {
     m_player->m_ship_in_process.EraseCell(m_cell);
   }
   m_loop->GetWnd().SetShow(scene, "status", 1, false);
-  std::cout << "executing4\n";
-  std::cout.flush();
-  m_loop->GetWnd().SetShow(scene, "status", 1, false);
 }
 
 bool AddCellCommand::IsValid() const {
@@ -219,8 +215,6 @@ void AddShipCommand::Execute(bool is_remote) {
   string scene = "select_" + std::to_string(m_player->GetIndex());
   m_loop->GetWnd().SetShow(scene, "status", 1, false);
   if ((!is_remote && m_loop->Blocked()) || !IsValid()) {
-    std::cout << "blocked(\n";
-    std::cout.flush();
     m_loop->GetWnd().SetShow(scene, "status", 0, false);
     m_loop->GetWnd().SetShow(scene, "status", 2, true);
     return;
@@ -229,6 +223,8 @@ void AddShipCommand::Execute(bool is_remote) {
     Send();
   }
 
+  std::cout << m_player->GetIndex();
+  std::cout.flush();
   m_player->AddShip();
   m_loop->GetWnd().SetShow(scene, "status", 0, true);
   m_loop->GetWnd().SetShow(scene, "status", 2, false);
@@ -238,15 +234,24 @@ void AddShipCommand::Execute(bool is_remote) {
     m_loop->Blocked() = !m_loop->Blocked();
     m_player->GetMField()->RemoveProhibited();
     if (m_player->GetIndex() == 0) {
-      m_loop->GetWnd().SetButtons("select_1");
+      if (m_loop->GetLocalPlayer() == 0) {
+        m_loop->Blocked() = true;
+      } else {
+        m_loop->Blocked() = false;
+      }
     } else {
       m_loop->GetWnd().GetMusic("main").stop();
       m_loop->GetWnd().GetMusic("game").play();
       m_loop->GetWnd().SetButtons("play_" +
                                   std::to_string(m_loop->GetLocalPlayer()));
       m_loop->GetWnd().SetShow(
-          "play_" + std::to_string(m_loop->GetLocalPlayer()), "turn",
-          m_loop->GetLocalPlayer(), true);
+          "play_" + std::to_string(m_loop->GetLocalPlayer()), "return",
+          5 + m_loop->GetLocalPlayer(), true);
+      if (m_loop->GetLocalPlayer() == 0) {
+        m_loop->Blocked() = false;
+      } else {
+        m_loop->Blocked() = true;
+      }
     }
   }
 }
@@ -275,14 +280,19 @@ void ShootCommand::Execute(bool is_remote) {
   size_t index = m_player->GetIndex();
   ShotState shot_result;
   m_player->Shoot(m_cell, shot_result);
+  m_loop->GetWnd().SetButtons("play_" +
+                              std::to_string(m_loop->GetLocalPlayer()));
   if (m_player->GetRival()->GetShipCount() == 0) {
     m_loop->GetWnd().SetButtons("won_" + std::to_string(index));
     m_loop->Blocked() = false;
   }
   if (m_player->GetLastShotResult() == ShotState::Miss) {
-    m_loop->GetWnd().SetButtons("turn_" + std::to_string(1 - index));
-    sf::sleep(sf::milliseconds(2000));
-    m_loop->GetWnd().SetButtons("play_" + std::to_string(1 - index));
+    m_loop->GetWnd().SetShow(
+        "play_" + std::to_string(m_loop->GetLocalPlayer()), "return",
+        5 + m_loop->GetLocalPlayer() == index ? 0 : 1, false);
+    m_loop->GetWnd().SetShow(
+        "play_" + std::to_string(m_loop->GetLocalPlayer()), "return",
+        5 + m_loop->GetLocalPlayer() == index ? 1 : 0, true);
     m_loop->Blocked() = !m_loop->Blocked();
   }
 }

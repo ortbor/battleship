@@ -274,7 +274,11 @@ void Push::ConfigPlay(array<Player, 2>& players) {
         TextObject("Your turn ", 100, Color::Red, {675, 930}, m_font,
                    sf::Text::Bold),
         TextObject("Your field", 80, Color::Red, {133, 950}, m_font),
-        TextObject("Rival field", 80, Color::Red, {1410, 950}, m_font));
+        TextObject("Rival field", 80, Color::Red, {1410, 950}, m_font),
+        TextObject("Your turn", 100, Color::Red, {675, 930}, m_font,
+                   sf::Text::Bold, false),
+        TextObject("Wait", 100, Color::Red, {700, 930}, m_font, sf::Text::Bold,
+                   false));
   }
 
   Set<MouseButton>("won_0", "return", Mouse::Left,
