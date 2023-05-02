@@ -39,7 +39,7 @@ _Now you can start to build and install game_
   cmake --build . --target clean
   ```
 
-### Usage
+## Usage
   Just start the game using the following command:
   ```sh
   battlesh1p
