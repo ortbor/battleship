@@ -22,28 +22,18 @@ void Network::Terminate() { m_connect_thr.terminate(); }
 
 void Network::ServerAccept() {
   m_listener.accept(m_socket);
-  m_loop->LaunckNetwork();
+  m_loop->LaunchNetwork();
   m_loop->Blocked() = true;
-  m_loop->GetWnd().SetButtons("select_" + std::to_string(m_loop->GetLocalPlayer()));
+  m_loop->GetWnd().SetButtons("select_" +
+                              std::to_string(m_loop->GetLocalPlayer()));
 }
 
-void Network::ServerConnect() {
-  connect_thr.launch();
-}
+void Network::ServerConnect() { m_connect_thr.launch(); }
 
 Socket::Status Network::ClientConnect(pair<IpAddress, size_t> address) {
   return m_socket.connect(address.first, address.second,
                           sf::milliseconds(1500));
 }
-
-void Network::ServerAccept() {
-  m_listener.accept(m_socket);
-  m_loop->LaunchNetwork();
-  m_loop->Blocked() = true;
-  m_loop->GetWnd().SetButtons("select_0");
-}
-
-void Network::ServerConnect() { m_connect_thr.launch(); }
 
 void Network::Send(std::string command_type, std::string coords) {
   m_packet_out.clear();
