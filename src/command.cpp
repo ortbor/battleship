@@ -154,8 +154,6 @@ void AddCellCommand::Execute(bool is_remote) {
   string scene = "select_" + std::to_string(player_->GetIndex());
   loop_->GetWnd().SetShow(scene, "status", 0, false);
   loop_->GetWnd().SetShow(scene, "status", 2, false);
-  std::cout << "executing\n";
-  std::cout.flush();
   if ((!is_remote && loop_->Blocked()) || !IsValid()) {
     loop_->GetWnd().SetShow(scene, "status", 1, true);
     return;
@@ -164,18 +162,12 @@ void AddCellCommand::Execute(bool is_remote) {
     Send();
   }
 
-  std::cout << "executing3\n";
-  std::cout.flush();
   if (cell_->GetState() == State::Clear) {
     player_->ship_in_process_.AddCell(cell_);
-    std::cout << "cell_added\n";
-    std::cout.flush();
   } else {
     player_->ship_in_process_.EraseCell(cell_);
   }
   loop_->GetWnd().SetShow(scene, "status", 1, false);
-  std::cout << "executing4\n";
-  std::cout.flush();
 }
 
 bool AddCellCommand::IsValid() const {
@@ -194,8 +186,6 @@ void AddShipCommand::Execute(bool is_remote) {
   string scene = "select_" + std::to_string(player_->GetIndex());
   loop_->GetWnd().SetShow(scene, "status", 1, false);
   if ((!is_remote && loop_->Blocked()) || !IsValid()) {
-    std::cout << "blocked( " << IsValid() << "\n";
-    std::cout.flush();
     loop_->GetWnd().SetShow(scene, "status", 0, false);
     loop_->GetWnd().SetShow(scene, "status", 2, true);
     return;
@@ -209,27 +199,22 @@ void AddShipCommand::Execute(bool is_remote) {
   loop_->GetWnd().SetShow(scene, "status", 2, false);
   loop_->GetWnd().DrawObjects();
   sf::sleep(sf::milliseconds(1000));
-  std::cout << "shipcounts " << player_->GetShipCount() << " " << loop_->kShips << "\n";
-  std::cout.flush();
   if (player_->GetShipCount() == loop_->kShips) {
     loop_->Blocked() = !loop_->Blocked();
-    std::cout << "here " << loop_->Blocked() << "\n";
-    std::cout.flush();
     player_->GetField()->RemoveProhibited();
     if (player_->GetIndex() == 0) {
       loop_->GetWnd().SetButtons("select_1");
     } else {
       loop_->GetWnd().GetMusic("main").stop();
       loop_->GetWnd().GetMusic("game").play();
-      loop_->GetWnd().SetButtons("play_0");
+      loop_->GetWnd().SetButtons("play_" + std::to_string(loop_->GetLocalPlayer()));
+      loop_->GetWnd().SetShow("play_" + std::to_string(loop_->GetLocalPlayer()), "turn", loop_->GetLocalPlayer(), true);
     }
   }
 }
 
 bool AddShipCommand::IsValid() const {
   if (!player_->GetShipInProcess()->IsClassic()) {
-    std::cout << "xex " << player_->GetShipInProcess()->GetSize() << "\n";
-    std::cout.flush();
     return false;
   }
   return player_->GetNumberOfShips(player_->GetShipInProcess()->GetSize()) <
@@ -252,14 +237,14 @@ void ShootCommand::Execute(bool is_remote) {
   size_t index = player_->GetIndex();
   ShotResult shot_result;
   player_->Shoot(cell_, shot_result);
+  loop_->GetWnd().SetButtons("play_" + std::to_string(loop_->GetLocalPlayer()));
   if (player_->GetRival()->GetShipCount() == 0) {
     loop_->GetWnd().SetButtons("won_" + std::to_string(index));
     loop_->Blocked() = false;
   }
   if (player_->GetLastShotResult() == ShotResult::Miss) {
-    loop_->GetWnd().SetButtons("turn_" + std::to_string(1 - index));
-    sf::sleep(sf::milliseconds(2000));
-    loop_->GetWnd().SetButtons("play_" + std::to_string(1 - index));
+    loop_->GetWnd().SetShow("play_" + std::to_string(loop_->GetLocalPlayer()), "turn", loop_->GetLocalPlayer() == index ? 0 : 1, false);
+    loop_->GetWnd().SetShow("play_" + std::to_string(loop_->GetLocalPlayer()), "turn", loop_->GetLocalPlayer() == index ? 1 : 0, true);
     loop_->Blocked() = !loop_->Blocked();
   }
 }

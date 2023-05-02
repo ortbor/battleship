@@ -18,8 +18,7 @@ Socket::Status Network::UpdatePort(size_t port) {
 void Network::Terminate() { connect_thr.terminate(); }
 
 void Network::ServerAccept() {
-  listener_.accept(in_socket_);
-  listener_.accept(out_socket_);
+  listener_.accept(socket_);
   loop_->LaunckNetwork();
   loop_->Blocked() = true;
   loop_->GetWnd().SetButtons("select_0");
@@ -34,25 +33,20 @@ Socket::Status Network::ClientConnect(pair<IpAddress, size_t> address) {
   if (address.first.toString().empty()) {
     return Socket::Error;
   }
-  in_socket_.connect(address.first, address.second, sf::milliseconds(1500));
-  return out_socket_.connect(address.first, address.second, sf::milliseconds(1500));
+  return socket_.connect(address.first, address.second, sf::milliseconds(1500));
 }
 
 void Network::Send(std::string command_type, std::string coords) {
   out_packet_.clear();
   out_packet_ << command_type << coords;
-  if (out_socket_.send(out_packet_) == Socket::Done) {
-    std::cout << "sent\n";
-    std::cout.flush();
-  }
+  socket_.send(out_packet_);
 }
 
 Command* Network::GetCommand() {
   in_packet_.clear();
-  in_socket_.receive(in_packet_);
+  socket_.receive(in_packet_);
   std::string command_type;
   in_packet_ >> command_type;
-  std::cout << "got command " << command_type << "\n";
   std::string coords;
   in_packet_ >> coords;
   auto& buttons = loop_->GetWnd().GetButtons();

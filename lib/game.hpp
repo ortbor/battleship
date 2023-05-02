@@ -21,8 +21,8 @@ class GameLoop {
   const Vector2f& GetSize() const;
   bool& Blocked();
   const string& GetBox() const;
-  int GetLocalPlayer() const;
-  void SetLocalPlayer(int local_player);
+  size_t GetLocalPlayer() const;
+  void SetLocalPlayer(size_t local_player);
 
   const size_t kShips = 10;
 
@@ -34,7 +34,7 @@ class GameLoop {
   Network network_;
   Thread network_thr_;
   bool is_blocked_ = false;
-  int local_player_ = 0;
+  size_t local_player_ = 0;
 
   void ProcessNetwork();
 };

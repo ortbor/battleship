@@ -47,11 +47,11 @@ void GameLoop::Clear() {
 }
 
 
-int GameLoop::GetLocalPlayer() const {
+size_t GameLoop::GetLocalPlayer() const {
   return local_player_;
 }
 
-void GameLoop::SetLocalPlayer(int local_player) {
+void GameLoop::SetLocalPlayer(size_t local_player) {
   local_player_ = local_player;
 }
 
