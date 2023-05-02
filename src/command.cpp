@@ -150,8 +150,10 @@ void SetSceneCommand::Execute(bool is_remote) {
 
   if (m_str == "back") {
     auto size = m_stack.back().size();
-    if (m_str == "back" &&
-        (m_stack.back() == "won_0" || m_stack.back() == "won_1")) {
+    if (m_stack.back() == "disconnected") {
+      m_stack.resize(2);
+      DisconnectCommand().Execute(false);
+    } else if ((m_stack.back() == "won_0" || m_stack.back() == "won_1")) {
       m_stack.resize(2);
       DisconnectCommand().Execute(true);
     } else if (m_stack.back() == "server" || m_stack.back() == "client" ||
