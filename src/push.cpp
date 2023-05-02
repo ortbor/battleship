@@ -279,7 +279,6 @@ void Push::ConfigPlay(array<Player, 2>& players) {
                  Text::Bold));
 
   Set<Button>("disconnected", "text", nullptr,
-              TextObject("The connection is lost", 150, Color::Red,
-                         {260, 450}, m_font));
+              TextObject("The connection is lost", 120, Color::Red, {400, 550},
+                         m_font));
 }
-
