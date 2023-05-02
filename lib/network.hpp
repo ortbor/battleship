@@ -17,7 +17,8 @@ class Network {
  protected:
   TcpSocket m_socket;
   TcpListener m_listener;
-  Packet m_packet;
+  Packet m_packet_in;
+  Packet m_packet_out;
   Thread m_connect_thr;
   GameLoop* m_loop;
 };

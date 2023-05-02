@@ -32,36 +32,30 @@ void Network::ServerAccept() {
   m_loop->GetWnd().SetButtons("select_0");
 }
 
-void Network::ServerConnect() {
-  m_connect_thr.launch();
-}
+void Network::ServerConnect() { m_connect_thr.launch(); }
 
 void Network::Send(std::string command_type, std::string coords) {
-  m_packet.clear();
-  m_packet << command_type << coords;
-  if (m_socket.send(m_packet) == Socket::Done) {
-    std::cout << "sent\n";
-    std::cout.flush();
-  }
+  m_packet_out.clear();
+  m_packet_out << command_type << coords;
+  socket_.send(m_packet_out);
 }
 
 Command* Network::GetCommand() {
-  m_socket.receive(m_packet);
+  m_packet_in.clear();
+  m_socket.receive(m_packet_in);
   std::string command_type;
-  m_packet >> command_type;
-
-  auto index = std::to_string(1 - m_loop->GetLocalPlayer());
-  auto& buttons = m_loop->GetWnd().GetButtons();
-  if (command_type == "add_ship") {
-    return buttons.Get("select_" + index, "ship")->GetCommand().get();
-  }
-
+  m_packet_in >> command_type;
   std::string coords;
-  m_packet >> coords;
-  if (command_type == "add_cell") {
-    return buttons.Get("select_" + index, "cell_m_" + coords)
-        ->GetCommand()
-        .get();
+  m_packet_in >> coords;
+
+  auto ind = std::to_string(1 - m_loop->GetLocalPlayer());
+  auto& buttons = loop_->GetWnd().GetButtons();
+  if (command_type == "add_ship") {
+    return buttons.Get("select_" + ind, "ship")->GetCommand().get();
   }
-  return buttons.Get("play_" + index, "cell_r_" + coords)->GetCommand().get();
+
+  if (command_type == "add_cell") {
+    return buttons.Get("select_" + ind, "cell_m_" + coords)->GetCommand().get();
+  }
+  return buttons.Get("play_" + ind, "cell_r_" + coords)->GetCommand().get();
 }
