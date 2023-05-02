@@ -43,6 +43,8 @@ void Network::ClientAccept() {
   switch (status) {
     case Socket::Done:
       m_loop->GetWnd().GetBoxes()["ip"].clear();
+      m_loop->GetWnd().SetObject("client", "box", 1,
+                                 m_loop->GetWnd().GetBoxes()["ip"]);
       m_loop->GetWnd().SetShow("client", "status", true, 0);
       sf::sleep(sf::milliseconds(kMoveSleep));
       m_loop->GetWnd().SetShow("client", "status", false, 0);
@@ -90,10 +92,9 @@ void Network::Send(string command_type, string coords) {
 Command* Network::GetCommand() {
   Packet m_packet_in;
   m_socket.receive(m_packet_in);
-  std::string command_type;
-  m_packet_in >> command_type;
-  std::string coords;
-  m_packet_in >> coords;
+  string coords;
+  string command_type;
+  m_packet_in >> command_type >> coords;
 
   auto ind = std::to_string(1 - m_loop->GetLocalPlayer());
   auto& buttons = m_loop->GetWnd().GetButtons();

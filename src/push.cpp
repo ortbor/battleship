@@ -196,8 +196,8 @@ void Push::ConfigField(array<Player, 2>& players, const Vector2u& size) {
         auto* cell_my = players[pl].GetMField()->GetCell(Vector2u(i, j));
         auto* cell_rv = players[pl].GetRField()->GetCell(Vector2u(i, j));
         auto play = "play_" + std::to_string(pl);
-        auto cell = std::to_string(i * size.y + j);
         auto select = "select_" + std::to_string(pl);
+        auto cell = std::to_string(i * size.y + j);
 
         auto pos_my = Vector2u(140 + i * 70, 250 + j * 70);
         auto pos_rv = Vector2u(1080 + i * 70, 250 + j * 70);
