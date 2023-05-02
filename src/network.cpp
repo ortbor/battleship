@@ -37,7 +37,7 @@ void Network::ServerConnect() { m_connect_thr.launch(); }
 void Network::Send(std::string command_type, std::string coords) {
   m_packet_out.clear();
   m_packet_out << command_type << coords;
-  socket_.send(m_packet_out);
+  m_socket.send(m_packet_out);
 }
 
 Command* Network::GetCommand() {
@@ -49,7 +49,7 @@ Command* Network::GetCommand() {
   m_packet_in >> coords;
 
   auto ind = std::to_string(1 - m_loop->GetLocalPlayer());
-  auto& buttons = loop_->GetWnd().GetButtons();
+  auto& buttons = m_loop->GetWnd().GetButtons();
   if (command_type == "add_ship") {
     return buttons.Get("select_" + ind, "ship")->GetCommand().get();
   }

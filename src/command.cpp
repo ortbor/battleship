@@ -176,7 +176,7 @@ AddCellCommand::AddCellCommand(Player* player, Cell* cell)
     : CellCommand(player, cell) {}
 
 void AddCellCommand::Execute(bool is_remote) {
-  string scene = "select_" + std::to_string(player_->GetIndex());
+  string scene = "select_" + std::to_string(m_player->GetIndex());
   m_loop->GetWnd().SetShow(scene, "status", 0, false);
   m_loop->GetWnd().SetShow(scene, "status", 2, false);
   if ((!is_remote && m_loop->Blocked()) || !IsValid()) {
@@ -187,15 +187,15 @@ void AddCellCommand::Execute(bool is_remote) {
     Send();
   }
 
-  if (cell_->GetState() == State::Clear) {
-    player_->ship_in_process_.AddCell(cell_);
+  if (m_cell->GetState() == CellState::Clear) {
+    m_player->m_ship_in_process.AddCell(m_cell);
   } else {
     m_player->m_ship_in_process.EraseCell(m_cell);
   }
   m_loop->GetWnd().SetShow(scene, "status", 1, false);
   std::cout << "executing4\n";
   std::cout.flush();
-  loop_->GetWnd().SetShow(scene, "status", 1, false);
+  m_loop->GetWnd().SetShow(scene, "status", 1, false);
 }
 
 bool AddCellCommand::IsValid() const {
@@ -204,14 +204,14 @@ bool AddCellCommand::IsValid() const {
 }
 
 void AddCellCommand::Send() {
-  size_t index = m_cell->GetCoord().x * m_loop->GetSize().y + m_cell->GetCoord().y;
+  size_t index = m_cell->GetCoord().x * m_loop->kSize.y + m_cell->GetCoord().y;
   m_loop->GetNetwork().Send("add_cell", std::to_string(index));
 }
 
 AddShipCommand::AddShipCommand(Player* player) : m_player(player) {}
 
 void AddShipCommand::Execute(bool is_remote) {
-  string scene = "select_" + std::to_string(player_->GetIndex());
+  string scene = "select_" + std::to_string(m_player->GetIndex());
   m_loop->GetWnd().SetShow(scene, "status", 1, false);
   if ((!is_remote && m_loop->Blocked()) || !IsValid()) {
     std::cout << "blocked(\n";
@@ -229,22 +229,22 @@ void AddShipCommand::Execute(bool is_remote) {
   m_loop->GetWnd().SetShow(scene, "status", 2, false);
   m_loop->GetWnd().DrawObjects();
   sf::sleep(sf::milliseconds(1000));
-  std::cout << "shipcounts " << player_->GetShipCount() << " " << m_loop->kShips << "\n";
-  if (player_->GetShipCount() == m_loop->kShips) {
+  std::cout << "shipcounts " << m_player->GetShipCount() << " " << m_loop->kShips << "\n";
+  if (m_player->GetShipCount() == m_loop->kShips) {
     m_loop->Blocked() = !m_loop->Blocked();
     std::cout << "here " << m_loop->Blocked() << "\n";
     std::cout.flush();
-    player_->GetField()->RemoveProhibited();
-    if (player_->GetIndex() == 0) {
+    m_player->GetMField()->RemoveProhibited();
+    if (m_player->GetIndex() == 0) {
       m_loop->GetWnd().SetButtons("select_1");
     } else {
       m_loop->GetWnd().GetMusic("main").stop();
       m_loop->GetWnd().GetMusic("game").play();
       m_loop->GetWnd().SetButtons("play_0");
-      loop_->GetWnd().GetMusic("main").stop();
-      loop_->GetWnd().GetMusic("game").play();
-      loop_->GetWnd().SetButtons("play_" + std::to_string(loop_->GetLocalPlayer()));
-      loop_->GetWnd().SetShow("play_" + std::to_string(loop_->GetLocalPlayer()), "turn", loop_->GetLocalPlayer(), true);
+      m_loop->GetWnd().GetMusic("main").stop();
+      m_loop->GetWnd().GetMusic("game").play();
+      m_loop->GetWnd().SetButtons("play_" + std::to_string(m_loop->GetLocalPlayer()));
+      m_loop->GetWnd().SetShow("play_" + std::to_string(m_loop->GetLocalPlayer()), "turn", m_loop->GetLocalPlayer(), true);
     }
   }
 }
@@ -270,14 +270,14 @@ void ShootCommand::Execute(bool is_remote) {
     Send();
   }
 
-  size_t index = player_->GetIndex();
-  ShotResult shot_result;
-  player_->Shoot(cell_, shot_result);
-  if (player_->GetRival()->GetShipCount() == 0) {
+  size_t index = m_player->GetIndex();
+  ShotState shot_result;
+  m_player->Shoot(m_cell, shot_result);
+  if (m_player->GetRival()->GetShipCount() == 0) {
     m_loop->GetWnd().SetButtons("won_" + std::to_string(index));
     m_loop->Blocked() = false;
   }
-  if (player_->GetLastShotResult() == ShotResult::Miss) {
+  if (m_player->GetLastShotResult() == ShotState::Miss) {
     m_loop->GetWnd().SetButtons("turn_" + std::to_string(1 - index));
     sf::sleep(sf::milliseconds(2000));
     m_loop->GetWnd().SetButtons("play_" + std::to_string(1 - index));
@@ -288,6 +288,6 @@ void ShootCommand::Execute(bool is_remote) {
 bool ShootCommand::IsValid() const { return true; }
 
 void ShootCommand::Send() {
-  size_t index = m_cell->GetCoord().x * m_loop->GetSize().y + m_cell->GetCoord().y;
+  size_t index = m_cell->GetCoord().x * m_loop->kSize.y + m_cell->GetCoord().y;
   m_loop->GetNetwork().Send("shoot", std::to_string(index));
 }

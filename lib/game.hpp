@@ -16,15 +16,14 @@ class GameLoop {
   Network& GetNetwork();
   void LaunchNetwork();
   void Terminate();
-  const Vector2u& GetSize() const;
   bool& Blocked();
   size_t GetLocalPlayer() const;
   void SetLocalPlayer(size_t local_player);
 
   const size_t kShips;
+  const Vector2u kSize;
 
- protected:
-  const Vector2u m_size;
+ private:
   array<Player, 2> m_players;
   deque<Command*> m_turns;
   GameWindow m_window;

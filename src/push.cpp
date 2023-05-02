@@ -216,7 +216,7 @@ void Push::ConfigField(array<Player, 2>& players, const Vector2u& size) {
         auto select = "select_" + std::to_string(pl);
 
         auto pos_my = Vector2u(140 + i * 70, 250 + j * 70);
-        auto pos_rv = Vector2u(1080 + i * 70 - pl * 940, 250 + j * 70);
+        auto pos_rv = Vector2u(1080 + i * 70, 250 + j * 70);
         Set<MouseButton>(
             select, "cell_m_" + cell, Mouse::Left,
             make_shared<AddCellCommand>(players.data() + pl, cell_my),

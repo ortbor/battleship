@@ -14,7 +14,7 @@ class Network {
   void Send(std::string command_type, std::string coords = "");
   Command* GetCommand();
 
- protected:
+ private:
   TcpSocket m_socket;
   TcpListener m_listener;
   Packet m_packet_in;

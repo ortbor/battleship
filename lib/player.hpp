@@ -25,7 +25,7 @@ class Player {
   void LinkWithRival(Player* rival);
   Player* GetRival();
 
- protected:
+ private:
   size_t m_index;
   ShotState m_last_shot_state;
   size_t m_ship_count;
