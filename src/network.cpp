@@ -8,55 +8,74 @@
 #include "../lib/player.hpp"
 
 Network::Network(GameLoop* loop)
-    : connect_thr(&Network::ServerAccept, this), loop_(loop) {}
+    : m_connect_thr(&Network::ServerAccept, this), m_loop(loop) {
+  m_listener.listen(2000);
+}
+
+size_t Network::GetPort() { return m_listener.getLocalPort(); }
 
 Socket::Status Network::UpdatePort(size_t port) {
-  port_ = port;
-  return listener_.listen(port);
+  return m_listener.listen(port);
 }
 
-void Network::Terminate() { connect_thr.terminate(); }
+void Network::Terminate() { m_connect_thr.terminate(); }
 
 void Network::ServerAccept() {
-  listener_.accept(socket_);
-  loop_->LaunckNetwork();
-  loop_->Blocked() = true;
-  loop_->GetWnd().SetButtons("select_" + std::to_string(loop_->GetLocalPlayer()));
+  m_listener.accept(m_socket);
+  m_loop->LaunchNetwork();
+  m_connected = true;
+  m_loop->GetWnd().SetButtons("select_" +
+                              std::to_string(m_loop->GetLocalPlayer()));
 }
 
-void Network::ServerConnect() {
-  listener_.listen(port_);
-  connect_thr.launch();
-}
+void Network::ServerConnect() { m_connect_thr.launch(); }
 
 Socket::Status Network::ClientConnect(pair<IpAddress, size_t> address) {
-  if (address.first.toString().empty()) {
-    return Socket::Error;
-  }
-  return socket_.connect(address.first, address.second, sf::milliseconds(1500));
+  return m_socket.connect(address.first, address.second,
+                          sf::milliseconds(1500));
 }
 
-void Network::Send(std::string command_type, std::string coords) {
-  out_packet_.clear();
-  out_packet_ << command_type << coords;
-  socket_.send(out_packet_);
+void Network::Disconnect(bool send) {
+  std::cout << "ddd";
+  std::cout.flush();
+  m_connect_thr.terminate();
+  std::cout << "ccc";
+  std::cout.flush();
+  if (m_socket.getRemoteAddress() != IpAddress::None && send) {
+    Send("disconnect");
+  }
+  std::cout << "bbb";
+  std::cout.flush();
+  m_socket.disconnect();
+  m_connected = false;
+}
+
+bool& Network::GetConnected() { return m_connected; }
+
+void Network::Send(string command_type, string coords) {
+  Packet m_packet_out;
+  m_packet_out << command_type << coords;
+  m_socket.send(m_packet_out);
 }
 
 Command* Network::GetCommand() {
-  in_packet_.clear();
-  socket_.receive(in_packet_);
+  Packet m_packet_in;
+  m_socket.receive(m_packet_in);
   std::string command_type;
-  in_packet_ >> command_type;
+  m_packet_in >> command_type;
   std::string coords;
-  in_packet_ >> coords;
-  auto& buttons = loop_->GetWnd().GetButtons();
+  m_packet_in >> coords;
+
+  auto ind = std::to_string(1 - m_loop->GetLocalPlayer());
+  auto& buttons = m_loop->GetWnd().GetButtons();
+  if (command_type == "disconnect") {
+    DisconnectCommand(false);
+  }
   if (command_type == "add_ship") {
-    return buttons["select_" + std::to_string(1 - loop_->GetLocalPlayer())]["ship"]->GetCommand().get();
+    return buttons.Get("select_" + ind, "ship")->GetCommand().get();
   }
-
-
   if (command_type == "add_cell") {
-    return buttons["select_" + std::to_string(1 - loop_->GetLocalPlayer())]["cell" + coords]->GetCommand().get();
+    return buttons.Get("select_" + ind, "cell_m_" + coords)->GetCommand().get();
   }
-  return buttons["play_" + std::to_string(1 - loop_->GetLocalPlayer())]["cell_rival" + coords]->GetCommand().get();
+  return buttons.Get("play_" + ind, "cell_r_" + coords)->GetCommand().get();
 }

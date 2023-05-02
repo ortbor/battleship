@@ -4,26 +4,23 @@
 #include "../lib/object.hpp"
 
 bool Button::IsPressed(const Event& event) const {
-  return command_ != nullptr && event.type == command_->GetType();
+  return m_cmd != nullptr && event.type == m_cmd->GetType();
 }
 
-const std::shared_ptr<Command>& Button::GetCommand() const { return command_; }
+const std::shared_ptr<Command>& Button::GetCommand() const { return m_cmd; }
 
-deque<DrawObject>& Button::GetDrawable() { return draw_; }
+deque<DrawObject>& Button::GetShapes() { return m_draw; }
 
 bool MouseButton::IsPressed(const Event& event) const {
-  /*auto coord = Mouse::getPosition() - window.getPosition();
-  float coeffx = 1920 / Vector2f(window.getSize()).x,
-        coeffy = 1080 / Vector2f(window.getSize()).y;*/
-  return command_ != nullptr && event.type == Event::MouseButtonPressed &&
-         Inside(Vector2f(Mouse::getPosition())) &&
-         Mouse::isButtonPressed(button_);
+  return m_cmd != nullptr && event.type == Event::MouseButtonPressed &&
+         Inside(Mouse::getPosition()) &&
+         Mouse::isButtonPressed(m_btn);
 }
 
-bool MouseButton::Inside(const Vector2f& mouse) const {
+bool MouseButton::Inside(const Vector2i& mouse) const {
   RectangleShape* shape = nullptr;
-  if (draw_.empty() || (shape = dynamic_cast<RectangleShape*>(
-                            draw_[0].sprite.get())) == nullptr) {
+  if (m_draw.empty() || (shape = dynamic_cast<RectangleShape*>(
+                            m_draw[0].sprite.get())) == nullptr) {
     return false;
   }
 
@@ -35,5 +32,5 @@ bool MouseButton::Inside(const Vector2f& mouse) const {
 }
 
 bool KeyboardButton::IsPressed(const Event& event) const {
-  return command_ != nullptr && event.type == Event::TextEntered;
+  return m_cmd != nullptr && event.type == Event::TextEntered;
 }

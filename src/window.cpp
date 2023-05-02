@@ -3,41 +3,32 @@
 #include "../lib/button.hpp"
 #include "../lib/object.hpp"
 
-GameWindow::GameWindow(array<Player, 2>& players, const Vector2f& size,
-                       Vector2f sides)
-    : kPath(Path().string()) {
-  if (sides.x < 0) {
-    sides.x = 1920;
-    sides.y = 1080;
-  }
-  create(VideoMode(sides.x, sides.y), kName, sf::Style::Fullscreen);
-  view_.setSize(sides);
-  view_.setCenter(Vector2f(view_.getSize().x / 2, view_.getSize().y / 2));
-  setView(view_);
+GameWindow::GameWindow(array<Player, 2>& players, const Vector2u& size) {
+  create(VideoMode(1920, 1080), kName, sf::Style::Fullscreen);
+  m_view.setSize(Vector2f(getSize()));
+  m_view.setCenter(Vector2f(m_view.getSize().x / 2, m_view.getSize().y / 2));
+  setView(m_view);
 
-  if (!font_.loadFromFile(kPath + kRes + "symbola.ttf")) {
-    throw std::runtime_error("Cannot load font");
-  }
-  if (!background_.loadFromFile(kPath + kRes + "background.jpg")) {
-    throw std::runtime_error("Cannot load background");
-  }
-  if (!movie_.openFromFile(kPath + kRes + "bug.or.ficha")) {
+  if (!m_music["game"].openFromFile(bs::Path() + kRes + "ficha2.what")) {
     throw std::runtime_error("Cannot load ficha");
   }
-
-  if (!music_["game"].openFromFile(kPath + kRes + "ficha3.whaaaat")) {
-    throw std::runtime_error("Cannot load ficha");
-  }
-  if (!music_["main"].openFromFile(kPath + kRes + "ficha2.what")) {
+  if (!m_music["main"].openFromFile(bs::Path() + kRes + "ficha1.what")) {
     throw std::runtime_error("Cannot load fichaaaa");
   }
+  if (!m_movie.openFromFile(bs::Path() + kRes + "ficha3.what")) {
+    throw std::runtime_error("Cannot load ficha");
+  }
 
-  music_["main"].setLoop(true);
-  music_["game"].setLoop(true);
-  music_["main"].play();
-  movie_.fit(0, 0, sides.x, sides.y);
+  m_music["game"].setLoop(true);
+  m_music["main"].setLoop(true);
+  m_music["main"].play();
+  m_movie.fit(0, 0, getSize().x, getSize().y);
 
-  Configure(players, size);
+  m_boxes["scene"] = "menu";
+  m_boxes["port"] = "2000";
+  m_boxes["ip"] = "";
+
+  m_push.Config(players, size, m_music, m_boxes);
   DrawObjects();
 }
 
@@ -45,49 +36,44 @@ GameWindow::~GameWindow() {}
 
 const std::shared_ptr<Command>& GameWindow::GetCommand() {
   while (true) {
-    waitEvent(event_);
-    for (auto& button : buttons_[button_str_]) {
-      if (button.second->IsPressed(event_)) {
-        return button.second->GetCommand();
-      }
+    waitEvent(m_event);
+    auto* btn = m_push.GetPressed(m_boxes["scene"], m_event);
+    if (btn != nullptr) {
+      return btn->GetCommand();
     }
   }
 }
 
-unordered_map<string, map<string, std::shared_ptr<Button>>>&
-GameWindow::GetButtons() {
-  return buttons_;
-}
+Push& GameWindow::GetButtons() { return m_push; }
 
-Event& GameWindow::GetEvent() { return event_; }
+Event& GameWindow::GetEvent() { return m_event; }
 
-Music& GameWindow::GetMusic(const string& elem) { return music_[elem]; }
+Music& GameWindow::GetMusic(const string& elem) { return m_music[elem]; }
 
-string& GameWindow::GetBox() { return text_box_; }
+map<string, string>& GameWindow::GetBoxes() { return m_boxes; }
 
-void GameWindow::SetObject(const string& scene, const string& elem,
-                           size_t index, const string& str) {
-  dynamic_cast<Text*>(
-      buttons_[scene][elem].get()->GetDrawable()[index].sprite.get())
-      ->setString(str);
+void GameWindow::SetButtons(const string& str) {
+  m_boxes["scene"] = str;
   DrawObjects();
 }
 
-void GameWindow::SetButtons(const string& str) {
-  button_str_ = str;
+void GameWindow::SetObject(const string& scene, const string& elem,
+                           size_t index, const string& str) {
+  dynamic_cast<Text*>(m_push.Get(scene, elem)->GetShapes()[index].sprite.get())
+      ->setString(str);
   DrawObjects();
 }
 
 void GameWindow::SetShow(const string& scene, const string& elem, size_t index,
                          bool show) {
-  buttons_[scene][elem].get()->GetDrawable()[index].show = show;
+  m_push.Get(scene, elem)->GetShapes()[index].show = show;
   DrawObjects();
 }
 
 void GameWindow::DrawObjects() {
   clear();
-  for (const auto& item : buttons_[button_str_]) {
-    for (const auto& object : item.second->GetDrawable()) {
+  for (const auto& item : m_push.Data(m_boxes["scene"])) {
+    for (const auto& object : item.second->GetShapes()) {
       if (object.show) {
         draw(*object.sprite);
       }
@@ -96,64 +82,48 @@ void GameWindow::DrawObjects() {
   display();
 }
 
-void GameWindow::SetVolume(Volume value) {
-  for (auto& elem : music_) {
-    switch (value) {
-      case Volume::Silence:
+void GameWindow::SetVolume(CMDVolume type) {
+  for (auto& elem : m_music) {
+    switch (type) {
+      case CMDVolume::Silence:
         elem.second.setVolume(0);
         elem.second.pause();
         break;
 
-      case Volume::Less:
+      case CMDVolume::Less:
         elem.second.setVolume(std::max(0.F, elem.second.getVolume() - 10));
         if (elem.second.getVolume() == 0) {
           elem.second.pause();
         }
         break;
 
-      case Volume::More:
+      case CMDVolume::More:
         elem.second.setVolume(std::min(100.F, elem.second.getVolume() + 10));
         if (elem.second.getStatus() == sf::SoundSource::Paused) {
           elem.second.play();
         }
         break;
 
-      case Volume::Max:
+      case CMDVolume::Max:
         elem.second.setVolume(100);
         if (elem.second.getStatus() == sf::SoundSource::Paused) {
           elem.second.play();
         }
         break;
-
-      default:
-        throw std::runtime_error("Unknown volume!");
-        break;
     }
   }
+  SetObject("settings", "volume", 0,
+            "Volume: " + bs::atos(m_music["main"].getVolume()));
 }
 
 void GameWindow::Ficha() {
-  music_["main"].stop();
-  music_["game"].stop();
-  movie_.play();
+  m_music["main"].stop();
+  m_music["game"].stop();
+  m_movie.play();
   while (true) {
-    movie_.update();
+    m_movie.update();
     clear();
-    draw(movie_);
+    draw(m_movie);
     display();
   }
-}
-
-std::filesystem::path GameWindow::Path() {
-  std::string path_str(PATH_MAX + 1, 0);
-#if defined(__unix)
-  if (readlink("/proc/self/exe", path_str.data(), PATH_MAX) == -1) {
-    throw std::runtime_error("Cannot specify program path!");
-  }
-#elif defined(_WIN32)
-  GetModuleFileName(NULL, path_str.data(), 0 PATH_MAX);
-#else
-  throw std::runtime_error("Unsupported OS");
-#endif
-  return std::filesystem::path(path_str).parent_path().parent_path();
 }

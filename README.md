@@ -8,15 +8,10 @@ This is a battlesh!p game developed as an university project.
 How to install?
 
 ### Prerequisites
-You need an **SFML library** and **cmake** to build project.
-* SFML, required version >= 2.5.1
-  ```sh
-  sudo apt install libsfml-dev
-  ```
-* cmake, required version >= 3.2.3
-  ```sh
-  sudo apt install cmake
-  ```
+You need an **SFML library**, **SFE Movie library** with all included decoders and **cmake** to build project. Find installation instructions on official websites.  
+_SFML version >= 2.5.1_  
+_cmake version >= 3.20_  
+_SFE Movie version > 1.0_  
 
 ### Installation
 _Now you can start to build and install game_
@@ -33,7 +28,7 @@ _Now you can start to build and install game_
   cd build
   ```
 
-3. Now you can start to build and install game
+3. Now you can start to build and install game. num_cores is a number of your processor's cores (usually 16).
   ```sh
   cmake -DCMAKE_BUILD_TYPE=Release ..
   cmake --build . --config Release -- -j <num_cores + 1>
@@ -44,7 +39,7 @@ _Now you can start to build and install game_
   cmake --build . --target clean
   ```
 
-### Usage
+## Usage
   Just start the game using the following command:
   ```sh
   battlesh1p
