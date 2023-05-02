@@ -5,13 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(SRC_PATH src/)
 set(SOURCES ${SRC_PATH}/button.cpp 
             ${SRC_PATH}/cell.cpp 
-<<<<<<< HEAD
-            ${SRC_PATH}/configure.cpp 
-||||||| 58d15e7
-=======
             ${SRC_PATH}/command.cpp 
             ${SRC_PATH}/common.cpp 
->>>>>>> dev-ntheme
             ${SRC_PATH}/field.cpp 
             ${SRC_PATH}/game.cpp 
             ${SRC_PATH}/network.cpp 

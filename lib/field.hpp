@@ -21,18 +21,7 @@ class Field {
 
 class MyField : public Field {
  public:
-<<<<<<< HEAD
-  MyField(const Vector2f& sizen);
-  void SetShip(Ship* ship);
-  void RemoveProhibited();
-
-||||||| 58d15e7
-  MyField(const Vector2f& sizen);
-  void SetShip(Ship* ship);
-
-=======
   MyField(const Vector2u& size);
->>>>>>> dev-ntheme
   void Clear() final;
   void SetShip(Ship* ship);
   void RemoveProhibited();

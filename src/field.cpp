@@ -78,21 +78,6 @@ void MyField::SetShip(Ship* ship) {
   }
 }
 
-<<<<<<< HEAD
-void MyField::RemoveProhibited() {
-  for (size_t i = 0; i < size_.x; ++i) {
-    for (size_t j = 0; j < size_.y; ++j) {
-      if (cells_[i][j].GetState() == State::Prohibited) {
-        cells_[i][j].SetState(State::Clear);
-      }
-    }
-  }
-}
-
-RivalField::RivalField(const Vector2f& sizen) : Field(sizen) {}
-||||||| 58d15e7
-RivalField::RivalField(const Vector2f& sizen) : Field(sizen) {}
-=======
 void MyField::RemoveProhibited() {
   for (size_t i = 0; i < m_size.x; ++i) {
     for (size_t j = 0; j < m_size.y; ++j) {
@@ -102,7 +87,6 @@ void MyField::RemoveProhibited() {
     }
   }
 }
->>>>>>> dev-ntheme
 
 RivalField::RivalField(const Vector2u& size) : Field(size) {}
 

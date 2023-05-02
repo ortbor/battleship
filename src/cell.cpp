@@ -38,19 +38,9 @@ void Cell::SetTwins(Cell* other) {
 void Cell::SetShape(sf::RectangleShape* shape) { m_shape = shape; }
 
 void Cell::UpdateColor() {
-<<<<<<< HEAD
-  switch (state_) {
-    case State::Alive:
-      shape_->setFillColor(Color(0, 255, 255));
-||||||| 58d15e7
-  switch (state_) {
-    case State::Alive:
-      shape_->setFillColor(Color(0, 135, 255));
-=======
   switch (m_state) {
     case CellState::Alive:
       m_shape->setFillColor(Color(0, 255, 255));
->>>>>>> dev-ntheme
       break;
     case CellState::Chosen:
       m_shape->setFillColor(Color(0, 255 - 120, 0));
