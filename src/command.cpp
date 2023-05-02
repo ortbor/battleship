@@ -73,10 +73,11 @@ void IPClientCommand::Execute(bool is_remote) {
 
   switch (m_loop->GetNetwork().ClientConnect(ip_got)) {
     case Socket::Done:
-      m_loop->GetWnd().SetShow("client", "status", 0, true);
-      sf::sleep(sf::milliseconds(kMoveSleep));
-      m_loop->LaunchNetwork();
-      m_loop->GetWnd().SetButtons("select_0");
+      m_loop->GetWnd().SetShow("ip", "status", 0, true);
+      sf::sleep(sf::milliseconds(1000));
+      m_loop->LaunckNetwork();
+      m_loop->GetWnd().GetBox().clear();
+      m_loop->GetWnd().SetButtons("select_" + std::to_string(m_loop->GetLocalPlayer()));
       break;
     case Socket::Disconnected:
       m_loop->GetWnd().SetShow("client", "status", 2, true);
@@ -229,18 +230,12 @@ void AddShipCommand::Execute(bool is_remote) {
   m_loop->GetWnd().SetShow(scene, "status", 2, false);
   m_loop->GetWnd().DrawObjects();
   sf::sleep(sf::milliseconds(1000));
-  std::cout << "shipcounts " << m_player->GetShipCount() << " " << m_loop->kShips << "\n";
-  if (m_player->GetShipCount() == m_loop->kShips) {
+  if (player_->GetShipCount() == m_loop->kShips) {
     m_loop->Blocked() = !m_loop->Blocked();
-    std::cout << "here " << m_loop->Blocked() << "\n";
-    std::cout.flush();
-    m_player->GetMField()->RemoveProhibited();
-    if (m_player->GetIndex() == 0) {
+    player_->GetField()->RemoveProhibited();
+    if (player_->GetIndex() == 0) {
       m_loop->GetWnd().SetButtons("select_1");
     } else {
-      m_loop->GetWnd().GetMusic("main").stop();
-      m_loop->GetWnd().GetMusic("game").play();
-      m_loop->GetWnd().SetButtons("play_0");
       m_loop->GetWnd().GetMusic("main").stop();
       m_loop->GetWnd().GetMusic("game").play();
       m_loop->GetWnd().SetButtons("play_" + std::to_string(m_loop->GetLocalPlayer()));
