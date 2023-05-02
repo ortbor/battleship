@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../lib/game.hpp"
+#include "lib/game.hpp"
 
 int main() {
   const size_t kSize = 10;
