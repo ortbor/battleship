@@ -267,18 +267,18 @@ void Push::ConfigPlay(array<Player, 2>& players) {
                 TextObject("Wrong shaped ship!", 80, Color::Red, {1030, 750},
                            m_font, Text::Bold, false));
 
-    Set<MouseButton>(
-        play, "return", Mouse::Left, make_shared<SetSceneCommand>("menu"),
-        RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-        TextObject("<-", 60, Color::Red, {85, 72}, m_font),
-        TextObject("Your turn ", 100, Color::Red, {675, 930}, m_font,
-                   sf::Text::Bold),
-        TextObject("Your field", 80, Color::Red, {133, 950}, m_font),
-        TextObject("Rival field", 80, Color::Red, {1410, 950}, m_font),
-        TextObject("Your turn", 100, Color::Red, {675, 930}, m_font,
-                   sf::Text::Bold, false),
-        TextObject("Wait", 100, Color::Red, {700, 930}, m_font, sf::Text::Bold,
-                   false));
+    Set<MouseButton>(play, "return", Mouse::Left,
+                     make_shared<SetSceneCommand>("menu"),
+                     RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+                     TextObject("<-", 60, Color::Red, {85, 72}, m_font));
+
+    Set<Button>(play, "turn", nullptr,
+                TextObject("Your turn", 100, Color::Red, {675, 930}, m_font,
+                           sf::Text::Bold, false),
+                TextObject("Wait", 100, Color::Red, {700, 930}, m_font,
+                           sf::Text::Bold, false),
+                TextObject("Your field", 80, Color::Red, {133, 950}, m_font),
+                TextObject("Rival field", 80, Color::Red, {1410, 950}, m_font));
   }
 
   Set<MouseButton>("won_0", "return", Mouse::Left,

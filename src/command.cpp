@@ -173,11 +173,11 @@ void SetSceneCommand::Execute(bool is_remote) {
   }
   m_loop->GetWnd().SetButtons(str_);
 }
-CellCommand::CellCommand(Player* player, Cell* cell)
-    : m_player(player), m_cell(cell) {}
+CellCommand::CellCommand(Player* play, Cell* cell)
+    : m_player(play), m_cell(cell) {}
 
-AddCellCommand::AddCellCommand(Player* player, Cell* cell)
-    : CellCommand(player, cell) {}
+AddCellCommand::AddCellCommand(Player* play, Cell* cell)
+    : CellCommand(play, cell) {}
 
 void AddCellCommand::Execute(bool is_remote) {
   string scene = "select_" + std::to_string(m_player->GetIndex());
@@ -187,6 +187,7 @@ void AddCellCommand::Execute(bool is_remote) {
     m_loop->GetWnd().SetShow(scene, "status", 1, true);
     return;
   }
+
   if (!is_remote) {
     Send();
   }
@@ -209,7 +210,7 @@ void AddCellCommand::Send() {
   m_loop->GetNetwork().Send("add_cell", std::to_string(index));
 }
 
-AddShipCommand::AddShipCommand(Player* player) : m_player(player) {}
+AddShipCommand::AddShipCommand(Player* play) : m_player(play) {}
 
 void AddShipCommand::Execute(bool is_remote) {
   string scene = "select_" + std::to_string(m_player->GetIndex());
@@ -219,39 +220,28 @@ void AddShipCommand::Execute(bool is_remote) {
     m_loop->GetWnd().SetShow(scene, "status", 2, true);
     return;
   }
+
   if (!is_remote) {
     Send();
   }
 
-  std::cout << m_player->GetIndex();
-  std::cout.flush();
   m_player->AddShip();
   m_loop->GetWnd().SetShow(scene, "status", 0, true);
   m_loop->GetWnd().SetShow(scene, "status", 2, false);
   m_loop->GetWnd().DrawObjects();
-  sf::sleep(sf::milliseconds(1000));
+  sf::sleep(sf::milliseconds(kMoveSleep));
   if (m_player->GetShipCount() == m_loop->kShips) {
+    auto play = m_loop->GetLocalPlayer();
     m_loop->Blocked() = !m_loop->Blocked();
     m_player->GetMField()->RemoveProhibited();
-    if (m_player->GetIndex() == 0) {
-      if (m_loop->GetLocalPlayer() == 0) {
-        m_loop->Blocked() = true;
-      } else {
-        m_loop->Blocked() = false;
-      }
-    } else {
+    m_loop->GetWnd().DrawObjects();
+    m_loop->Blocked() = play == m_player->GetIndex();
+
+    if (m_player->GetIndex() == 1) {
       m_loop->GetWnd().GetMusic("main").stop();
       m_loop->GetWnd().GetMusic("game").play();
-      m_loop->GetWnd().SetButtons("play_" +
-                                  std::to_string(m_loop->GetLocalPlayer()));
-      m_loop->GetWnd().SetShow(
-          "play_" + std::to_string(m_loop->GetLocalPlayer()), "return",
-          5 + m_loop->GetLocalPlayer(), true);
-      if (m_loop->GetLocalPlayer() == 0) {
-        m_loop->Blocked() = false;
-      } else {
-        m_loop->Blocked() = true;
-      }
+      m_loop->GetWnd().SetButtons("play_" + bs::atos(play));
+      m_loop->GetWnd().SetShow("play_" + bs::atos(play), "turn", play, true);
     }
   }
 }
@@ -266,8 +256,8 @@ bool AddShipCommand::IsValid() const {
 
 void AddShipCommand::Send() { m_loop->GetNetwork().Send("add_ship"); }
 
-ShootCommand::ShootCommand(Player* player, Cell* cell)
-    : CellCommand(player, cell) {}
+ShootCommand::ShootCommand(Player* play, Cell* cell)
+    : CellCommand(play, cell) {}
 
 void ShootCommand::Execute(bool is_remote) {
   if ((!is_remote && m_loop->Blocked()) || !IsValid()) {
@@ -278,21 +268,19 @@ void ShootCommand::Execute(bool is_remote) {
   }
 
   size_t index = m_player->GetIndex();
+  size_t play = m_loop->GetLocalPlayer();
   ShotState shot_result;
   m_player->Shoot(m_cell, shot_result);
-  m_loop->GetWnd().SetButtons("play_" +
-                              std::to_string(m_loop->GetLocalPlayer()));
+  m_loop->GetWnd().SetButtons("play_" + bs::atos(play));
   if (m_player->GetRival()->GetShipCount() == 0) {
-    m_loop->GetWnd().SetButtons("won_" + std::to_string(index));
+    m_loop->GetWnd().SetButtons("won_" + bs::atos(index));
     m_loop->Blocked() = false;
   }
   if (m_player->GetLastShotResult() == ShotState::Miss) {
-    m_loop->GetWnd().SetShow(
-        "play_" + std::to_string(m_loop->GetLocalPlayer()), "return",
-        5 + m_loop->GetLocalPlayer() == index ? 0 : 1, false);
-    m_loop->GetWnd().SetShow(
-        "play_" + std::to_string(m_loop->GetLocalPlayer()), "return",
-        5 + m_loop->GetLocalPlayer() == index ? 1 : 0, true);
+    m_loop->GetWnd().SetShow("play_" + bs::atos(play), "turn",
+                             play == index ? 0 : 1, false);
+    m_loop->GetWnd().SetShow("play_" + bs::atos(play), "turn",
+                             play == index ? 1 : 0, true);
     m_loop->Blocked() = !m_loop->Blocked();
   }
 }
