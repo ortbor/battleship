@@ -11,7 +11,7 @@ Network::Network(GameLoop* loop)
     : m_client_thr(&Network::ClientAccept, this),
       m_server_thr(&Network::ServerAccept, this),
       m_loop(loop) {
-  m_listener.listen(2000);
+  m_listener.listen(2001);
 }
 
 void Network::Disconnect(bool send) {
