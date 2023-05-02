@@ -43,7 +43,12 @@ void Push::Config(array<Player, 2>& players, const Vector2u& size,
   ConfigField(players, size);
   ConfigPlay(players);
 
-  Set<Button>("any", "close", make_shared<WindowCommand>(CMDType::Close));
+  Set<Button>("any", "close", make_shared<SetSceneCommand>("adios"));
+
+  Set<MouseButton>("any", "return", Mouse::Left,
+                   make_shared<SetSceneCommand>("back"),
+                   RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+                   TextObject("<-", 60, Color::Red, {85, 70}, m_font));
 
   Set<Button>("any", "background", nullptr,
               DrawObject(make_shared<Sprite>(m_bg)),
@@ -63,26 +68,16 @@ void Push::ConfigMainMenu() {
                    TextObject("Settings", 140, Color::Red, {720, 790}, m_font));
 
   Set<MouseButton>("menu", "ficha", Mouse::Left,
-                   make_shared<WindowCommand>(CMDType::Ficha),
+                   make_shared<SetSceneCommand>("ficha"),
                    RectObject({370, 50}, {0, 255, 95}, {1550, 1030}, false),
                    TextObject("By NThemeDEV & ortbor", 30, Color::Green,
                               {1550, 990}, m_font, Text::Italic),
                    TextObject("Click to learn more...", 30, Color::Green,
                               {1550, 1030}, m_font, Text::Bold));
-
-  Set<MouseButton>("menu", "return", Mouse::Left,
-                   make_shared<WindowCommand>(CMDType::Close),
-                   RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-                   TextObject("X", 60, Color::Red, {97, 75}, m_font));
 }
 
 void Push::ConfigSettings(const map<string, Music>& music,
                           const map<string, string>& boxes) {
-  Set<MouseButton>("settings", "return", Mouse::Left,
-                   make_shared<SetSceneCommand>("menu"),
-                   RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-                   TextObject("<-", 60, Color::Red, {85, 70}, m_font));
-
   ConfigVolume(music);
   ConfigPort(boxes);
 }
@@ -122,7 +117,7 @@ void Push::ConfigVolume(const map<string, Music>& music) {
 }
 
 void Push::ConfigPort(const map<string, string>& boxes) {
-  Vector2u coord(475, 300);
+  Vector2u coord(595, 300);
 
   Set<Button>("settings", "port", nullptr,
               TextObject("Change port: ", 100, Color::Red, {coord.x, coord.y},
@@ -136,25 +131,20 @@ void Push::ConfigPort(const map<string, string>& boxes) {
 
   Set<MouseButton>(
       "settings", "port_save", Mouse::Left, make_shared<PortCommand>(),
-      RectObject({150, 90}, {0, 255, 95}, {coord.x + 807, coord.y + 25}),
-      TextObject("Save", 60, Color::Red, {coord.x + 820, coord.y + 27},
+      RectObject({150, 70}, {0, 255, 95}, {coord.x + 297, coord.y - 65}),
+      TextObject("Save", 60, Color::Red, {coord.x + 310, coord.y - 73},
                  m_font));
 
   Set<Button>("settings", "port_status", nullptr,
-              TextObject("Success", 80, Color::Green, {coord.x + 348, 445},
+              TextObject("Success", 80, Color::Green, {coord.x + 243, 445},
                          m_font, Text::Bold, false),
-              TextObject("Invalid Port", 80, Color::Red, {coord.x + 260, 445},
+              TextObject("Invalid Port", 80, Color::Red, {coord.x + 145, 445},
                          m_font, Text::Bold, false),
-              TextObject("Failed to set", 80, Color::Red, {coord.x + 258, 445},
+              TextObject("Failed to set", 80, Color::Red, {coord.x + 143, 445},
                          m_font, Text::Bold, false));
 }
 
 void Push::ConfigPlayMenu() {
-  Set<MouseButton>("play", "return", Mouse::Left,
-                   make_shared<SetSceneCommand>("menu"),
-                   RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-                   TextObject("<-", 60, Color::Red, {85, 70}, m_font));
-
   Set<MouseButton>(
       "play", "client", Mouse::Left, make_shared<SetSceneCommand>("client"),
       RectObject({665, 150}, {0, 255, 95}, {630, 300}),
@@ -167,11 +157,6 @@ void Push::ConfigPlayMenu() {
 }
 
 void Push::ConfigClient() {
-  Set<MouseButton>("client", "return", Mouse::Left,
-                   make_shared<SetSceneCommand>("play"),
-                   RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-                   TextObject("<-", 60, Color::Red, {85, 70}, m_font));
-
   Set<KeyboardButton>("client", "box", make_shared<IPBoxCommand>(),
                       RectObject({500, 70}, {200, 200, 200}, {708, 445}),
                       TextObject("", 40, Color::Black, {715, 450}, m_font));
@@ -191,15 +176,12 @@ void Push::ConfigClient() {
               TextObject("Connection timeout!", 80, Color::Red, {590, 800},
                          m_font, Text::Bold, false),
               TextObject("Port is busy", 80, Color::Red, {735, 800}, m_font,
+                         Text::Bold, false),
+              TextObject("Connecting...", 80, Color::Blue, {725, 800}, m_font,
                          Text::Bold, false));
 }
 
 void Push::ConfigServer() {
-  Set<MouseButton>("server", "return", Mouse::Left,
-                   make_shared<DisconnectCommand>(),
-                   RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-                   TextObject("<-", 60, Color::Red, {85, 70}, m_font));
-
   Set<Button>("server", "status", nullptr,
               TextObject("Waiting for the connection...", 100, Color::Red,
                          {330, 490}, m_font, Text::Bold),
@@ -244,22 +226,24 @@ void Push::ConfigPlay(array<Player, 2>& players) {
   for (size_t pl = 0; pl < 2; ++pl) {
     auto play = "play_" + std::to_string(pl);
     auto select = "select_" + std::to_string(pl);
+
     Set<MouseButton>(
-        select, "return", Mouse::Left, make_shared<RestartCommand>(),
-        RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-        TextObject("<-", 60, Color::Red, {85, 70}, m_font),
-        TextObject("Select your ships", 80, Color::Blue, {1110, 300}, m_font));
+        select, "settings", Mouse::Left,
+        make_shared<SetSceneCommand>("settings"),
+        RectObject({150, 60}, {0, 255, 95}, {1730, 75}),
+        TextObject("Settings", 40, Color::Red, {1736, 75}, m_font));
+
+    Set<MouseButton>(
+        play, "settings", Mouse::Left, make_shared<SetSceneCommand>("settings"),
+        RectObject({140, 60}, {0, 255, 95}, {1780, 65}),
+        TextObject("Settings", 40, Color::Red, {1780, 65}, m_font));
 
     Set<MouseButton>(
         select, "ship", Mouse::Left,
         make_shared<AddShipCommand>(players.data() + pl),
         RectObject({335, 110}, {0, 255, 95}, {1210, 530}),
-        TextObject("Add ship", 80, Color::Red, {1220, 530}, m_font));
-
-    Set<MouseButton>(select, "return", Mouse::Left,
-                     make_shared<RestartCommand>(),
-                     RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-                     TextObject("<-", 60, Color::Red, {85, 72}, m_font));
+        TextObject("Add ship", 80, Color::Red, {1220, 530}, m_font),
+        TextObject("Select your ships", 80, Color::Blue, {1100, 300}, m_font));
 
     Set<Button>(select, "status", nullptr,
                 TextObject("Success!", 80, Color::Green, {1240, 750}, m_font,
@@ -268,10 +252,6 @@ void Push::ConfigPlay(array<Player, 2>& players) {
                            {1120, 750}, m_font, Text::Bold, false),
                 TextObject("Wrong shaped ship!", 80, Color::Red, {1030, 750},
                            m_font, Text::Bold, false));
-
-    Set<MouseButton>(play, "return", Mouse::Left, make_shared<RestartCommand>(),
-                     RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-                     TextObject("<-", 60, Color::Red, {85, 72}, m_font));
 
     Set<Button>(play, "turn", nullptr,
                 TextObject("Your turn", 100, Color::Red, {730, 930}, m_font,
@@ -282,26 +262,17 @@ void Push::ConfigPlay(array<Player, 2>& players) {
                 TextObject("Rival field", 80, Color::Red, {1410, 950}, m_font));
   }
 
-  Set<MouseButton>("waiting", "return", Mouse::Left,
-                   make_shared<RestartCommand>(),
-                   RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-                   TextObject("<-", 60, Color::Red, {85, 72}, m_font),
-                   TextObject("Waiting for other player...", 100, Color::Red,
-                              {380, 550}, m_font));
+  Set<Button>("waiting", "text", nullptr,
+              TextObject("Waiting for other player...", 100, Color::Red,
+                         {380, 550}, m_font));
 
-  Set<MouseButton>("won_0", "return", Mouse::Left,
-                   make_shared<RestartCommand>(),
-                   RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-                   TextObject("<-", 60, Color::Red, {85, 70}, m_font),
-                   TextObject("You win!", 120, Color::Red, {720, 350}, m_font),
-                   TextObject("        Do you feel proud of yourself after\n"
-                              "you killed all innocent other player's ships?..",
-                              60, Color::Red, {360, 750}, m_font, Text::Bold));
-
-  Set<MouseButton>(
-      "won_1", "return", Mouse::Left, make_shared<RestartCommand>(),
-      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
-      TextObject("<-", 60, Color::Red, {85, 70}, m_font),
+  Set<Button>("won_0", "text", nullptr,
+              TextObject("You win!", 120, Color::Red, {720, 350}, m_font),
+              TextObject("        Do you feel proud of yourself after\n"
+                         "you killed all innocent other player's ships?..",
+                         60, Color::Red, {360, 750}, m_font, Text::Bold));
+  Set<Button>(
+      "won_1", "text", nullptr,
       TextObject("Rival win(", 120, Color::Red, {690, 350}, m_font, Text::Bold),
       TextObject("Don't worry, be happy!", 60, Color::Red, {650, 750}, m_font,
                  Text::Bold));

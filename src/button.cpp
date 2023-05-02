@@ -13,14 +13,13 @@ deque<DrawObject>& Button::GetShapes() { return m_draw; }
 
 bool MouseButton::IsPressed(const Event& event) const {
   return m_cmd != nullptr && event.type == Event::MouseButtonPressed &&
-         Inside(Mouse::getPosition()) &&
-         Mouse::isButtonPressed(m_btn);
+         Inside(Mouse::getPosition());
 }
 
 bool MouseButton::Inside(const Vector2i& mouse) const {
   RectangleShape* shape = nullptr;
   if (m_draw.empty() || (shape = dynamic_cast<RectangleShape*>(
-                            m_draw[0].sprite.get())) == nullptr) {
+                             m_draw[0].sprite.get())) == nullptr) {
     return false;
   }
 
