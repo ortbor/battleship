@@ -14,9 +14,11 @@ GameLoop::GameLoop(const Vector2u& size, size_t ships)
 }
 
 void GameLoop::ProcessNetwork() {
-  while (m_window.isOpen()) {
+  while (m_window.isOpen() && m_network.GetConnected()) {
     m_network.GetCommand()->Execute(true);
   }
+  std::cout << "fff";
+  std::cout.flush();
 }
 
 void GameLoop::Go() {
@@ -40,7 +42,7 @@ void GameLoop::LaunchNetwork() { m_network_thr.launch(); }
 
 void GameLoop::Terminate() { m_network_thr.terminate(); }
 
-bool& GameLoop::Blocked() { return m_blocked; }
+bool& GameLoop::GetBlocked() { return m_blocked; }
 
 size_t GameLoop::GetLocalPlayer() const { return m_local_player; }
 

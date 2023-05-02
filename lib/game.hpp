@@ -16,7 +16,7 @@ class GameLoop {
   Network& GetNetwork();
   void LaunchNetwork();
   void Terminate();
-  bool& Blocked();
+  bool& GetBlocked();
   size_t GetLocalPlayer() const;
   void SetLocalPlayer(size_t local_player);
 
@@ -29,8 +29,8 @@ class GameLoop {
   GameWindow m_window;
   Network m_network;
   Thread m_network_thr;
-  bool m_blocked = false;
   size_t m_local_player = 0;
+  bool m_blocked = false;
 
   void ProcessNetwork();
 };

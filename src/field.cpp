@@ -12,6 +12,15 @@ Field::Field(const Vector2u& size)
   }
 }
 
+void MyField::Clear() {
+  for (int i = 0; i < m_size.x; ++i) {
+    for (int j = 0; j < m_size.y; ++j) {
+      m_cells[i][j].SetState(CellState::Clear);
+      m_cells[i][j].SetShip(nullptr);
+    }
+  }
+}
+
 void Field::LinkField(Field* other) {
   for (size_t i = 0; i < m_size.x; ++i) {
     for (size_t j = 0; j < m_size.y; ++j) {
@@ -79,18 +88,10 @@ void MyField::RemoveProhibited() {
   }
 }
 
-void MyField::Clear() {
-  for (int i = 0; i < m_size.x; ++i) {
-    for (int j = 0; j < m_size.y; ++j) {
-      m_cells[i][j].SetState(CellState::Clear);
-      m_cells[i][j].SetShip(nullptr);
-    }
-  }
-}
-
 RivalField::RivalField(const Vector2u& size) : Field(size) {}
 
-void RivalField::UpdateShot(Cell* cell, ShotState& shot_result) {
+ShotState RivalField::UpdateShot(Cell* cell) {
+  ShotState shot_result;
   Cell* twin = cell->GetTwin();
   if (twin->GetState() == CellState::Alive) {
     cell->SetState(CellState::Harmed);
@@ -113,6 +114,7 @@ void RivalField::UpdateShot(Cell* cell, ShotState& shot_result) {
   } else {
     shot_result = ShotState::Miss;
   }
+  return shot_result;
 }
 
 void RivalField::Clear() {

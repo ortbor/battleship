@@ -189,19 +189,21 @@ void Push::ConfigClient() {
               TextObject("Server is offline", 80, Color::Red, {660, 800},
                          m_font, Text::Bold, false),
               TextObject("Connection timeout!", 80, Color::Red, {590, 800},
-                         m_font, Text::Bold, false));
+                         m_font, Text::Bold, false),
+              TextObject("Port is busy", 80, Color::Red, {735, 800}, m_font,
+                         Text::Bold, false));
 }
 
 void Push::ConfigServer() {
   Set<MouseButton>("server", "return", Mouse::Left,
-                   make_shared<TerminateCommand>(),
+                   make_shared<DisconnectCommand>(),
                    RectObject({100, 100}, {0, 255, 95}, {70, 65}),
                    TextObject("<-", 60, Color::Red, {85, 70}, m_font));
 
   Set<Button>("server", "status", nullptr,
               TextObject("Waiting for the connection...", 100, Color::Red,
                          {330, 490}, m_font, Text::Bold),
-              TextObject("Connected!", 100, Color::Green, {700, 490}, m_font,
+              TextObject("Connected!", 100, Color::Green, {700, 550}, m_font,
                          Text::Bold, false));
 }
 
@@ -243,7 +245,7 @@ void Push::ConfigPlay(array<Player, 2>& players) {
     auto play = "play_" + std::to_string(pl);
     auto select = "select_" + std::to_string(pl);
     Set<MouseButton>(
-        select, "return", Mouse::Left, make_shared<SetSceneCommand>("play"),
+        select, "return", Mouse::Left, make_shared<RestartCommand>(),
         RectObject({100, 100}, {0, 255, 95}, {70, 65}),
         TextObject("<-", 60, Color::Red, {85, 70}, m_font),
         TextObject("Select your ships", 80, Color::Blue, {1110, 300}, m_font));
@@ -255,7 +257,7 @@ void Push::ConfigPlay(array<Player, 2>& players) {
         TextObject("Add ship", 80, Color::Red, {1220, 530}, m_font));
 
     Set<MouseButton>(select, "return", Mouse::Left,
-                     make_shared<SetSceneCommand>("play"),
+                     make_shared<RestartCommand>(),
                      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
                      TextObject("<-", 60, Color::Red, {85, 72}, m_font));
 
@@ -267,33 +269,40 @@ void Push::ConfigPlay(array<Player, 2>& players) {
                 TextObject("Wrong shaped ship!", 80, Color::Red, {1030, 750},
                            m_font, Text::Bold, false));
 
-    Set<MouseButton>(play, "return", Mouse::Left,
-                     make_shared<SetSceneCommand>("menu"),
+    Set<MouseButton>(play, "return", Mouse::Left, make_shared<RestartCommand>(),
                      RectObject({100, 100}, {0, 255, 95}, {70, 65}),
                      TextObject("<-", 60, Color::Red, {85, 72}, m_font));
 
     Set<Button>(play, "turn", nullptr,
-                TextObject("Your turn", 100, Color::Red, {675, 930}, m_font,
+                TextObject("Your turn", 100, Color::Red, {730, 930}, m_font,
                            sf::Text::Bold, false),
-                TextObject("Wait", 100, Color::Red, {700, 930}, m_font,
+                TextObject("Wait", 100, Color::Red, {845, 930}, m_font,
                            sf::Text::Bold, false),
-                TextObject("Your field", 80, Color::Red, {133, 950}, m_font),
+                TextObject("Your field", 80, Color::Red, {135, 950}, m_font),
                 TextObject("Rival field", 80, Color::Red, {1410, 950}, m_font));
   }
 
+  Set<MouseButton>("waiting", "return", Mouse::Left,
+                   make_shared<RestartCommand>(),
+                   RectObject({100, 100}, {0, 255, 95}, {70, 65}),
+                   TextObject("<-", 60, Color::Red, {85, 72}, m_font),
+                   TextObject("Waiting for other player...", 100, Color::Red,
+                              {380, 550}, m_font));
+
   Set<MouseButton>("won_0", "return", Mouse::Left,
-                   make_shared<SetSceneCommand>("menu"),
+                   make_shared<RestartCommand>(),
                    RectObject({100, 100}, {0, 255, 95}, {70, 65}),
                    TextObject("<-", 60, Color::Red, {85, 70}, m_font),
+                   TextObject("You win!", 120, Color::Red, {720, 350}, m_font),
                    TextObject("        Do you feel proud of yourself after\n"
                               "you killed all innocent other player's ships?..",
                               60, Color::Red, {360, 750}, m_font, Text::Bold));
 
   Set<MouseButton>(
-      "won_1", "return", Mouse::Left, make_shared<SetSceneCommand>("menu"),
+      "won_1", "return", Mouse::Left, make_shared<RestartCommand>(),
       RectObject({100, 100}, {0, 255, 95}, {70, 65}),
       TextObject("<-", 60, Color::Red, {85, 70}, m_font),
-      TextObject("Rival win!", 120, Color::Red, {600, 350}, m_font, Text::Bold),
-      TextObject("Don't worry, be happy!", 60, Color::Red, {360, 750}, m_font,
+      TextObject("Rival win(", 120, Color::Red, {690, 350}, m_font, Text::Bold),
+      TextObject("Don't worry, be happy!", 60, Color::Red, {650, 750}, m_font,
                  Text::Bold));
 }

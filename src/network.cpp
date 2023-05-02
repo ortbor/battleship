@@ -9,7 +9,7 @@
 
 Network::Network(GameLoop* loop)
     : m_connect_thr(&Network::ServerAccept, this), m_loop(loop) {
-  m_listener.listen(2001);
+  m_listener.listen(2000);
 }
 
 size_t Network::GetPort() { return m_listener.getLocalPort(); }
@@ -23,7 +23,7 @@ void Network::Terminate() { m_connect_thr.terminate(); }
 void Network::ServerAccept() {
   m_listener.accept(m_socket);
   m_loop->LaunchNetwork();
-  m_loop->Blocked() = true;
+  m_connected = true;
   m_loop->GetWnd().SetButtons("select_" +
                               std::to_string(m_loop->GetLocalPlayer()));
 }
@@ -35,14 +35,31 @@ Socket::Status Network::ClientConnect(pair<IpAddress, size_t> address) {
                           sf::milliseconds(1500));
 }
 
-void Network::Send(std::string command_type, std::string coords) {
-  m_packet_out.clear();
+void Network::Disconnect(bool send) {
+  std::cout << "ddd";
+  std::cout.flush();
+  m_connect_thr.terminate();
+  std::cout << "ccc";
+  std::cout.flush();
+  if (m_socket.getRemoteAddress() != IpAddress::None && send) {
+    Send("disconnect");
+  }
+  std::cout << "bbb";
+  std::cout.flush();
+  m_socket.disconnect();
+  m_connected = false;
+}
+
+bool& Network::GetConnected() { return m_connected; }
+
+void Network::Send(string command_type, string coords) {
+  Packet m_packet_out;
   m_packet_out << command_type << coords;
   m_socket.send(m_packet_out);
 }
 
 Command* Network::GetCommand() {
-  m_packet_in.clear();
+  Packet m_packet_in;
   m_socket.receive(m_packet_in);
   std::string command_type;
   m_packet_in >> command_type;
@@ -51,10 +68,12 @@ Command* Network::GetCommand() {
 
   auto ind = std::to_string(1 - m_loop->GetLocalPlayer());
   auto& buttons = m_loop->GetWnd().GetButtons();
+  if (command_type == "disconnect") {
+    DisconnectCommand(false);
+  }
   if (command_type == "add_ship") {
     return buttons.Get("select_" + ind, "ship")->GetCommand().get();
   }
-
   if (command_type == "add_cell") {
     return buttons.Get("select_" + ind, "cell_m_" + coords)->GetCommand().get();
   }

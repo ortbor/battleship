@@ -70,10 +70,18 @@ class PortCommand final : public Command {
   static std::regex m_port_regex;
 };
 
-class TerminateCommand final : public Command {
+class DisconnectCommand final : public Command {
  public:
-  TerminateCommand() = default;
-  ~TerminateCommand() final = default;
+  DisconnectCommand() = default;
+  ~DisconnectCommand() final = default;
+
+  void Execute(bool is_remote = false);
+};
+
+class RestartCommand final : public Command {
+ public:
+  RestartCommand() = default;
+  ~RestartCommand() final = default;
 
   void Execute(bool is_remote = false);
 };
