@@ -11,7 +11,7 @@ Network::Network(GameLoop* loop)
     : m_client_thr(&Network::ClientAccept, this),
       m_server_thr(&Network::ServerAccept, this),
       m_loop(loop) {
-  m_listener.listen(2001);
+  m_listener.listen(2000);
 }
 
 void Network::Disconnect(bool send) {
@@ -43,6 +43,8 @@ void Network::ClientAccept() {
   switch (status) {
     case Socket::Done:
       m_loop->GetWnd().GetBoxes()["ip"].clear();
+      m_loop->GetWnd().SetObject("client", "box", 1,
+                                 m_loop->GetWnd().GetBoxes()["ip"]);
       m_loop->GetWnd().SetShow("client", "status", true, 0);
       sf::sleep(sf::milliseconds(kMoveSleep));
       m_loop->GetWnd().SetShow("client", "status", false, 0);
