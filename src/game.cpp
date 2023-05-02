@@ -14,11 +14,9 @@ GameLoop::GameLoop(const Vector2u& size, size_t ships)
 }
 
 void GameLoop::ProcessNetwork() {
-  while (m_window.isOpen() && m_network.GetConnected()) {
+  while (m_window.isOpen() && m_network.Connected()) {
     m_network.GetCommand()->Execute(true);
   }
-  std::cout << "fff";
-  std::cout.flush();
 }
 
 void GameLoop::Go() {

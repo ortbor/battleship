@@ -16,8 +16,8 @@ class GameWindow : public sf::RenderWindow {
   void SetButtons(const string& str);
   void SetObject(const string& scene, const string& elem, size_t index,
                  const string& str);
-  void SetShow(const string& scene, const string& elem, size_t index,
-               bool show);
+  void SetShow(const string& scene, const string& elem, 
+               bool show, int index = -1);
   void DrawObjects();
   void SetVolume(CMDVolume type);
   void Ficha();
