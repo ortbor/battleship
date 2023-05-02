@@ -11,13 +11,16 @@ class Network {
   Socket::Status ClientConnect(pair<IpAddress, size_t> address);
   void ServerAccept();
   void ServerConnect();
-  void Send(std::string command_type, std::string coords = "");
+  void Disconnect(bool send = true);
+  bool& GetConnected();
+
+  void Send(string command_type, string coords = "");
   Command* GetCommand();
 
- protected:
+ private:
   TcpSocket m_socket;
   TcpListener m_listener;
-  Packet m_packet;
   Thread m_connect_thr;
   GameLoop* m_loop;
+  bool m_connected = false;
 };

@@ -22,7 +22,7 @@ class GameWindow : public sf::RenderWindow {
   void SetVolume(CMDVolume type);
   void Ficha();
 
- protected:
+ private:
   View m_view;
   Event m_event;
 

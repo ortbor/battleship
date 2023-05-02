@@ -4,9 +4,9 @@
 
 GameLoop::GameLoop(const Vector2u& size, size_t ships)
     : kShips(ships),
-      m_size(size),
+      kSize(size),
       m_players(array<Player, 2>{Player(0, size), Player(1, size)}),
-      m_window(m_players, m_size),
+      m_window(m_players, kSize),
       m_network(this),
       m_network_thr(&GameLoop::ProcessNetwork, this) {
   Command::m_loop = this;
@@ -14,9 +14,11 @@ GameLoop::GameLoop(const Vector2u& size, size_t ships)
 }
 
 void GameLoop::ProcessNetwork() {
-  while (m_window.isOpen()) {
+  while (m_window.isOpen() && m_network.GetConnected()) {
     m_network.GetCommand()->Execute(true);
   }
+  std::cout << "fff";
+  std::cout.flush();
 }
 
 void GameLoop::Go() {
@@ -40,9 +42,7 @@ void GameLoop::LaunchNetwork() { m_network_thr.launch(); }
 
 void GameLoop::Terminate() { m_network_thr.terminate(); }
 
-const Vector2u& GameLoop::GetSize() const { return m_size; }
-
-bool& GameLoop::Blocked() { return m_blocked; }
+bool& GameLoop::GetBlocked() { return m_blocked; }
 
 size_t GameLoop::GetLocalPlayer() const { return m_local_player; }
 

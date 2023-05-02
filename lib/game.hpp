@@ -16,22 +16,21 @@ class GameLoop {
   Network& GetNetwork();
   void LaunchNetwork();
   void Terminate();
-  const Vector2u& GetSize() const;
-  bool& Blocked();
+  bool& GetBlocked();
   size_t GetLocalPlayer() const;
   void SetLocalPlayer(size_t local_player);
 
   const size_t kShips;
+  const Vector2u kSize;
 
- protected:
-  const Vector2u m_size;
+ private:
   array<Player, 2> m_players;
   deque<Command*> m_turns;
   GameWindow m_window;
   Network m_network;
   Thread m_network_thr;
-  bool m_blocked = false;
   size_t m_local_player = 0;
+  bool m_blocked = false;
 
   void ProcessNetwork();
 };

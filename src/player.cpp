@@ -3,7 +3,7 @@
 #include "../lib/cell.hpp"
 
 Player::Player(size_t index, const Vector2u& size)
-    : m_last_shot_state(ShotState::Unknown),
+    : m_index(index),
       m_ship_count(0),
       m_field_m(MyField(size)),
       m_field_r(RivalField(size)),
@@ -17,11 +17,10 @@ void Player::Clear() {
     m_ships[i].clear();
   }
   m_ship_in_process.Clear();
+  m_ship_count = 0;
 }
 
 size_t Player::GetIndex() const { return m_index; }
-
-ShotState Player::GetLastShotResult() const { return m_last_shot_state; }
 
 size_t Player::GetShipCount() const { return m_ship_count; }
 
@@ -38,19 +37,17 @@ void Player::AddShip() {
   m_ship_in_process.Clear();
 }
 
-void Player::Shoot(Cell* cell, ShotState& shot_result) {
-  m_field_r.UpdateShot(cell, shot_result);
+ShotState Player::Shoot(Cell* cell) {
+  ShotState shot_result = m_field_r.UpdateShot(cell);
   if (shot_result == ShotState::Kill) {
     m_rival->DecrementShipCount();
   }
-  m_last_shot_state = shot_result;
+  return shot_result;
 }
 
 const Ship* Player::GetShipInProcess() const { return &m_ship_in_process; }
 
-size_t Player::GetNumberOfShips(size_t size) const {
-  return m_ships[size].size();
-}
+size_t Player::GetNumShips(size_t size) const { return m_ships[size].size(); }
 
 void Player::LinkWithRival(Player* rival) {
   m_rival = rival;

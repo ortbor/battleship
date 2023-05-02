@@ -9,7 +9,7 @@
 
 Network::Network(GameLoop* loop)
     : m_connect_thr(&Network::ServerAccept, this), m_loop(loop) {
-  m_listener.listen(2001);
+  m_listener.listen(2000);
 }
 
 size_t Network::GetPort() { return m_listener.getLocalPort(); }
@@ -20,48 +20,62 @@ Socket::Status Network::UpdatePort(size_t port) {
 
 void Network::Terminate() { m_connect_thr.terminate(); }
 
+void Network::ServerAccept() {
+  m_listener.accept(m_socket);
+  m_loop->LaunchNetwork();
+  m_connected = true;
+  m_loop->GetWnd().SetButtons("select_" +
+                              std::to_string(m_loop->GetLocalPlayer()));
+}
+
+void Network::ServerConnect() { m_connect_thr.launch(); }
+
 Socket::Status Network::ClientConnect(pair<IpAddress, size_t> address) {
   return m_socket.connect(address.first, address.second,
                           sf::milliseconds(1500));
 }
 
-void Network::ServerAccept() {
-  m_listener.accept(m_socket);
-  m_loop->LaunchNetwork();
-  m_loop->Blocked() = true;
-  m_loop->GetWnd().SetButtons("select_0");
-}
-
-void Network::ServerConnect() {
-  m_connect_thr.launch();
-}
-
-void Network::Send(std::string command_type, std::string coords) {
-  m_packet.clear();
-  m_packet << command_type << coords;
-  if (m_socket.send(m_packet) == Socket::Done) {
-    std::cout << "sent\n";
-    std::cout.flush();
+void Network::Disconnect(bool send) {
+  std::cout << "ddd";
+  std::cout.flush();
+  m_connect_thr.terminate();
+  std::cout << "ccc";
+  std::cout.flush();
+  if (m_socket.getRemoteAddress() != IpAddress::None && send) {
+    Send("disconnect");
   }
+  std::cout << "bbb";
+  std::cout.flush();
+  m_socket.disconnect();
+  m_connected = false;
+}
+
+bool& Network::GetConnected() { return m_connected; }
+
+void Network::Send(string command_type, string coords) {
+  Packet m_packet_out;
+  m_packet_out << command_type << coords;
+  m_socket.send(m_packet_out);
 }
 
 Command* Network::GetCommand() {
-  m_socket.receive(m_packet);
+  Packet m_packet_in;
+  m_socket.receive(m_packet_in);
   std::string command_type;
-  m_packet >> command_type;
-
-  auto index = std::to_string(1 - m_loop->GetLocalPlayer());
-  auto& buttons = m_loop->GetWnd().GetButtons();
-  if (command_type == "add_ship") {
-    return buttons.Get("select_" + index, "ship")->GetCommand().get();
-  }
-
+  m_packet_in >> command_type;
   std::string coords;
-  m_packet >> coords;
-  if (command_type == "add_cell") {
-    return buttons.Get("select_" + index, "cell_m_" + coords)
-        ->GetCommand()
-        .get();
+  m_packet_in >> coords;
+
+  auto ind = std::to_string(1 - m_loop->GetLocalPlayer());
+  auto& buttons = m_loop->GetWnd().GetButtons();
+  if (command_type == "disconnect") {
+    DisconnectCommand(false);
   }
-  return buttons.Get("play_" + index, "cell_r_" + coords)->GetCommand().get();
+  if (command_type == "add_ship") {
+    return buttons.Get("select_" + ind, "ship")->GetCommand().get();
+  }
+  if (command_type == "add_cell") {
+    return buttons.Get("select_" + ind, "cell_m_" + coords)->GetCommand().get();
+  }
+  return buttons.Get("play_" + ind, "cell_r_" + coords)->GetCommand().get();
 }
