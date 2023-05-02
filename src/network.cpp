@@ -92,10 +92,9 @@ void Network::Send(string command_type, string coords) {
 Command* Network::GetCommand() {
   Packet m_packet_in;
   m_socket.receive(m_packet_in);
-  std::string command_type;
-  m_packet_in >> command_type;
-  std::string coords;
-  m_packet_in >> coords;
+  string coords;
+  string command_type;
+  m_packet_in >> command_type >> coords;
 
   auto ind = std::to_string(1 - m_loop->GetLocalPlayer());
   auto& buttons = m_loop->GetWnd().GetButtons();
