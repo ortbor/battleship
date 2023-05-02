@@ -78,25 +78,6 @@ class DisconnectCommand final : public Command {
   void Execute(bool is_remote = false);
 };
 
-class RestartCommand final : public Command {
- public:
-  RestartCommand() = default;
-  ~RestartCommand() final = default;
-
-  void Execute(bool is_remote = false);
-};
-
-class WindowCommand final : public Command {
- public:
-  WindowCommand(CMDType request);
-  ~WindowCommand() final = default;
-
-  void Execute(bool is_remote = false);
-
- private:
-  CMDType m_request;
-};
-
 class VolumeCommand final : public Command {
  public:
   VolumeCommand(CMDVolume type);
@@ -116,7 +97,8 @@ class SetSceneCommand final : public Command {
   void Execute(bool is_remote = false) final;
 
  private:
-  string str_;
+  static deque<string> m_stack;
+  string m_str;
 };
 
 class CellCommand : public Command {

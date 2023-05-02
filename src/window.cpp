@@ -41,7 +41,7 @@ const std::shared_ptr<Command>& GameWindow::GetCommand() {
     if (btn != nullptr) {
       return btn->GetCommand();
     }
-  }
+  } 
 }
 
 Push& GameWindow::GetButtons() { return m_push; }
@@ -64,9 +64,15 @@ void GameWindow::SetObject(const string& scene, const string& elem,
   DrawObjects();
 }
 
-void GameWindow::SetShow(const string& scene, const string& elem, size_t index,
-                         bool show) {
+void GameWindow::SetShow(const string& scene, const string& elem, bool show,
+                         int index) {
+  if (index == -1) {
+    for (auto& item : m_push.Get(scene, elem)->GetShapes()) {
+      item.show = show;
+    }
+  } else {
   m_push.Get(scene, elem)->GetShapes()[index].show = show;
+  }
   DrawObjects();
 }
 
