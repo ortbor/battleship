@@ -99,6 +99,7 @@ Command* Network::GetCommand() {
   auto ind = std::to_string(1 - m_loop->GetLocalPlayer());
   auto& buttons = m_loop->GetWnd().GetButtons();
   if (command_type == "disconnect") {
+    m_loop->GetWnd().SetButtons("disconnected");
     return &terminate;
   }
   if (command_type == "add_ship") {

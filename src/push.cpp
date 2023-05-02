@@ -271,9 +271,15 @@ void Push::ConfigPlay(array<Player, 2>& players) {
               TextObject("        Do you feel proud of yourself after\n"
                          "you killed all innocent other player's ships?..",
                          60, Color::Red, {360, 750}, m_font, Text::Bold));
+
   Set<Button>(
       "won_1", "text", nullptr,
       TextObject("Rival win(", 120, Color::Red, {690, 350}, m_font, Text::Bold),
       TextObject("Don't worry, be happy!", 60, Color::Red, {650, 750}, m_font,
                  Text::Bold));
+
+  Set<Button>("disconnected", "text", nullptr,
+              TextObject("The connection is lost", 150, Color::Red,
+                         {380, 550}, m_font));
 }
+
