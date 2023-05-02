@@ -3,48 +3,48 @@
 #include "../lib/cell.hpp"
 
 Ship::Ship(const std::deque<Cell*>& chosen_cells)
-    : health_(chosen_cells.size()), cells_(chosen_cells) {
-  std::sort(cells_.begin(), cells_.end(), CellComparator);
+    : m_health(chosen_cells.size()), m_cells(chosen_cells) {
+  std::sort(m_cells.begin(), m_cells.end(), CellComparator);
 }
 
 void Ship::Clear() {
-  health_ = 0;
-  cells_.clear();
+  m_health = 0;
+  m_cells.clear();
 }
 
 void Ship::DecrementHealth() {
-  if (health_ > 0) {
-    --health_;
+  if (m_health > 0) {
+    --m_health;
   }
 }
 
-bool Ship::IsAlive() const { return health_ > 0; }
+bool Ship::IsAlive() const { return m_health > 0; }
 
-const deque<Cell*>& Ship::GetCells() const { return cells_; }
+const deque<Cell*>& Ship::GetCells() const { return m_cells; }
 
-size_t Ship::GetSize() const { return cells_.size(); }
+size_t Ship::GetSize() const { return m_cells.size(); }
 
 void Ship::AddCell(Cell* cell) {
-  ++health_;
-  cells_.push_back(cell);
-  cell->SetState(State::Chosen);
+  ++m_health;
+  m_cells.push_back(cell);
+  cell->SetState(CellState::Chosen);
   size_t new_cell_index = GetSize() - 1;
   while (new_cell_index > 0 &&
-         !CellComparator(cells_[new_cell_index - 1], cells_[new_cell_index])) {
-    std::swap(cells_[new_cell_index], cells_[new_cell_index - 1]);
+         !CellComparator(m_cells[new_cell_index - 1], m_cells[new_cell_index])) {
+    std::swap(m_cells[new_cell_index], m_cells[new_cell_index - 1]);
     --new_cell_index;
   }
 }
 
 void Ship::EraseCell(Cell* cell) {
-  auto cell_location = find(cells_.begin(), cells_.end(), cell);
-  if (cell_location != cells_.end()) {
-    if (cell->GetState() != State::Killed &&
-        cell->GetState() != State::Harmed) {
-      --health_;
+  auto cell_location = find(m_cells.begin(), m_cells.end(), cell);
+  if (cell_location != m_cells.end()) {
+    if (cell->GetState() != CellState::Killed &&
+        cell->GetState() != CellState::Harmed) {
+      --m_health;
     }
-    cells_.erase(find(cells_.begin(), cells_.end(), cell));
-    cell->SetState(State::Clear);
+    m_cells.erase(find(m_cells.begin(), m_cells.end(), cell));
+    cell->SetState(CellState::Clear);
   }
 }
 
@@ -56,15 +56,15 @@ bool Ship::IsClassic() const {
     return false;
   }
   bool vertical = false;
-  if (cells_[0]->GetCoord().y == cells_[1]->GetCoord().y) {
+  if (m_cells[0]->GetCoord().y == m_cells[1]->GetCoord().y) {
     vertical = true;
   }
   for (size_t i = 0; i < GetSize() - 1; ++i) {
     if ((vertical &&
-         cells_[i + 1]->GetCoord().y == cells_[i + 1]->GetCoord().y &&
-         cells_[i]->GetCoord().x + 1 == cells_[i + 1]->GetCoord().x) ||
-        (!vertical && cells_[i]->GetCoord().x == cells_[i + 1]->GetCoord().x &&
-         cells_[i]->GetCoord().y + 1 == cells_[i + 1]->GetCoord().y)) {
+         m_cells[i + 1]->GetCoord().y == m_cells[i + 1]->GetCoord().y &&
+         m_cells[i]->GetCoord().x + 1 == m_cells[i + 1]->GetCoord().x) ||
+        (!vertical && m_cells[i]->GetCoord().x == m_cells[i + 1]->GetCoord().x &&
+         m_cells[i]->GetCoord().y + 1 == m_cells[i + 1]->GetCoord().y)) {
       continue;
     }
     return false;

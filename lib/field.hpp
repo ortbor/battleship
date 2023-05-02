@@ -1,36 +1,48 @@
 #pragma once
 
+#include "cell.hpp"
 #include "common.hpp"
 
 class Field {
  public:
-  Field(const Vector2f& sizen);
+  Field(const Vector2u& size);
   ~Field() = default;
-  void LinkField(Field* other_field);
-
-  Cell* GetCell(const Vector2f& coord);
-  void SurroundExcept(Cell* cell, State around, State except);
-
   virtual void Clear() = 0;
+  void LinkField(Field* other);
+
+  Cell* GetCell(const Vector2u& coord);
+  void SurroundExcept(Cell* cell, CellState around, CellState except);
+
 
  protected:
-  Vector2f size_;
-  deque<deque<Cell>> cells_;
+  Vector2f m_size;
+  deque<deque<Cell>> m_cells;
 };
 
 class MyField : public Field {
  public:
+<<<<<<< HEAD
   MyField(const Vector2f& sizen);
   void SetShip(Ship* ship);
   void RemoveProhibited();
 
+||||||| 58d15e7
+  MyField(const Vector2f& sizen);
+  void SetShip(Ship* ship);
+
+=======
+  MyField(const Vector2u& size);
+>>>>>>> dev-ntheme
   void Clear() final;
+  void SetShip(Ship* ship);
+  void RemoveProhibited();
+
 };
 
 class RivalField : public Field {
  public:
-  RivalField(const Vector2f& sizen);
-  void UpdateShot(Cell* cell, ShotResult& shot_result);
-
+  RivalField(const Vector2u& size);
   void Clear() final;
+  ShotState UpdateShot(Cell* cell);
+
 };

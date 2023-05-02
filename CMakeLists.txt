@@ -5,15 +5,22 @@ set(CMAKE_CXX_STANDARD 20)
 set(SRC_PATH src/)
 set(SOURCES ${SRC_PATH}/button.cpp 
             ${SRC_PATH}/cell.cpp 
+<<<<<<< HEAD
             ${SRC_PATH}/configure.cpp 
+||||||| 58d15e7
+=======
+            ${SRC_PATH}/command.cpp 
+            ${SRC_PATH}/common.cpp 
+>>>>>>> dev-ntheme
             ${SRC_PATH}/field.cpp 
             ${SRC_PATH}/game.cpp 
             ${SRC_PATH}/network.cpp 
             ${SRC_PATH}/object.cpp 
             ${SRC_PATH}/player.cpp 
-            ${SRC_PATH}/ship.cpp
-            ${SRC_PATH}/window.cpp
-            ${SRC_PATH}/main.cpp)
+            ${SRC_PATH}/push.cpp 
+            ${SRC_PATH}/ship.cpp 
+            ${SRC_PATH}/window.cpp 
+            main.cpp)
 
 set(CMAKE_INSTALL_PREFIX /usr/local)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
