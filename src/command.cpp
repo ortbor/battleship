@@ -150,14 +150,17 @@ void SetSceneCommand::Execute(bool is_remote) {
 
   if (m_str == "back") {
     auto size = m_stack.back().size();
-    if (m_str == "back" &&
-        (m_stack.back() == "won_0" || m_stack.back() == "won_1")) {
+    if (m_stack.back() == "disconnected") {
+      m_stack.resize(3);
+      DisconnectCommand().Execute(false);
+    } else if ((m_stack.back() == "won_0" || m_stack.back() == "won_1")) {
       m_stack.resize(2);
       DisconnectCommand().Execute(true);
     } else if (m_stack.back() == "server" || m_stack.back() == "client" ||
                m_stack.back() == "waiting" ||
                m_stack.back().substr(0, size - 1) == "select_" ||
                m_stack.back().substr(0, size - 1) == "play_") {
+      m_stack.resize(3);
       DisconnectCommand().Execute(true);
     }
     m_stack.pop_back();
@@ -177,6 +180,7 @@ void SetSceneCommand::Execute(bool is_remote) {
   }
   m_loop->GetWnd().SetButtons(m_stack.back());
 }
+
 CellCommand::CellCommand(Player* play, Cell* cell)
     : m_player(play), m_cell(cell) {}
 

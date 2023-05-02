@@ -196,8 +196,8 @@ void Push::ConfigField(array<Player, 2>& players, const Vector2u& size) {
         auto* cell_my = players[pl].GetMField()->GetCell(Vector2u(i, j));
         auto* cell_rv = players[pl].GetRField()->GetCell(Vector2u(i, j));
         auto play = "play_" + std::to_string(pl);
-        auto cell = std::to_string(i * size.y + j);
         auto select = "select_" + std::to_string(pl);
+        auto cell = std::to_string(i * size.y + j);
 
         auto pos_my = Vector2u(140 + i * 70, 250 + j * 70);
         auto pos_rv = Vector2u(1080 + i * 70, 250 + j * 70);
@@ -271,9 +271,14 @@ void Push::ConfigPlay(array<Player, 2>& players) {
               TextObject("        Do you feel proud of yourself after\n"
                          "you killed all innocent other player's ships?..",
                          60, Color::Red, {360, 750}, m_font, Text::Bold));
+
   Set<Button>(
       "won_1", "text", nullptr,
       TextObject("Rival win(", 120, Color::Red, {690, 350}, m_font, Text::Bold),
       TextObject("Don't worry, be happy!", 60, Color::Red, {650, 750}, m_font,
                  Text::Bold));
+
+  Set<Button>("disconnected", "text", nullptr,
+              TextObject("The connection is lost", 120, Color::Red, {400, 550},
+                         m_font));
 }
