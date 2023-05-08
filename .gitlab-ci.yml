@@ -6,7 +6,7 @@ Build:
   stage: build
   script:
     - apt update
-    - apt install git cmake gcc g++ gdb libx11-dev x11-xserver-utils -y
+    - apt install git cmake gcc g++ gdb libx11-dev x11-xserver-utils libxrandr-dev libxcursor-dev -y
     - mkdir build
     - mkdir dist
     - mkdir dist/exe
