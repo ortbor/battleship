@@ -23,7 +23,7 @@ Build:
 Deliver:
   stage: deliver
   script:
-    echo "Build succeded! Execution files saved to dist/"
+    echo "Build succeded! Execution files saved to ./dist"
   artifacts:
     paths:
       - dist/
