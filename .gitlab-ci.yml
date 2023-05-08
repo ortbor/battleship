@@ -6,15 +6,15 @@ Build:
   stage: build
   script:
     - apt update
-    - apt install git cmake gcc g++ gdb libsfml-dev -y
+    - apt install git cmake g++ libsfml-dev libxrandr-dev libxcursor-dev -y
     - mkdir build
     - mkdir dist
     - mkdir dist/exe
     - cd 3rdparty
-    - git clone https://github.com/SFML/SFML.git
+    - echo "https://github.com/SFML/SFML.git"
     - cd ../build
-    - cmake -E env SFML_DIR="SFML" cmake -DCMAKE_INSTALL_PREFIX=../dist ..
-    - cmake --build .
+    - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../dist ..
+    - cmake --build . --config Release -- -j 18
     - cmake --install .
   artifacts:
     paths:
