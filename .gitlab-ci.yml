@@ -9,9 +9,8 @@ Build:
     - apt update
     - apt install git cmake g++ libsfml-dev libxrandr-dev libxcursor-dev yasm -y
     - mkdir build
-    - mkdir dist
     - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./dist ..
+    - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../dist ..
     - cmake --build . --config Release -- -j 18
     - cmake --install .
   artifacts:
