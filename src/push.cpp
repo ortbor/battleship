@@ -184,6 +184,8 @@ void Push::ConfigField(array<Player, 2>& players, const Vector2u& size) {
 
 void Push::ConfigPlay(array<Player, 2>& players) {
   for (size_t pl = 0; pl < 2; ++pl) {
+    unsigned int start = 255;
+    unsigned int shift = 120;
     auto play = "play_" + std::to_string(pl);
     auto select = "select_" + std::to_string(pl);
 
@@ -192,8 +194,31 @@ void Push::ConfigPlay(array<Player, 2>& players) {
                      TextObject("Settings", 40, Color::Red, {1736, 75}, m_font));
 
     Set<MouseButton>(play, "settings", Mouse::Left, make_shared<SetSceneCommand>("settings"),
-                     RectObject({140, 60}, {0, 255, 95}, {1780, 65}),
-                     TextObject("Settings", 40, Color::Red, {1780, 65}, m_font));
+                     RectObject({150, 60}, {0, 255, 95}, {1730, 75}),
+                     TextObject("Settings", 40, Color::Red, {1736, 75}, m_font));
+
+    Set<Button>(play, "cell_clear", nullptr, RectObject({40, 40}, {255, 120, 255}, {940, start}),
+                TextObject("Clear", 40, Color::Red, {910, start + 40}, m_font));
+
+    Set<Button>(play, "cell_alive", nullptr,
+                RectObject({40, 40}, {0, 255, 255}, {940, start + shift}),
+                TextObject("Alive", 40, Color::Red, {910, start + shift + 40}, m_font));
+
+    Set<Button>(play, "cell_harmed", nullptr,
+                RectObject({40, 40}, {100, 100, 0}, {940, start + shift * 2}),
+                TextObject("Harmed", 40, Color::Red, {887, start + shift * 2 + 40}, m_font));
+
+    Set<Button>(play, "cell_killed", nullptr,
+                RectObject({40, 40}, {0, 0, 0}, {940, start + shift * 3}),
+                TextObject("Killed", 40, Color::Red, {908, start + shift * 3 + 40}, m_font));
+
+    Set<Button>(play, "cell_missed", nullptr,
+                RectObject({40, 40}, {0, 0, 255}, {940, start + shift * 4}),
+                TextObject("Missed", 40, Color::Red, {900, start + shift * 4 + 40}, m_font));
+
+    Set<Button>(play, "cell_unknown", nullptr,
+                RectObject({40, 40}, {255, 255, 255}, {940, start + shift * 5}),
+                TextObject("Unknown", 40, Color::Red, {873, start + shift * 5 + 40}, m_font));
 
     Set<MouseButton>(select, "ship", Mouse::Left, make_shared<AddShipCommand>(players.data() + pl),
                      RectObject({335, 110}, {0, 255, 95}, {1210, 530}),

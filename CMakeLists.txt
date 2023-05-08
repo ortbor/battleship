@@ -22,7 +22,7 @@ SET(CMAKE_CXX_FLAGS_RELEASE "-std=c++20 -O3 -Wall")
 
 find_package(SFML 2.5.1 COMPONENTS window graphics audio network system REQUIRED)
 add_executable(battlesh1p ${SOURCES})
-target_link_libraries(battlesh1p PRIVATE sfml-window sfml-graphics sfml-audio sfml-network sfml-system sfeMovie)
+target_link_libraries(battlesh1p PRIVATE sfml-window sfml-graphics sfml-audio sfml-network sfml-system)
 
 install(TARGETS battlesh1p DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(DIRECTORY share DESTINATION ${CMAKE_INSTALL_PREFIX})
