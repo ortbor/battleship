@@ -3,6 +3,7 @@ build/
 .vscode/
 .idea/
 cmake-build-debug/
+3rdparty/*
 
 # Prerequisites
 *.d
