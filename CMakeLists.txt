@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.22)
 project(battlesh1p VERSION 1.2.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
