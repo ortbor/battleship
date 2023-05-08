@@ -9,11 +9,10 @@ Build:
     - apt install git cmake g++ libsfml-dev libxrandr-dev libxcursor-dev -y
     - mkdir build
     - mkdir dist
-    - mkdir dist/exe
     - cd 3rdparty
-    - echo "https://github.com/SFML/SFML.git"
+    - git clone https://github.com/NTheme/sfeMovie.git
     - cd ../build
-    - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../dist ..
+    - cmake -E env SFE_MOVIE_DIR="sfeMovie" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../dist ..
     - cmake --build . --config Release -- -j 18
     - cmake --install .
   artifacts:
