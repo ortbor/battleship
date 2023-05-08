@@ -25,4 +25,5 @@ Deliver:
   script:
     echo "Build succeded! Execution files saved to dist/"
   artifacts:
-    - dist/
+    paths:
+      - dist/
