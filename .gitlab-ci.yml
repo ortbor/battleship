@@ -6,7 +6,7 @@ Build:
   stage: build
   script:
     - apt update
-    - apt install git cmake gcc g++ gdb -y
+    - apt install git cmake gcc g++ gdb libx11-dev -y
     - mkdir build
     - mkdir dist
     - mkdir dist/exe
