@@ -17,7 +17,6 @@ set(SOURCES ${SRC_PATH}/button.cpp
             ${SRC_PATH}/window.cpp 
             main.cpp)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 SET(CMAKE_CXX_FLAGS_DEBUG "-std=c++20 -Og -Wall -Werror -fsanitize=address -Wl,-rpath-link,/usr/bin/x86_64-linux-gnu/libFLAC.so.8")
 SET(CMAKE_CXX_FLAGS_RELEASE "-std=c++20 -O3 -Wall")
 
