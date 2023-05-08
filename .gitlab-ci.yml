@@ -2,6 +2,7 @@ stages:
   - build
   - deliver
 
+
 Build:
   stage: build
   script:
@@ -10,7 +11,7 @@ Build:
     - mkdir build
     - mkdir dist
     - cd 3rdparty
-    - git clone https://github.com/Yalir/sfeMovie.git
+    - git clone https://github.com/NTheme/sfeMovie.git
     - cd ../build
     - cmake -E env SFEMOVIE_DIR="sfeMovie" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../dist ..
     - cmake --build . --config Release -- -j 18
@@ -18,3 +19,10 @@ Build:
   artifacts:
     paths:
       - dist/
+
+Deliver:
+  stage: deliver
+  script:
+    echo "Build succeded! Execution files saved to dist/"
+  artifacts:
+    - dist/
