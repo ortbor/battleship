@@ -12,12 +12,10 @@ struct DrawObject {
 };
 
 struct TextObject : public DrawObject {
-  TextObject(const string& str, size_t size, const Color& color,
-             const Vector2u& pos, const sf::Font& font,
-             int style = Text::Regular, bool show = true);
+  TextObject(const string& str, size_t size, const Color& color, const Vector2u& pos,
+             const sf::Font& font, int style = Text::Regular, bool show = true);
 };
 
 struct RectObject : public DrawObject {
-  RectObject(const Vector2u& size, const Color& color, const Vector2u& pos,
-             bool show = true);
+  RectObject(const Vector2u& size, const Color& color, const Vector2u& pos, bool show = true);
 };

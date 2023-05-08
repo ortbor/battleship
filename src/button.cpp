@@ -18,16 +18,15 @@ bool MouseButton::IsPressed(const Event& event) const {
 
 bool MouseButton::Inside(const Vector2i& mouse) const {
   RectangleShape* shape = nullptr;
-  if (m_draw.empty() || (shape = dynamic_cast<RectangleShape*>(
-                             m_draw[0].sprite.get())) == nullptr) {
+  if (m_draw.empty() ||
+      (shape = dynamic_cast<RectangleShape*>(m_draw[0].sprite.get())) == nullptr) {
     return false;
   }
 
   auto left = shape->getPosition();
   auto size = shape->getSize();
   auto right = Vector2f(left.x + size.x, left.y + size.y);
-  return mouse.x >= left.x && mouse.x <= right.x && mouse.y >= left.y &&
-         mouse.y <= right.y;
+  return mouse.x >= left.x && mouse.x <= right.x && mouse.y >= left.y && mouse.y <= right.y;
 }
 
 bool KeyboardButton::IsPressed(const Event& event) const {

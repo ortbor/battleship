@@ -15,6 +15,7 @@
 #include <memory>
 #include <ranges>
 #include <regex>
+#include <sfeMovie/Movie.hpp>
 #include <unordered_map>
 
 using sf::Color;
@@ -41,6 +42,7 @@ using sf::Vector2i;
 using sf::Vector2u;
 using sf::VideoMode;
 using sf::View;
+using sfe::Movie;
 using std::array;
 using std::deque;
 using std::make_shared;

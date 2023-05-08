@@ -15,10 +15,14 @@ GameWindow::GameWindow(array<Player, 2>& players, const Vector2u& size) {
   if (!m_music["main"].openFromFile(bs::Path() + kRes + "ficha1.what")) {
     throw std::runtime_error("Cannot load fichaaaa");
   }
+  if (!m_movie.openFromFile(bs::Path() + kRes + "ficha3.what")) {
+    throw std::runtime_error("Cannot load ficha");
+  }
 
   m_music["game"].setLoop(true);
   m_music["main"].setLoop(true);
   m_music["main"].play();
+  m_movie.fit(0, 0, getSize().x, getSize().y);
 
   m_boxes["scene"] = "menu";
   m_boxes["port"] = "2000";
@@ -37,7 +41,7 @@ const std::shared_ptr<Command>& GameWindow::GetCommand() {
     if (btn != nullptr) {
       return btn->GetCommand();
     }
-  } 
+  }
 }
 
 Push& GameWindow::GetButtons() { return m_push; }
@@ -53,21 +57,19 @@ void GameWindow::SetButtons(const string& str) {
   DrawObjects();
 }
 
-void GameWindow::SetObject(const string& scene, const string& elem,
-                           size_t index, const string& str) {
-  dynamic_cast<Text*>(m_push.Get(scene, elem)->GetShapes()[index].sprite.get())
-      ->setString(str);
+void GameWindow::SetObject(const string& scene, const string& elem, size_t index,
+                           const string& str) {
+  dynamic_cast<Text*>(m_push.Get(scene, elem)->GetShapes()[index].sprite.get())->setString(str);
   DrawObjects();
 }
 
-void GameWindow::SetShow(const string& scene, const string& elem, bool show,
-                         int index) {
+void GameWindow::SetShow(const string& scene, const string& elem, bool show, int index) {
   if (index == -1) {
     for (auto& item : m_push.Get(scene, elem)->GetShapes()) {
       item.show = show;
     }
   } else {
-  m_push.Get(scene, elem)->GetShapes()[index].show = show;
+    m_push.Get(scene, elem)->GetShapes()[index].show = show;
   }
   DrawObjects();
 }
@@ -114,12 +116,17 @@ void GameWindow::SetVolume(CMDVolume type) {
         break;
     }
   }
-  SetObject("settings", "volume", 0,
-            "Volume: " + bs::atos(m_music["main"].getVolume()));
+  SetObject("settings", "volume", 0, "Volume: " + bs::atos(m_music["main"].getVolume()));
 }
 
 void GameWindow::Ficha() {
   m_music["main"].stop();
   m_music["game"].stop();
-
+  m_movie.play();
+  while (true) {
+    m_movie.update();
+    clear();
+    draw(m_movie);
+    display();
+  }
 }

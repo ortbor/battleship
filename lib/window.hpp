@@ -14,10 +14,8 @@ class GameWindow : public sf::RenderWindow {
   Music& GetMusic(const string& elem);
   map<string, string>& GetBoxes();
   void SetButtons(const string& str);
-  void SetObject(const string& scene, const string& elem, size_t index,
-                 const string& str);
-  void SetShow(const string& scene, const string& elem, 
-               bool show, int index = -1);
+  void SetObject(const string& scene, const string& elem, size_t index, const string& str);
+  void SetShow(const string& scene, const string& elem, bool show, int index = -1);
   void DrawObjects();
   void SetVolume(CMDVolume type);
   void Ficha();
@@ -26,6 +24,7 @@ class GameWindow : public sf::RenderWindow {
   View m_view;
   Event m_event;
 
+  Movie m_movie;
   map<string, Music> m_music;
   map<string, string> m_boxes;
   Push m_push;
