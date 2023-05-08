@@ -2,6 +2,7 @@ stages:
   - build
   - deliver
 
+
 Build:
   stage: build
   script:
@@ -12,9 +13,10 @@ Build:
     - cd 3rdparty
     - git clone https://github.com/NTheme/sfeMovie.git
     - cd ../build
-    - cmake -E env SFE_MOVIE_DIR="sfeMovie" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../dist ..
+    - cmake -E env SFEMOVIE_DIR="sfeMovie" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../dist ..
     - cmake --build . --config Release -- -j 18
     - cmake --install .
   artifacts:
     paths:
       - dist/
+
