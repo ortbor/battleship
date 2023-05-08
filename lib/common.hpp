@@ -15,7 +15,6 @@
 #include <memory>
 #include <ranges>
 #include <regex>
-#include <sfeMovie/Movie.hpp>
 #include <unordered_map>
 
 using sf::Color;
@@ -42,7 +41,6 @@ using sf::Vector2i;
 using sf::Vector2u;
 using sf::VideoMode;
 using sf::View;
-using sfe::Movie;
 using std::array;
 using std::deque;
 using std::make_shared;
@@ -90,16 +88,7 @@ struct RectObject;
 enum class CMDVolume { Silence, Less, More, Max };
 enum class CMDType { Close, Ficha };
 enum class ShotState { Kill, Harm, Miss, Unknown };
-enum class CellState {
-  Alive,
-  Harmed,
-  Missed,
-  Clear,
-  Unknown,
-  Prohibited,
-  Killed,
-  Chosen
-};
+enum class CellState { Alive, Harmed, Missed, Clear, Unknown, Prohibited, Killed, Chosen };
 
 static const string kName = "BATTLESH!P!!";
 static const string kRes = "/share/battlesh1p/";
@@ -108,4 +97,4 @@ static const size_t kMoveSleep = 700;
 namespace bs {
 string atos(long double num);
 string Path();
-}
+}  // namespace bs

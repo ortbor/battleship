@@ -15,14 +15,10 @@ GameWindow::GameWindow(array<Player, 2>& players, const Vector2u& size) {
   if (!m_music["main"].openFromFile(bs::Path() + kRes + "ficha1.what")) {
     throw std::runtime_error("Cannot load fichaaaa");
   }
-  if (!m_movie.openFromFile(bs::Path() + kRes + "ficha3.what")) {
-    throw std::runtime_error("Cannot load ficha");
-  }
 
   m_music["game"].setLoop(true);
   m_music["main"].setLoop(true);
   m_music["main"].play();
-  m_movie.fit(0, 0, getSize().x, getSize().y);
 
   m_boxes["scene"] = "menu";
   m_boxes["port"] = "2000";
@@ -125,11 +121,5 @@ void GameWindow::SetVolume(CMDVolume type) {
 void GameWindow::Ficha() {
   m_music["main"].stop();
   m_music["game"].stop();
-  m_movie.play();
-  while (true) {
-    m_movie.update();
-    clear();
-    draw(m_movie);
-    display();
-  }
+
 }

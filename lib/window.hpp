@@ -26,7 +26,6 @@ class GameWindow : public sf::RenderWindow {
   View m_view;
   Event m_event;
 
-  Movie m_movie;
   map<string, Music> m_music;
   map<string, string> m_boxes;
   Push m_push;
