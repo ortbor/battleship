@@ -6,7 +6,7 @@ Build:
   stage: build
   script:
     - apt update
-    - apt install git cmake -y
+    - apt install git cmake gcc g++ gdb -y
     - mkdir build
     - mkdir dist
     - mkdir dist/exe
