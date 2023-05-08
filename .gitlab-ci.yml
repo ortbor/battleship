@@ -2,16 +2,15 @@ stages:
   - build
   - deliver
 
-
 Build:
   stage: build
   script:
     - apt update
-    - apt install git cmake g++ libsfml-dev libxrandr-dev libxcursor-dev -y
+    - apt install git cmake g++ libsfml-dev libxrandr-dev libxcursor-dev yasm -y
     - mkdir build
     - mkdir dist
     - cd 3rdparty
-    - git clone https://github.com/NTheme/sfeMovie.git
+    - git clone https://github.com/Yalir/sfeMovie.git
     - cd ../build
     - cmake -E env SFEMOVIE_DIR="sfeMovie" cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../dist ..
     - cmake --build . --config Release -- -j 18
@@ -19,4 +18,3 @@ Build:
   artifacts:
     paths:
       - dist/
-
