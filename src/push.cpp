@@ -59,11 +59,9 @@ void Push::ConfigMainMenu() {
                    RectObject({530, 150}, {0, 255, 95}, {700, 820}),
                    TextObject("Settings", 140, Color::Red, {720, 790}, m_font));
 
-  Set<MouseButton>(
-      "menu", "ficha", Mouse::Left, make_shared<SetSceneCommand>("ficha"),
-      RectObject({370, 50}, {0, 255, 95}, {1550, 1030}, false),
-      TextObject("By NThemeDEV & ortbor", 30, Color::Green, {1550, 990}, m_font, Text::Italic),
-      TextObject("Click to learn more...", 30, Color::Green, {1550, 1030}, m_font, Text::Bold));
+  Set<Button>(
+      "menu", "ficha", nullptr,
+      TextObject("By NThemeDEV & ortbor", 30, Color::Green, {1550, 1030}, m_font, Text::Italic));
 }
 
 void Push::ConfigSettings(const map<string, Music>& music, const map<string, string>& boxes) {

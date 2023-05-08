@@ -131,10 +131,6 @@ void DisconnectCommand::Execute(bool is_remote) {
 }
 
 void SetSceneCommand::Execute(bool is_remote) {
-  if (m_str == "ficha") {
-    m_loop->GetWnd().Ficha();
-    return;
-  }
   if (m_str == "adios" || (m_str == "back" && m_stack.back() == "menu")) {
     DisconnectCommand().Execute(true);
     m_loop->GetWnd().close();
