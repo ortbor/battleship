@@ -27,8 +27,7 @@ void IPBoxCommand::Execute(bool is_remote) {
              m_loop->GetWnd().GetBoxes()["ip"].size() < 21) {
     m_loop->GetWnd().GetBoxes()["ip"].push_back(static_cast<char>(code));
   }
-  m_loop->GetWnd().SetObject("client", "box", 1,
-                             m_loop->GetWnd().GetBoxes()["ip"]);
+  m_loop->GetWnd().SetObject("client", "box", 1, m_loop->GetWnd().GetBoxes()["ip"]);
 }
 
 void PortBoxCommand::Execute(bool is_remote) {
@@ -40,16 +39,13 @@ void PortBoxCommand::Execute(bool is_remote) {
     m_loop->GetWnd().GetBoxes()["port"].pop_back();
   } else if (code == 13) {
     PortCommand().Execute();
-  } else if (code >= 48 && code <= 58 &&
-             m_loop->GetWnd().GetBoxes()["port"].size() < 5) {
+  } else if (code >= 48 && code <= 58 && m_loop->GetWnd().GetBoxes()["port"].size() < 5) {
     m_loop->GetWnd().GetBoxes()["port"].push_back(static_cast<char>(code));
   }
-  m_loop->GetWnd().SetObject("settings", "port_box", 1,
-                             m_loop->GetWnd().GetBoxes()["port"]);
+  m_loop->GetWnd().SetObject("settings", "port_box", 1, m_loop->GetWnd().GetBoxes()["port"]);
 }
 
-std::string IPClientCommand::m_ip_addr =
-    R"(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))";
+std::string IPClientCommand::m_ip_addr = R"(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))";
 std::string IPClientCommand::m_ip_port =
     R"(([0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))";
 std::string IPClientCommand::m_ip_full =
@@ -119,12 +115,9 @@ void PortCommand::Execute(bool is_remote) {
 
 VolumeCommand::VolumeCommand(CMDVolume type) : m_type(type) {}
 
-void VolumeCommand::Execute(bool is_remote) {
-  m_loop->GetWnd().SetVolume(m_type);
-}
+void VolumeCommand::Execute(bool is_remote) { m_loop->GetWnd().SetVolume(m_type); }
 
-SetSceneCommand::SetSceneCommand(const string& m_str)
-    : Command(Event::Closed), m_str(m_str) {}
+SetSceneCommand::SetSceneCommand(const string& m_str) : Command(Event::Closed), m_str(m_str) {}
 
 deque<string> SetSceneCommand::m_stack = {"menu"};
 
@@ -138,10 +131,6 @@ void DisconnectCommand::Execute(bool is_remote) {
 }
 
 void SetSceneCommand::Execute(bool is_remote) {
-  if (m_str == "ficha") {
-    m_loop->GetWnd().Ficha();
-    return;
-  }
   if (m_str == "adios" || (m_str == "back" && m_stack.back() == "menu")) {
     DisconnectCommand().Execute(true);
     m_loop->GetWnd().close();
@@ -157,8 +146,7 @@ void SetSceneCommand::Execute(bool is_remote) {
       m_stack.resize(2);
       DisconnectCommand().Execute(true);
     } else if (m_stack.back() == "server" || m_stack.back() == "client" ||
-               m_stack.back() == "waiting" ||
-               m_stack.back().substr(0, size - 1) == "select_" ||
+               m_stack.back() == "waiting" || m_stack.back().substr(0, size - 1) == "select_" ||
                m_stack.back().substr(0, size - 1) == "play_") {
       m_stack.resize(3);
       DisconnectCommand().Execute(true);
@@ -172,20 +160,16 @@ void SetSceneCommand::Execute(bool is_remote) {
       } else {
         m_loop->GetWnd().SetShow(m_str, "port_save", true);
       }
-      m_loop->GetWnd().GetBoxes()["port"] =
-          bs::atos(m_loop->GetNetwork().GetPort());
-      m_loop->GetWnd().SetObject(m_str, "port_box", 1,
-                                 m_loop->GetWnd().GetBoxes()["port"]);
+      m_loop->GetWnd().GetBoxes()["port"] = bs::atos(m_loop->GetNetwork().GetPort());
+      m_loop->GetWnd().SetObject(m_str, "port_box", 1, m_loop->GetWnd().GetBoxes()["port"]);
     }
   }
   m_loop->GetWnd().SetButtons(m_stack.back());
 }
 
-CellCommand::CellCommand(Player* play, Cell* cell)
-    : m_player(play), m_cell(cell) {}
+CellCommand::CellCommand(Player* play, Cell* cell) : m_player(play), m_cell(cell) {}
 
-AddCellCommand::AddCellCommand(Player* play, Cell* cell)
-    : CellCommand(play, cell) {}
+AddCellCommand::AddCellCommand(Player* play, Cell* cell) : CellCommand(play, cell) {}
 
 void AddCellCommand::Execute(bool is_remote) {
   string scene = "select_" + bs::atos(m_player->GetIndex());
@@ -209,8 +193,7 @@ void AddCellCommand::Execute(bool is_remote) {
 }
 
 bool AddCellCommand::IsValid() const {
-  return m_cell->GetState() == CellState::Clear ||
-         m_cell->GetState() == CellState::Chosen;
+  return m_cell->GetState() == CellState::Clear || m_cell->GetState() == CellState::Chosen;
 }
 
 void AddCellCommand::Send() {
@@ -240,8 +223,8 @@ void AddShipCommand::Execute(bool is_remote) {
   if (m_player->GetShipCount() == m_loop->kShips) {
     auto play = m_loop->GetLocalPlayer();
     m_player->GetMField()->RemoveProhibited();
-    m_loop->GetWnd().SetShow("play_" + bs::atos(m_player->GetIndex()), "turn",
-                             true, m_player->GetIndex() ^ 1);
+    m_loop->GetWnd().SetShow("play_" + bs::atos(m_player->GetIndex()), "turn", true,
+                             m_player->GetIndex() ^ 1);
 
     if (m_player->GetRival()->GetShipCount() == m_loop->kShips) {
       m_loop->GetWnd().GetMusic("main").pause();
@@ -264,8 +247,7 @@ bool AddShipCommand::IsValid() const {
 
 void AddShipCommand::Send() { m_loop->GetNetwork().Send("add_ship"); }
 
-ShootCommand::ShootCommand(Player* play, Cell* cell)
-    : CellCommand(play, cell) {}
+ShootCommand::ShootCommand(Player* play, Cell* cell) : CellCommand(play, cell) {}
 
 void ShootCommand::Execute(bool is_remote) {
   if (!IsValid() ^ is_remote) {

@@ -13,8 +13,7 @@ class Push {
   Button* GetPressed(const string& scene, const Event& event);
   Button* Get(const string& scene, const string& obj);
 
-  void Config(array<Player, 2>& players, const Vector2u& size,
-              const map<string, Music>& music,
+  void Config(array<Player, 2>& players, const Vector2u& size, const map<string, Music>& music,
               const map<string, string>& boxes);
 
  private:
@@ -23,8 +22,7 @@ class Push {
   map<string, map<string, shared_ptr<Button>>> m_buttons;
 
   void ConfigMainMenu();
-  void ConfigSettings(const map<string, Music>& music,
-                      const map<string, string>& boxes);
+  void ConfigSettings(const map<string, Music>& music, const map<string, string>& boxes);
   void ConfigVolume(const map<string, Music>& music);
   void ConfigPort(const map<string, string>& boxes);
   void ConfigPlayMenu();

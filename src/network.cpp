@@ -24,27 +24,21 @@ void Network::Disconnect(bool send) {
   m_loop->Terminate();
 }
 
-bool Network::Connected() {
-  return m_socket.getRemoteAddress() != IpAddress::None;
-}
+bool Network::Connected() { return m_socket.getRemoteAddress() != IpAddress::None; }
 
 size_t Network::GetPort() { return m_listener.getLocalPort(); }
 
-Socket::Status Network::UpdatePort(size_t port) {
-  return m_listener.listen(port);
-}
+Socket::Status Network::UpdatePort(size_t port) { return m_listener.listen(port); }
 
 void Network::ClientAccept() {
   m_loop->GetWnd().SetShow("client", "status", true, 5);
-  auto status = m_socket.connect(m_address.first, m_address.second,
-                                 sf::milliseconds(1500));
+  auto status = m_socket.connect(m_address.first, m_address.second, sf::milliseconds(1500));
   m_loop->GetWnd().SetShow("client", "status", false, 5);
 
   switch (status) {
     case Socket::Done:
       m_loop->GetWnd().GetBoxes()["ip"].clear();
-      m_loop->GetWnd().SetObject("client", "box", 1,
-                                 m_loop->GetWnd().GetBoxes()["ip"]);
+      m_loop->GetWnd().SetObject("client", "box", 1, m_loop->GetWnd().GetBoxes()["ip"]);
       m_loop->GetWnd().SetShow("client", "status", true, 0);
       sf::sleep(sf::milliseconds(kMoveSleep));
       m_loop->GetWnd().SetShow("client", "status", false, 0);

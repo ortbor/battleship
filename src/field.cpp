@@ -3,8 +3,7 @@
 #include "../lib/cell.hpp"
 #include "../lib/ship.hpp"
 
-Field::Field(const Vector2u& size)
-    : m_size(size), m_cells(deque<deque<Cell>>(m_size.x)) {
+Field::Field(const Vector2u& size) : m_size(size), m_cells(deque<deque<Cell>>(m_size.x)) {
   for (size_t i = 0; i < m_size.x; ++i) {
     for (size_t j = 0; j < m_size.y; ++j) {
       m_cells[i].push_back(Cell(Vector2u(i, j)));
@@ -29,9 +28,7 @@ void Field::LinkField(Field* other) {
   }
 }
 
-Cell* Field::GetCell(const Vector2u& coord) {
-  return &m_cells[coord.x][Vector2u(coord).y];
-}
+Cell* Field::GetCell(const Vector2u& coord) { return &m_cells[coord.x][Vector2u(coord).y]; }
 
 void Field::SurroundExcept(Cell* cell, CellState around, CellState except) {
   size_t current_w = cell->GetCoord().x;

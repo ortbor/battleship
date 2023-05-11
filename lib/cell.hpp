@@ -3,7 +3,7 @@
 #include "common.hpp"
 
 class Cell {
-  public:
+ public:
   Cell(const Vector2u& coord);
   ~Cell() = default;
 
