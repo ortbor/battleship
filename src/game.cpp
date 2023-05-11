@@ -1,27 +1,49 @@
 #include "../lib/game.hpp"
 
 #include "../lib/command.hpp"
-#include "../lib/window.hpp"
 
-GameLoop::GameLoop(const Vector2f& size, size_t ships)
+GameLoop::GameLoop(const Vector2u& size, size_t ships)
     : kShips(ships),
-      size_(size),
-      players_(array<Player, 2>{Player(0, size), Player(1, size)}),
-      window_(players_, size_) {
-  players_[0].LinkWithRival(&players_[1]);
+      kSize(size),
+      m_players(array<Player, 2>{Player(0, size), Player(1, size)}),
+      m_window(m_players, kSize),
+      m_network(this),
+      m_network_thr(&GameLoop::ProcessNetwork, this) {
+  Command::m_loop = this;
+  m_players[0].LinkWithRival(&m_players[1]);
+}
+
+void GameLoop::ProcessNetwork() {
+  while (m_window.isOpen() && m_network.Connected()) {
+    m_network.GetCommand()->Execute(true);
+  }
 }
 
 void GameLoop::Go() {
-  Command::loop_ = this;
-  while (window_.isOpen()) {
-    window_.GetCommand()->Execute();
+  while (m_window.isOpen()) {
+    m_window.GetCommand()->Execute();
   }
+  m_network_thr.terminate();
 }
-
-GameWindow* GameLoop::GetWindow() { return &window_; }
 
 void GameLoop::Clear() {
   for (int pl = 0; pl < 2; ++pl) {
-    players_[pl].Clear();
+    m_players[pl].Clear();
   }
+}
+
+GameWindow& GameLoop::GetWnd() { return m_window; }
+
+Network& GameLoop::GetNetwork() { return m_network; }
+
+void GameLoop::LaunchNetwork() { m_network_thr.launch(); }
+
+void GameLoop::Terminate() { m_network_thr.terminate(); }
+
+bool& GameLoop::GetBlocked() { return m_blocked; }
+
+size_t GameLoop::GetLocalPlayer() const { return m_local_player; }
+
+void GameLoop::SetLocalPlayer(size_t local_player) {
+  m_local_player = local_player;
 }

@@ -1,79 +1,73 @@
 #include "../lib/cell.hpp"
 
-Cell::Cell(const Vector2f& coord)
-    : coord_(coord),
-      ship_(nullptr),
-      twin_cell_(nullptr),
-      shape_(nullptr) {
-  SetState(State::Unknown);
+Cell::Cell(const Vector2u& coord)
+    : m_coord(coord), m_ship(nullptr), m_cell_t(nullptr), m_shape(nullptr) {
+  SetState(CellState::Unknown);
 }
 
-const Vector2f& Cell::GetCoord() const { return coord_; }
+const Vector2u& Cell::GetCoord() const { return m_coord; }
 
-State Cell::GetState() const { return state_; }
+CellState Cell::GetState() const { return m_state; }
 
-Ship* Cell::GetShip() const { return ship_; }
+Ship* Cell::GetShip() const { return m_ship; }
 
-Cell* Cell::GetTwin() const { return twin_cell_; }
+Cell* Cell::GetTwin() const { return m_cell_t; }
 
-sf::RectangleShape* Cell::GetShape() const { return shape_; }
+sf::RectangleShape* Cell::GetShape() const { return m_shape; }
 
-void Cell::SetState(State state) {
-  state_ = state;
-  if (shape_ != nullptr) {
+void Cell::SetState(CellState state) {
+  m_state = state;
+  if (m_shape != nullptr) {
     UpdateColor();
   }
 }
 
-void Cell::SetStateExcept(State set_state, State except) {
+void Cell::SetStateExcept(CellState state, CellState except) {
   if (GetState() != except) {
-    SetState(set_state);
+    SetState(state);
   }
 };
 
-void Cell::SetShip(Ship* ship) { ship_ = ship; }
+void Cell::SetShip(Ship* ship) { m_ship = ship; }
 
-void Cell::SetTwins(Cell* other_cell) {
-  twin_cell_ = other_cell;
-  other_cell->twin_cell_ = this;
+void Cell::SetTwins(Cell* other) {
+  m_cell_t = other;
+  other->m_cell_t = this;
 }
 
-void Cell::SetShape(sf::RectangleShape* shape) { shape_ = shape; }
+void Cell::SetShape(sf::RectangleShape* shape) { m_shape = shape; }
 
 void Cell::UpdateColor() {
-  switch (state_) {
-    case State::Alive:
-      shape_->setFillColor(Color(0, 135, 255));
+  switch (m_state) {
+    case CellState::Alive:
+      m_shape->setFillColor(Color(0, 255, 255));
       break;
-    case State::Chosen:
-      shape_->setFillColor(Color(0, 255 - 120, 0));
+    case CellState::Chosen:
+      m_shape->setFillColor(Color(0, 255 - 120, 0));
       break;
-    case State::Clear:
-      shape_->setFillColor(Color(255, 120, 255));
+    case CellState::Clear:
+      m_shape->setFillColor(Color(255, 120, 255));
       break;
-    case State::Prohibited:
-      shape_->setFillColor(Color(255, 0, 0));
+    case CellState::Prohibited:
+      m_shape->setFillColor(Color(255, 0, 0));
       break;
-    case State::Harmed:
-      shape_->setFillColor(Color(100, 100, 0));
+    case CellState::Harmed:
+      m_shape->setFillColor(Color(100, 100, 0));
       break;
-    case State::Missed:
-      shape_->setFillColor(Color(0, 0, 255));
+    case CellState::Missed:
+      m_shape->setFillColor(Color(0, 0, 255));
       break;
-    case State::Killed:
-      shape_->setFillColor(Color(0, 0, 0));
+    case CellState::Killed:
+      m_shape->setFillColor(Color(0, 0, 0));
       break;
-    case State::Unknown:
-      shape_->setFillColor(Color(255, 255, 255));
-      break;
-    default:
-      throw std::runtime_error("Unknown state!");
+    case CellState::Unknown:
+      m_shape->setFillColor(Color(255, 255, 255));
       break;
   }
 }
 
-bool CellComparator(const Cell* cell1, const Cell* cell2) {
-  return cell1->GetCoord().x < cell2->GetCoord().x ||
-         (cell1->GetCoord().x == cell2->GetCoord().x &&
-          cell1->GetCoord().y < cell2->GetCoord().y);
+bool CellComparator(const Cell* cell_1, const Cell* cell_2) {
+  return cell_1->GetCoord().x < cell_2->GetCoord().x ||
+         (cell_1->GetCoord().x == cell_2->GetCoord().x &&
+          cell_1->GetCoord().y < cell_2->GetCoord().y);
 }

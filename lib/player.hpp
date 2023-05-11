@@ -8,32 +8,28 @@ class Player {
   friend class AddCellCommand;
 
  public:
-  Player(size_t index, const Vector2f& size);
+  Player(size_t index, const Vector2u& size);
   ~Player() = default;
 
+  void Clear();
   size_t GetIndex() const;
-  ShotResult GetLastShotResult() const;
   size_t GetShipCount() const;
-  /*Field* GetField();
-  Field* GetRField();*/
-  MyField* GetField();
+  MyField* GetMField();
   RivalField* GetRField();
   void DecrementShipCount();
   void AddShip();
-  void Shoot(Cell* cell, ShotResult& shot_result);
+  ShotState Shoot(Cell* cell);
   const Ship* GetShipInProcess() const;
-  size_t GetNumberOfShipsSized(size_t size) const;
+  size_t GetNumShips(size_t size) const;
   void LinkWithRival(Player* rival);
   Player* GetRival();
-  void Clear();
 
- protected:
-  size_t index_;
-  ShotResult last_shot_result_;
-  size_t ship_count_;
-  MyField my_field_;
-  RivalField rival_field_;
-  deque<deque<Ship>> ships_;
-  Ship ship_in_process_;
-  Player* rival_;
+ private:
+  size_t m_index;
+  size_t m_ship_count;
+  MyField m_field_m;
+  RivalField m_field_r;
+  deque<deque<Ship>> m_ships;
+  Ship m_ship_in_process;
+  Player* m_rival;
 };
