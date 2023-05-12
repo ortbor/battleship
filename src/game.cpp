@@ -44,6 +44,4 @@ bool& GameLoop::GetBlocked() { return m_blocked; }
 
 size_t GameLoop::GetLocalPlayer() const { return m_local_player; }
 
-void GameLoop::SetLocalPlayer(size_t local_player) {
-  m_local_player = local_player;
-}
+void GameLoop::SetLocalPlayer(size_t local_player) { m_local_player = local_player; }

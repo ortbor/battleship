@@ -20,8 +20,7 @@ class Button {
 class MouseButton final : public Button {
  public:
   template <typename... Args>
-  MouseButton(const Mouse::Button& btn, std::shared_ptr<Command> cmd,
-              Args... obj);
+  MouseButton(const Mouse::Button& btn, std::shared_ptr<Command> cmd, Args... obj);
 
   bool IsPressed(const Event& event) const final;
 
@@ -40,20 +39,17 @@ class KeyboardButton final : public Button {
 };
 
 template <typename... Args>
-Button::Button(std::shared_ptr<Command> cmd, Args... obj)
-    : m_cmd(std::move(cmd)) {
+Button::Button(std::shared_ptr<Command> cmd, Args... obj) : m_cmd(std::move(cmd)) {
   (..., m_draw.push_back(std::move(obj)));
 }
 
 template <typename... Args>
-MouseButton::MouseButton(const Mouse::Button& btn,
-                         std::shared_ptr<Command> cmd, Args... obj)
+MouseButton::MouseButton(const Mouse::Button& btn, std::shared_ptr<Command> cmd, Args... obj)
     : Button(std::move(cmd)), m_btn(btn) {
   (..., m_draw.push_back(std::move(obj)));
 }
 
 template <typename... Args>
-KeyboardButton::KeyboardButton(std::shared_ptr<Command> cmd, Args... obj)
-    : Button(std::move(cmd)) {
+KeyboardButton::KeyboardButton(std::shared_ptr<Command> cmd, Args... obj) : Button(std::move(cmd)) {
   (..., m_draw.push_back(std::move(obj)));
 }

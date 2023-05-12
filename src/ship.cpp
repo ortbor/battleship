@@ -39,8 +39,7 @@ void Ship::AddCell(Cell* cell) {
 void Ship::EraseCell(Cell* cell) {
   auto cell_location = find(m_cells.begin(), m_cells.end(), cell);
   if (cell_location != m_cells.end()) {
-    if (cell->GetState() != CellState::Killed &&
-        cell->GetState() != CellState::Harmed) {
+    if (cell->GetState() != CellState::Killed && cell->GetState() != CellState::Harmed) {
       --m_health;
     }
     m_cells.erase(find(m_cells.begin(), m_cells.end(), cell));
@@ -60,8 +59,7 @@ bool Ship::IsClassic() const {
     vertical = true;
   }
   for (size_t i = 0; i < GetSize() - 1; ++i) {
-    if ((vertical &&
-         m_cells[i + 1]->GetCoord().y == m_cells[i + 1]->GetCoord().y &&
+    if ((vertical && m_cells[i + 1]->GetCoord().y == m_cells[i + 1]->GetCoord().y &&
          m_cells[i]->GetCoord().x + 1 == m_cells[i + 1]->GetCoord().x) ||
         (!vertical && m_cells[i]->GetCoord().x == m_cells[i + 1]->GetCoord().x &&
          m_cells[i]->GetCoord().y + 1 == m_cells[i + 1]->GetCoord().y)) {
